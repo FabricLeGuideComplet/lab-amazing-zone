@@ -12,33 +12,11 @@ que ce dépôt contient.
 
 ## Architecture du lab
 
-```
-Azure (RG_AmazingZone, France Central)                  Azure (RG_WMS, North Europe)
-┌──────────────────────────────────────────┐            ┌─────────────────────────────────────────┐
-│ App Service AmazingWeb (nopCommerce 4.90)│            │ VNet 10.0.0.0/16                         │
-│   └─ journaux de diagnostic ─► Event Hub │            │  ├─ VM WMSpostgre  Ubuntu 24.04, PG 16   │
-│      WebLogsAZ / weblogs                 │            │  │   10.0.0.4, schéma wms                 │
-│ Azure SQL Database amazingdb (serverless)│            │  └─ VM WMSgateway  Windows Server 2025   │
-│ Application Insights AmazingWeb          │            │      10.0.0.5, passerelle de données     │
-│ Key Vault kv-amazingzone-lab             │            │      locale                              │
-└──────────────────────────────────────────┘            └─────────────────────────────────────────┘
-        │ mirroring        │ Eventstream                          │ Copy Job (via la passerelle)
-        ▼                  ▼                                      ▼
-Microsoft Fabric
-┌────────────────────────────────────────────────────────────────────────────────────────────────┐
-│ Espace « AmazingZone - Mirroring » : base mirrorée amazingdb                                    │
-│ Espace « AmazingZone - Dev - <prénom> » (synchronisé avec Git, dossier workspaces/amazingzone)  │
-│   1 - Ingestion       Copy Job WMS, notebooks météo, Dataflow des référentiels, orchestration   │
-│   2 - Stockage        Lakehouse AmazingZoneLK (Bronze), Warehouse AmazingZoneWH (Silver, Gold), │
-│                       Eventhouse AmazingZoneEH                                                  │
-│   3 - Transformation  job dbt « Silver et Gold », synchronisation SQL, variante MLV             │
-│   4 - Restitution     modèles sémantiques, rapports, application d'organisation, GraphQL, UDF   │
-│   5 - Temps réel      Eventstreams, tableau de bord KQL, alerte Activator                       │
-│   9 - Archives        éléments remplacés, conservés pour les démonstrations du livre            │
-└────────────────────────────────────────────────────────────────────────────────────────────────┘
-        ▲ Dataflow Gen2 (certificat du principal de service)       ▲ lien Fabric (facultatif)
-SharePoint « Finance » : référentiels Excel, budget                Dataverse (Dynamics 365 Customer Service)
-```
+![Architecture du lab Amazing Zone : sources Azure, Microsoft 365 et Dataverse, espaces Fabric de mirroring et de développement, flux d'ingestion, de transformation, de restitution et de temps réel](docs/architecture-lab.png)
+
+Les sources sont à gauche, la plateforme Fabric à droite. Dans l'espace de développement, les dossiers « 1 - Ingestion » à
+« 5 - Temps réel » correspondent à ceux du dépôt. Le schéma existe aussi en version vectorielle :
+[docs/architecture-lab.svg](docs/architecture-lab.svg).
 
 ## Contenu du dépôt
 
@@ -50,6 +28,7 @@ SharePoint « Finance » : référentiels Excel, budget                Dataverse
 | `referentiels/` | Classeurs Excel déposés sur SharePoint (référentiel géographique, budget des ventes). |
 | `modelisation/` | Description de la chaîne Bronze, Silver, Gold et de l'orchestration (chapitre 5). |
 | `workspaces/amazingzone/` | Éléments Fabric de l'espace de développement, au format de l'intégration Git de Fabric, et `parameter.yml` pour fabric-cicd. |
+| `docs/` | Schéma d'architecture du lab (PNG et SVG). |
 | `apps/retards-expedition/` | Fabric App « Suivi des retards d'expédition » (chapitre 6). |
 
 ## Reconstruire le lab
