@@ -1,0 +1,85 @@
+{
+  "properties": {
+    "description": "Transformation quotidienne d'Amazing Zone, appelée par « Orchestration - Ingestion » après le chargement de 6 h : synchronisation du point de terminaison SQL du Lakehouse, construction des couches Silver et Gold par le job dbt (modèles, snapshot SCD 2, table de caractéristiques, tests), puis actualisation du modèle sémantique Direct Lake, dont les mises à jour automatiques sont désactivées.",
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "0803a2c8-c488-47bd-8a51-4f8b583090fc",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.01:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Synchroniser le Bronze",
+        "description": "Notebook « Bronze - Synchronisation SQL » : synchronise le point de terminaison SQL d'AmazingZoneLK et échoue si une table n'est pas synchronisée",
+        "dependsOn": []
+      },
+      {
+        "type": "InvokeDataBuildToolJob",
+        "typeProperties": {
+          "dataBuildToolJobId": "643f7296-df61-a625-447c-2af82f6f4199",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "exclude": "tag:avertissement",
+          "threads": 4,
+          "operation": "build"
+        },
+        "externalReferences": {
+          "connection": "3e6211cb-15c3-4ec1-860f-441d8ae40f32"
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Construire Silver et Gold",
+        "description": "Job dbt « Silver et Gold - Nettoyage et modèle en étoile » : couches Silver et Gold du Warehouse, snapshot SCD 2, table de caractéristiques et tests",
+        "dependsOn": [
+          {
+            "activity": "Synchroniser le Bronze",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "PBISemanticModelRefresh",
+        "typeProperties": {
+          "method": "post",
+          "groupId": "0875373d-96cd-4d0e-b4e7-5fc5cd327cb8",
+          "datasetId": "53505de3-3037-4538-b2d4-6bd2b4e1b522",
+          "commitMode": "Transactional",
+          "waitOnCompletion": true,
+          "operationType": "SemanticModelRefresh"
+        },
+        "externalReferences": {
+          "connection": "fd054e4c-d2b1-433f-b39f-7a449ed3fc6d"
+        },
+        "policy": {
+          "timeout": "0.01:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Actualiser le modele semantique",
+        "description": "Recadrage du modèle « Ventes et logistique » (Direct Lake) une fois le Gold complet",
+        "dependsOn": [
+          {
+            "activity": "Construire Silver et Gold",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

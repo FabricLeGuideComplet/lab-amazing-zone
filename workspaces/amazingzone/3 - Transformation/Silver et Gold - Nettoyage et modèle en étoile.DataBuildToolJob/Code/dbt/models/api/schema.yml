@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: stock_disponible
+    description: >
+      Stock disponible (en stock moins réservé) par article et par entrepôt, à la fraîcheur de la dernière copie
+      du WMS. Exposé en lecture seule par l'API pour GraphQL « API_Stock_disponible » ; ne sert pas au modèle
+      sémantique. Suffisant pour annoncer une disponibilité, pas pour réserver un article.
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "CONCAT(sku, '|', code_entrepot)"
+    columns:
+      - name: quantite_disponible
+        description: Quantité en stock moins quantité réservée.
+        data_tests: [not_null]

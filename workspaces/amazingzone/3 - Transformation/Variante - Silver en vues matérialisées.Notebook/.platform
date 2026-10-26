@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "Variante - Silver en vues matérialisées",
+    "description": "Variante documentée de la couche Silver en Materialized Lake Views (schéma silver_mlv du Lakehouse) ; non appelée par l orchestration."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "0e758259-967e-439f-b627-310bf7775400"
+  }
+}

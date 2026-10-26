@@ -1,0 +1,36 @@
+/// Calculs temporels appliqués à n'importe quelle mesure : année en cours, année précédente, évolution et cumul annuel.
+table Période
+	lineageTag: 98bf6110-6114-4df7-bd8d-f8ab510c9df7
+
+	calculationGroup
+		precedence: 1
+
+		calculationItem N = SELECTEDMEASURE ()
+
+		calculationItem N-1 = CALCULATE ( SELECTEDMEASURE (), SAMEPERIODLASTYEAR ( Calendrier[Date] ) )
+
+		calculationItem 'Évolution N-1' =
+				VAR ValeurN = SELECTEDMEASURE ()
+				VAR ValeurN1 =
+				    CALCULATE ( SELECTEDMEASURE (), SAMEPERIODLASTYEAR ( Calendrier[Date] ) )
+				RETURN
+				    IF ( NOT ISBLANK ( ValeurN ), DIVIDE ( ValeurN - ValeurN1, ValeurN1 ) )
+
+			formatStringDefinition = "+0.0 %;-0.0 %;0.0 %"
+
+		calculationItem 'Cumul annuel' = CALCULATE ( SELECTEDMEASURE (), DATESYTD ( Calendrier[Date] ) )
+
+	column Période
+		dataType: string
+		lineageTag: 5e99ba2d-d0b3-4963-8c36-6f4d21b3639b
+		summarizeBy: none
+		sourceColumn: Name
+		sortByColumn: Ordre
+
+	column Ordre
+		dataType: int64
+		isHidden
+		lineageTag: ed14d9bf-8fb2-4074-bb0c-96d5441a359c
+		summarizeBy: none
+		sourceColumn: Ordinal
+

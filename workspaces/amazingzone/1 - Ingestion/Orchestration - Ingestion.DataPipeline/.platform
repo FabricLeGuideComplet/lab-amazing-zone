@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "Orchestration - Ingestion",
+    "description": "Orchestration des ingestions batch d'Amazing Zone, planifiée toutes les heures : WMS (Copy Job) à chaque exécution, prévisions météo (notebook Python) à 6 h, référentiels Excel (Dataflow Gen2) le lundi à 6 h ; les trois traitements s'exécutent en parallèle. À 6 h, une fois les trois réussis, le pipeline « Orchestration - Transformation » est appelé : la transformation ne lit jamais une ingestion en cours. Le paramètre forcer_tout lance l'ensemble quelle que soit l'heure."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "fa4fe9ad-4b67-4fc9-a37e-ff14a3632457"
+  }
+}

@@ -1,0 +1,35 @@
+# Projet dbt d'Amazing Zone : couches Silver et Gold dans le Warehouse AmazingZoneWH, construites à partir
+# du Bronze du Lakehouse AmazingZoneLK (un schéma par système source), lu par son point de terminaison SQL.
+name: amazingzone
+version: "1.0.0"
+config-version: 2
+profile: amazingzone
+
+model-paths: ["models"]
+snapshot-paths: ["snapshots"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+
+models:
+  amazingzone:
+    silver:
+      +schema: silver
+      +materialized: table
+    gold:
+      +schema: gold
+      +materialized: table
+    ml:
+      +schema: ml
+      +materialized: table
+    api:
+      +schema: api
+      +materialized: table
+
+seeds:
+  amazingzone:
+    +schema: silver
+
+snapshots:
+  amazingzone:
+    +target_schema: snapshots

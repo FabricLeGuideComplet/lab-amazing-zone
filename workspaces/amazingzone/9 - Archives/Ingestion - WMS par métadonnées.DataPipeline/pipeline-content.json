@@ -1,0 +1,252 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "DataWarehouseSource",
+            "sqlReaderQuery": "select * \nfrom tech.ingestWMS_config \nwhere src_code = 'wms'\nand is_active = 1",
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00"
+          },
+          "datasetSettings": {
+            "type": "DataWarehouseTable",
+            "schema": [],
+            "linkedService": {
+              "name": "AmazingZoneWH",
+              "properties": {
+                "type": "DataWarehouse",
+                "typeProperties": {
+                  "artifactId": "ca7e5c09-9bab-8e93-4719-0a319c883cd6",
+                  "endpoint": "xpuudm5uch6ezlvpconr4xjvpm-hu3xkcgnsyhe3nhhl7c42mt4xa.datawarehouse.fabric.microsoft.com",
+                  "workspaceId": "00000000-0000-0000-0000-000000000000"
+                },
+                "annotations": []
+              }
+            },
+            "annotations": []
+          },
+          "firstRowOnly": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Selection_tables",
+        "description": "Récupérer la liste de tables à charger depuis le warehouse",
+        "dependsOn": []
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "items": {
+            "value": "@activity('Selection_tables').output.value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "IfCondition",
+              "typeProperties": {
+                "expression": {
+                  "value": "@equals(toUpper(coalesce(item().ingest_mode, 'FULL')), 'DELTA')",
+                  "type": "Expression"
+                },
+                "ifTrueActivities": [
+                  {
+                    "type": "Copy",
+                    "typeProperties": {
+                      "source": {
+                        "type": "PostgreSqlSource",
+                        "query": {
+                          "type": "Expression",
+                          "value": "@concat(\n    if(empty(item().custom_query),\n       concat('select * from ', item().src_schema, '.', item().src_table),\n       concat('select * from (', item().custom_query, ') src')),\n    ' where ', item().delta_col_name,\n    ' >= now() - interval ''', string(item().delta_nb_jours), ' days''')"
+                        },
+                        "datasetSettings": {
+                          "type": "PostgreSqlTable",
+                          "typeProperties": {
+                            "table": {
+                              "value": "@item().src_table",
+                              "type": "Expression"
+                            },
+                            "schema": {
+                              "value": "@item().src_schema",
+                              "type": "Expression"
+                            }
+                          },
+                          "schema": [],
+                          "externalReferences": {
+                            "connection": "dafbe60c-6a9e-435b-8ee1-10abc7c93e4d"
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "sink": {
+                        "type": "LakehouseTableSink",
+                        "tableActionOption": "Upsert",
+                        "applyVOrder": false,
+                        "upsertSettings": {
+                          "keys": {
+                            "type": "Expression",
+                            "value": "@split(item().delta_key_cols, ',')"
+                          }
+                        },
+                        "partitionOption": "None",
+                        "datasetSettings": {
+                          "type": "LakehouseTable",
+                          "typeProperties": {
+                            "schema": {
+                              "value": "@item().lake_schema",
+                              "type": "Expression"
+                            },
+                            "table": {
+                              "value": "@item().lake_table",
+                              "type": "Expression"
+                            }
+                          },
+                          "schema": [],
+                          "linkedService": {
+                            "name": "AmazingZoneLK",
+                            "properties": {
+                              "type": "Lakehouse",
+                              "typeProperties": {
+                                "artifactId": "8d1ef2af-cebe-a672-401b-e450f6523eec",
+                                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                                "rootFolder": "Tables"
+                              },
+                              "annotations": []
+                            }
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "translator": {
+                        "type": "TabularTranslator",
+                        "typeConversion": true,
+                        "typeConversionSettings": {
+                          "allowDataTruncation": true,
+                          "treatBooleanAsNumber": false
+                        }
+                      },
+                      "enableStaging": false
+                    },
+                    "policy": {
+                      "timeout": "0.12:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 30,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "Ingestion delta wms",
+                    "description": "Mode DELTA : relit la fenêtre glissante de delta_nb_jours sur delta_col_name, puis fusionne (Upsert) sur delta_key_cols",
+                    "dependsOn": []
+                  }
+                ],
+                "ifFalseActivities": [
+                  {
+                    "type": "Copy",
+                    "typeProperties": {
+                      "source": {
+                        "type": "PostgreSqlSource",
+                        "query": {
+                          "value": "@if(empty(item().custom_query),\n    concat( 'select * from ' , \n            item().src_schema, \n            '.', \n            item().src_table), \n    item().custom_query)",
+                          "type": "Expression"
+                        },
+                        "datasetSettings": {
+                          "type": "PostgreSqlTable",
+                          "typeProperties": {
+                            "table": {
+                              "value": "@item().src_table",
+                              "type": "Expression"
+                            },
+                            "schema": {
+                              "value": "@item().src_schema",
+                              "type": "Expression"
+                            }
+                          },
+                          "schema": [],
+                          "externalReferences": {
+                            "connection": "dafbe60c-6a9e-435b-8ee1-10abc7c93e4d"
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "sink": {
+                        "type": "LakehouseTableSink",
+                        "tableActionOption": "OverwriteSchema",
+                        "applyVOrder": false,
+                        "partitionOption": "None",
+                        "datasetSettings": {
+                          "type": "LakehouseTable",
+                          "typeProperties": {
+                            "schema": {
+                              "value": "@item().lake_schema",
+                              "type": "Expression"
+                            },
+                            "table": {
+                              "value": "@item().lake_table",
+                              "type": "Expression"
+                            }
+                          },
+                          "schema": [],
+                          "linkedService": {
+                            "name": "AmazingZoneLK",
+                            "properties": {
+                              "type": "Lakehouse",
+                              "typeProperties": {
+                                "artifactId": "8d1ef2af-cebe-a672-401b-e450f6523eec",
+                                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                                "rootFolder": "Tables"
+                              },
+                              "annotations": []
+                            }
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "translator": {
+                        "type": "TabularTranslator",
+                        "typeConversion": true,
+                        "typeConversionSettings": {
+                          "allowDataTruncation": true,
+                          "treatBooleanAsNumber": false
+                        }
+                      },
+                      "enableStaging": false
+                    },
+                    "policy": {
+                      "timeout": "0.12:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 30,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "Ingestion tables wms",
+                    "description": "Mode FULL : copie complète de la table (ou de la requête personnalisée), en écrasement",
+                    "dependsOn": []
+                  }
+                ]
+              },
+              "name": "Choix du mode",
+              "description": "Aiguille vers le chargement complet (FULL) ou incrémental par fenêtre glissante (DELTA) selon ingest_mode",
+              "dependsOn": []
+            }
+          ]
+        },
+        "name": "Pour chaque table a charger",
+        "description": "Parcours de chaque table à charger dans le Lakehouse",
+        "dependsOn": [
+          {
+            "activity": "Selection_tables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

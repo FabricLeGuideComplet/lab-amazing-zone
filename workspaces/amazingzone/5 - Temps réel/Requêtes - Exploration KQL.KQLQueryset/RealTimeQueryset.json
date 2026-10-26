@@ -1,0 +1,22 @@
+{
+  "queryset": {
+    "version": "1.0.0",
+    "dataSources": [
+      {
+        "id": "38ab0a83-2077-4fdd-9942-1b81a8d2d6b3",
+        "clusterUri": "",
+        "type": "Fabric",
+        "databaseItemId": "16141940-050c-9467-467e-3ee59afe9a4e"
+      }
+    ],
+    "tabs": [
+      {
+        "id": "5f4c298c-c2eb-43dd-8a61-474a43fc8d2f",
+        "content": "//***********************************************************************************************************\n// Here are two articles to help you get started with KQL:\n// KQL reference guide - https://aka.ms/KQLguide\n// SQL - KQL conversions - https://aka.ms/sqlcheatsheet\n//***********************************************************************************************************\n\n// Use \"take\" to view a sample number of records in the table and check the data.\nsensors\n| take 100\n\n// See how many records are in the table.\nsensors\n| count\n\n// This query returns the number of ingestions per hour in the given table.\nsensors\n| summarize IngestionCount = count() by bin(ingestion_time(), 1h)\n\n\nsensors\n| extend metrics_json = todynamic(metrics) // Optionnel : nécessaire uniquement si la colonne est un string\n| project \n    eventType,\n    sensorId,\n    timestamp,\n    Temperature = todecimal(metrics_json.temperature_c),\n    Pressure = todecimal(metrics_json.pressure_hpa),\n    Humidity = todecimal(metrics_json.humidity_pct)\n",
+        "title": "Tab",
+        "dataSourceId": "38ab0a83-2077-4fdd-9942-1b81a8d2d6b3"
+      }
+    ],
+    "querysetType": "Standalone"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Eventhouse",
+    "displayName": "AmazingZoneEH"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "aa0dd91e-bae9-b1c5-4c56-17b4e2e69bc2"
+  }
+}

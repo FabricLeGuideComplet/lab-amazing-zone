@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "CopyJob",
+    "displayName": "Ingestion - WMS",
+    "description": "Ingestion incrémentale du WMS (watermark date_maj, écriture Merge)"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "4cde7c10-0772-40ac-a8b1-57c7097d4e26"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "Ingestion - Météo historique",
+    "description": "Reprise ponctuelle de l'historique météo des entrepôts"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "11736234-bc50-4f15-909b-494386817ee4"
+  }
+}

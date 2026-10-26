@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Eventstream",
+    "displayName": "Flux - Journaux du site"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "171c91de-a07a-905e-4b32-b74bef2f059f"
+  }
+}

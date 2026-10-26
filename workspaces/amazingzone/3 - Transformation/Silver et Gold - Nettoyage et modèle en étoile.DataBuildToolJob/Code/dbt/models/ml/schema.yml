@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: charge_entrepot_jour
+    description: >
+      Table de caractéristiques pour prévoir la charge des entrepôts (une ligne par entrepôt et par jour).
+      Exception assumée au modèle en étoile, réservée au Machine Learning : ne pas l'exposer dans un modèle sémantique.
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "CONCAT(code_entrepot, '|', CONVERT(VARCHAR(10), jour, 23))"
+    columns:
+      - name: nb_commandes
+        description: Cible. Commandes prises en charge par l'entrepôt ce jour-là ; zéro sans commande, vide pour un jour à prévoir.
+      - name: est_a_prevoir
+        description: Vrai pour les jours postérieurs au dernier jour connu (cible vide).
+      - name: temperature_max_prevue
+        description: Température maximale prévue la veille pour ce jour (Open-Meteo, Météo-France), et non observée.

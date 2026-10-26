@@ -1,0 +1,122 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "f658ebbe0a39824955b0",
+  "position": {
+    "x": 518.73149522067706,
+    "y": 52.297180717070979,
+    "z": 0,
+    "height": 613.39168490153168,
+    "width": 742.23194748358856,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Kusto Query Result"
+                    }
+                  },
+                  "Property": "Success"
+                }
+              },
+              "queryRef": "Kusto Query Result.Success",
+              "nativeQueryRef": "Success",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Kusto Query Result"
+                        }
+                      },
+                      "Property": "DurationMs"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Kusto Query Result.DurationMs)",
+              "nativeQueryRef": "Sum of DurationMs"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "Kusto Query Result"
+                      }
+                    },
+                    "Property": "DurationMs"
+                  }
+                },
+                "Function": 0
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "afa5d1a6aa3348990d24",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Kusto Query Result"
+              }
+            },
+            "Property": "Success"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2b311da5a515bc3921ce",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Kusto Query Result"
+                  }
+                },
+                "Property": "DurationMs"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

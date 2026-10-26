@@ -1,0 +1,85 @@
+/// Les quatre entrepôts d'Amazing Zone.
+table Entrepôt
+	lineageTag: a1ca7704-e4d7-5d7d-8bea-955a96a23da6
+	sourceLineageTag: [gold].[DimEntrepot]
+
+	column EntrepotKey
+		dataType: int64
+		isHidden
+		lineageTag: 83c9fcc6-b9dd-55f0-a158-f5d2918f8850
+		sourceLineageTag: EntrepotKey
+		summarizeBy: none
+		sourceColumn: EntrepotKey
+
+		annotation SummarizationSetBy = User
+
+	/// Code de l'entrepôt dans le WMS (WH1 à WH4).
+	column 'Code entrepôt'
+		dataType: string
+		lineageTag: 8349e207-6493-5ea2-97a8-363f36727748
+		sourceLineageTag: CodeEntrepot
+		summarizeBy: none
+		sourceColumn: CodeEntrepot
+
+		annotation SummarizationSetBy = User
+
+	column Entrepôt
+		dataType: string
+		lineageTag: 48c02150-7889-549a-981b-07dff238da9f
+		sourceLineageTag: Entrepot
+		summarizeBy: none
+		sourceColumn: Entrepot
+
+		annotation SummarizationSetBy = User
+
+	column 'Ville de l''entrepôt'
+		dataType: string
+		lineageTag: 4c456596-ecdb-5e67-a2d9-c60e30eba951
+		sourceLineageTag: Ville
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: Ville
+
+		annotation SummarizationSetBy = User
+
+	column Latitude
+		dataType: double
+		isHidden
+		lineageTag: 4bead834-1efc-5839-bf9c-7a7f123d0fc0
+		sourceLineageTag: Latitude
+		dataCategory: Latitude
+		summarizeBy: none
+		sourceColumn: Latitude
+
+		annotation SummarizationSetBy = User
+
+	column Longitude
+		dataType: double
+		isHidden
+		lineageTag: f37fdc16-b810-56dd-a345-c36ef9de5635
+		sourceLineageTag: Longitude
+		dataCategory: Longitude
+		summarizeBy: none
+		sourceColumn: Longitude
+
+		annotation SummarizationSetBy = User
+
+	column DateChargement
+		dataType: dateTime
+		isHidden
+		lineageTag: c8d0d549-fbe2-5252-a310-89b31d36b6a4
+		sourceLineageTag: DateChargement
+		summarizeBy: none
+		sourceColumn: DateChargement
+
+		annotation SummarizationSetBy = User
+
+	partition Entrepôt = entity
+		mode: directLake
+		source
+			entityName: DimEntrepot
+			schemaName: gold
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+

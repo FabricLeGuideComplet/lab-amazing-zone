@@ -1,0 +1,57 @@
+table 'Kusto Query Result'
+	lineageTag: 5845fd3c-4176-4f9e-bbbc-5769cb8e447d
+
+	column dateLog
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: d20ef0cf-b87b-47ea-ad0d-1673052d18e4
+		summarizeBy: none
+		sourceColumn: dateLog
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type
+		dataType: string
+		lineageTag: 46e88aa2-e347-405c-9e24-82ff195f3e74
+		summarizeBy: none
+		sourceColumn: Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResultCode
+		dataType: string
+		lineageTag: b06792f6-9093-4d8d-9dd6-ec2f21053a89
+		summarizeBy: none
+		sourceColumn: ResultCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column DurationMs
+		dataType: double
+		lineageTag: c1581afb-7ea1-49e2-a829-7809404ad8f2
+		summarizeBy: sum
+		sourceColumn: DurationMs
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Success
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 0014180a-d0a7-473f-ab94-2a203dd233d0
+		summarizeBy: none
+		sourceColumn: Success
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Kusto Query Result' = m
+		mode: directQuery
+		source =
+				let
+				Source = AzureDataExplorer.Contents("https://trd-7u2rbremdr7tjzdzyd.z7.kusto.fabric.microsoft.com", "0e1406d4-4530-4c1f-9419-46c8a9e29c71", "fn_ParseWebLogs()", [])
+				in
+				Source
+
+	annotation PBI_ResultType = Table
+

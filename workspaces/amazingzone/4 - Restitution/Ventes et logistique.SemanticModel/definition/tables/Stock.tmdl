@@ -1,0 +1,100 @@
+/// Photo quotidienne du stock par produit et par entrepôt. Le stock ne s'additionne pas dans le temps : les mesures retiennent le dernier jour de la période.
+table Stock
+	lineageTag: 75aa8b7b-8cbb-5353-b3ba-93a0131628f0
+	sourceLineageTag: [gold].[FaitStockJour]
+
+	/// Quantité en stock non réservée, au dernier jour photographié de la période.
+	measure 'Stock disponible' = CALCULATE(SUM(Stock[QuantiteDisponible]), LASTNONBLANK(Calendrier[Date], CALCULATE(COUNTROWS(Stock))))
+		formatString: #,0
+		lineageTag: 8453722f-955c-589c-ad71-379d02e72b35
+
+	/// Quantité physiquement en stock, au dernier jour photographié de la période.
+	measure 'Stock physique' = CALCULATE(SUM(Stock[QuantiteStock]), LASTNONBLANK(Calendrier[Date], CALCULATE(COUNTROWS(Stock))))
+		formatString: #,0
+		lineageTag: 018cc0e0-606a-5798-a0c8-a35cd0905aa7
+
+	column DateId
+		dataType: int64
+		isHidden
+		lineageTag: 6ec98e63-1c8e-5784-bac1-50a9ae8f9bf3
+		sourceLineageTag: DateId
+		summarizeBy: none
+		sourceColumn: DateId
+
+		annotation SummarizationSetBy = User
+
+	column ProduitKey
+		dataType: int64
+		isHidden
+		lineageTag: 6785c066-2203-54e4-bb00-8bfb336e335d
+		sourceLineageTag: ProduitKey
+		summarizeBy: none
+		sourceColumn: ProduitKey
+
+		annotation SummarizationSetBy = User
+
+	column EntrepotKey
+		dataType: int64
+		isHidden
+		lineageTag: ec2e9022-ae44-5764-85c0-bb12a96844e3
+		sourceLineageTag: EntrepotKey
+		summarizeBy: none
+		sourceColumn: EntrepotKey
+
+		annotation SummarizationSetBy = User
+
+	column QuantiteStock
+		dataType: decimal
+		isHidden
+		lineageTag: 4305e3ec-ac34-57f4-bbbb-371e6482ccfe
+		sourceLineageTag: QuantiteStock
+		summarizeBy: none
+		sourceColumn: QuantiteStock
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = User
+
+	column QuantiteReservee
+		dataType: decimal
+		isHidden
+		lineageTag: d20c45c6-e440-53dd-bbec-4137dfe91fed
+		sourceLineageTag: QuantiteReservee
+		summarizeBy: none
+		sourceColumn: QuantiteReservee
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = User
+
+	column QuantiteDisponible
+		dataType: decimal
+		isHidden
+		lineageTag: 5aa32763-0d18-5130-ac3e-c702a6d89d28
+		sourceLineageTag: QuantiteDisponible
+		summarizeBy: none
+		sourceColumn: QuantiteDisponible
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = User
+
+	column DateChargement
+		dataType: dateTime
+		isHidden
+		lineageTag: 0fcc9414-c865-520c-b022-18813576c280
+		sourceLineageTag: DateChargement
+		summarizeBy: none
+		sourceColumn: DateChargement
+
+		annotation SummarizationSetBy = User
+
+	partition Stock = entity
+		mode: directLake
+		source
+			entityName: FaitStockJour
+			schemaName: gold
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+

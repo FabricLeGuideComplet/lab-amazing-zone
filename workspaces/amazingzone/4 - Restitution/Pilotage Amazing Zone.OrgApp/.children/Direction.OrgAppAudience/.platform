@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "OrgAppAudience",
+    "displayName": "Direction"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "84acc599-6ca0-a4ed-4526-b9969cefb8bb"
+  }
+}

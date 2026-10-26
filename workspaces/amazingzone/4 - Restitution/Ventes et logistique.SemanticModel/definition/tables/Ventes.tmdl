@@ -1,0 +1,212 @@
+/// Ventes du site e-commerce, une ligne par ligne de commande. Les commandes annulées sont exclues ; les montants sont hors taxes.
+table Ventes
+	lineageTag: 697a3da5-7bf6-5486-9bb8-3957fa503344
+	sourceLineageTag: [gold].[FaitVente]
+
+	/// Chiffre d'affaires hors taxes des commandes non annulées.
+	measure 'CA HT' = SUM(Ventes[MontantHT])
+		formatString: #,0 €
+		displayFolder: Chiffre d'affaires
+		lineageTag: e300048d-e2a9-5599-97b8-3d3d59a2be0c
+
+	/// Chiffre d'affaires hors taxes de la même période l'année précédente.
+	measure 'CA HT N-1' = CALCULATE([CA HT], SAMEPERIODLASTYEAR(Calendrier[Date]))
+		formatString: #,0 €
+		displayFolder: Chiffre d'affaires
+		lineageTag: d29dbf5b-c7cd-5c20-b6fd-f0484d556c93
+
+	/// Évolution du chiffre d'affaires hors taxes par rapport à la même période l'année précédente.
+	measure 'Évolution CA HT' = IF(NOT ISBLANK([CA HT]), DIVIDE([CA HT] - [CA HT N-1], [CA HT N-1]))
+		formatString: +0.0 %;-0.0 %;0.0 %
+		displayFolder: Chiffre d'affaires
+		lineageTag: 9a20177b-d74b-5b8a-8e54-9d930b175c03
+
+	/// Chiffre d'affaires hors taxes cumulé depuis le 1er janvier.
+	measure 'CA HT cumul annuel' = TOTALYTD([CA HT], Calendrier[Date])
+		formatString: #,0 €
+		displayFolder: Chiffre d'affaires
+		lineageTag: dee52732-d89c-52b6-954e-a767eda18be8
+
+	/// Chiffre d'affaires hors taxes moins le coût d'achat des produits vendus.
+	measure 'Marge HT' = SUM(Ventes[MargeHT])
+		formatString: #,0 €
+		displayFolder: Marge
+		lineageTag: 635796be-51f2-573c-b03b-58069c5b4629
+
+	/// Marge hors taxes rapportée au chiffre d'affaires hors taxes.
+	measure 'Taux de marge' = DIVIDE([Marge HT], [CA HT])
+		formatString: 0.0 %
+		displayFolder: Marge
+		lineageTag: 03b8b2d0-5c3b-5951-b01f-27f5941b3e6f
+
+	/// Nombre de commandes distinctes non annulées.
+	measure 'Nombre de commandes' = DISTINCTCOUNT(Ventes[Numéro de commande])
+		formatString: #,0
+		displayFolder: Commandes
+		lineageTag: d24fa740-d964-5019-a9fd-7b5f0d86a18a
+
+	/// Chiffre d'affaires hors taxes moyen par commande.
+	measure 'Panier moyen HT' = DIVIDE([CA HT], [Nombre de commandes])
+		formatString: #,0.00 €
+		displayFolder: Commandes
+		lineageTag: 628f31b8-db4a-5ac3-bd44-4a5e0258c928
+
+	/// Nombre d'articles vendus.
+	measure 'Quantité vendue' = SUM(Ventes[Quantite])
+		formatString: #,0
+		displayFolder: Commandes
+		lineageTag: e8b35503-6658-5a3a-8f21-8b99e8aeb61d
+
+	/// Nombre de clients distincts ayant passé au moins une commande sur la période.
+	measure 'Nombre de clients acheteurs' = DISTINCTCOUNT(Ventes[ClientKey])
+		formatString: #,0
+		displayFolder: Commandes
+		lineageTag: 84beb1b6-acc6-5bfb-87f2-a93e65b8ae71
+
+	column DateCommandeId
+		dataType: int64
+		isHidden
+		lineageTag: 2077b78b-beab-5811-af7d-f2ab9d3023f7
+		sourceLineageTag: DateCommandeId
+		summarizeBy: none
+		sourceColumn: DateCommandeId
+
+		annotation SummarizationSetBy = User
+
+	column ClientKey
+		dataType: int64
+		isHidden
+		lineageTag: 3ecc3c95-9c72-52c2-8854-119115a2e2f8
+		sourceLineageTag: ClientKey
+		summarizeBy: none
+		sourceColumn: ClientKey
+
+		annotation SummarizationSetBy = User
+
+	column ProduitKey
+		dataType: int64
+		isHidden
+		lineageTag: ffe382f8-11c2-5de5-9bee-f9b5c1ecaf94
+		sourceLineageTag: ProduitKey
+		summarizeBy: none
+		sourceColumn: ProduitKey
+
+		annotation SummarizationSetBy = User
+
+	column EntrepotKey
+		dataType: int64
+		isHidden
+		lineageTag: dfddffb5-40b5-550d-a519-246105991aba
+		sourceLineageTag: EntrepotKey
+		summarizeBy: none
+		sourceColumn: EntrepotKey
+
+		annotation SummarizationSetBy = User
+
+	/// Numéro de la commande, commun au site e-commerce et au WMS.
+	column 'Numéro de commande'
+		dataType: string
+		lineageTag: a7a2ac52-4a09-5eeb-922a-ecace8afe52f
+		sourceLineageTag: NumeroCommande
+		summarizeBy: none
+		sourceColumn: NumeroCommande
+
+		annotation SummarizationSetBy = User
+
+	/// En attente, En cours ou Terminée.
+	column 'Statut de commande'
+		dataType: string
+		lineageTag: cb656af5-1d9a-5d0a-9587-eec2511c7681
+		sourceLineageTag: StatutCommande
+		summarizeBy: none
+		sourceColumn: StatutCommande
+
+		annotation SummarizationSetBy = User
+
+	/// Standard, Express ou Retrait, tel que choisi par le client.
+	column 'Mode de livraison'
+		dataType: string
+		lineageTag: 04ef433c-a30d-541c-9494-0447266e155b
+		sourceLineageTag: ModeLivraison
+		summarizeBy: none
+		sourceColumn: ModeLivraison
+
+		annotation SummarizationSetBy = User
+
+	column Quantite
+		dataType: int64
+		isHidden
+		lineageTag: 7b9346ce-15f3-584a-a2b5-d51854684ccb
+		sourceLineageTag: Quantite
+		summarizeBy: sum
+		sourceColumn: Quantite
+
+		annotation SummarizationSetBy = User
+
+	column PrixUnitaireHT
+		dataType: decimal
+		isHidden
+		lineageTag: 0ca61812-e634-5fa6-9f28-e283f98a8ea9
+		sourceLineageTag: PrixUnitaireHT
+		summarizeBy: none
+		sourceColumn: PrixUnitaireHT
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = User
+
+	column MontantHT
+		dataType: decimal
+		isHidden
+		lineageTag: 94ea4895-3269-5555-9f58-4179355c6963
+		sourceLineageTag: MontantHT
+		summarizeBy: sum
+		sourceColumn: MontantHT
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = User
+
+	column CoutAchat
+		dataType: decimal
+		isHidden
+		lineageTag: 28bf4e1e-a34d-5c10-909f-34d6be1ac7e3
+		sourceLineageTag: CoutAchat
+		summarizeBy: sum
+		sourceColumn: CoutAchat
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = User
+
+	column MargeHT
+		dataType: decimal
+		isHidden
+		lineageTag: b21b3120-03dd-5f39-979b-6e88ce108d21
+		sourceLineageTag: MargeHT
+		summarizeBy: sum
+		sourceColumn: MargeHT
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = User
+
+	column DateChargement
+		dataType: dateTime
+		isHidden
+		lineageTag: fc006ce7-e53b-56c1-8846-f63a2acf983d
+		sourceLineageTag: DateChargement
+		summarizeBy: none
+		sourceColumn: DateChargement
+
+		annotation SummarizationSetBy = User
+
+	partition Ventes = entity
+		mode: directLake
+		source
+			entityName: FaitVente
+			schemaName: gold
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+

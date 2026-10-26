@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "Bronze - Synchronisation SQL",
+    "description": "Synchronise le point de terminaison SQL du Lakehouse avant le job dbt et échoue si une table n est pas synchronisée."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "0803a2c8-c488-47bd-8a51-4f8b583090fc"
+  }
+}

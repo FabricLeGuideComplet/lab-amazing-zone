@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Dataflow",
+    "displayName": "Ingestion - Referentiels Excel"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "c4da816d-d95c-b662-4a96-9c4727d40f33"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Lakehouse",
+    "displayName": "AmazingZoneLK"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "8d1ef2af-cebe-a672-401b-e450f6523eec"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/orgapp/definition/orgAppDefinition/2.0.0/schema.json",
+  "settings": {},
+  "elements": [
+    {
+      "elementType": "item",
+      "elementId": "3982b95a-4f79-4bf4-bbd0-233e065e3296",
+      "itemType": "Report",
+      "itemLogicalId": "dbc8ebe3-211a-999d-4422-067642792c3e",
+      "displayName": "Pilotage des ventes et de la logistique"
+    }
+  ]
+}

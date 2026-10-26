@@ -1,0 +1,133 @@
+version: 2
+
+# Couche Gold : modèle en étoile du Warehouse AmazingZoneWH. Les descriptions alimentent la documentation
+# générée par dbt (dbt docs generate) ; les tests compensent l'absence de contraintes vérifiées dans le
+# Warehouse (clés primaires et étrangères NOT ENFORCED).
+models:
+  - name: DimDate
+    description: Calendrier, une ligne par jour du 1er janvier 2025 au 31 décembre 2027.
+    columns:
+      - name: DateId
+        description: Clé de la date au format AAAAMMJJ.
+        data_tests: [unique, not_null]
+      - name: EstWeekEnd
+        description: Vrai pour le samedi et le dimanche.
+
+  - name: DimClient
+    description: Clients du site e-commerce (SCD de type 1), avec un membre « Inconnu » de clé -1.
+    columns:
+      - name: ClientKey
+        description: Clé de substitution, calculée par hachage de l'identifiant client (stable d'une exécution à l'autre).
+        data_tests: [unique, not_null]
+      - name: ClientId
+        description: Identifiant du compte dans le site e-commerce (-1 pour le membre inconnu).
+        data_tests: [unique, not_null]
+      - name: Region
+        description: Région administrative du client.
+
+  - name: DimProduit
+    description: >
+      Catalogue historisé (SCD de type 2 sur le prix, la catégorie et l'univers), construit à partir du
+      snapshot produit. Une ligne par version ; la première version couvre tout le passé du produit.
+    columns:
+      - name: ProduitKey
+        description: Clé de substitution d'une version de produit (hachage de l'identifiant et de la date de début).
+        data_tests: [unique, not_null]
+      - name: PrixVenteHT
+        description: Prix catalogue hors taxes de la version.
+      - name: DateDebutValidite
+        description: Début de validité de la version (1900-01-01 pour la première).
+        data_tests: [not_null]
+      - name: DateFinValidite
+        description: Fin de validité, vide pour la version courante.
+      - name: EstVersionCourante
+        description: Vrai pour la version en vigueur.
+        data_tests: [not_null]
+
+  - name: DimEntrepot
+    description: Les quatre entrepôts d'Amazing Zone, avec un membre « Inconnu ».
+    columns:
+      - name: EntrepotKey
+        description: Clé de substitution de l'entrepôt.
+        data_tests: [unique, not_null]
+      - name: CodeEntrepot
+        description: Code de l'entrepôt dans le WMS.
+        data_tests: [unique, not_null]
+
+  - name: DimTransporteur
+    description: Transporteurs utilisés pour les expéditions, avec un membre « Non expédiée ».
+    columns:
+      - name: TransporteurKey
+        description: Clé de substitution du transporteur.
+        data_tests: [unique, not_null]
+      - name: TypeLivraison
+        description: Standard, Express ou Retrait.
+        data_tests:
+          - accepted_values:
+              arguments: {values: ['Standard', 'Express', 'Retrait', 'Non expédiée']}
+
+  - name: FaitVente
+    description: Ventes à la maille de la ligne de commande, hors commandes annulées, montants hors taxes.
+    columns:
+      - name: DateCommandeId
+        description: Date de la commande.
+        data_tests:
+          - relationships: {arguments: {to: ref('DimDate'), field: DateId}}
+      - name: ClientKey
+        description: Client acheteur (-1 si inconnu).
+        data_tests:
+          - relationships: {arguments: {to: ref('DimClient'), field: ClientKey}}
+      - name: ProduitKey
+        description: Version du produit valide à la date de la commande.
+        data_tests:
+          - relationships: {arguments: {to: ref('DimProduit'), field: ProduitKey}}
+      - name: EntrepotKey
+        description: Entrepôt de préparation (-1 tant que la commande n'est pas transmise au WMS).
+        data_tests:
+          - relationships: {arguments: {to: ref('DimEntrepot'), field: EntrepotKey}}
+      - name: StatutCommande
+        description: Statut de la commande sur le site.
+        data_tests:
+          - accepted_values: {arguments: {values: ['En attente', 'En cours', 'Terminée']}}
+      - name: MontantHT
+        description: Montant hors taxes de la ligne.
+        data_tests: [not_null]
+      - name: MargeHT
+        description: Montant hors taxes moins le coût d'achat.
+
+  - name: FaitExpedition
+    description: Commandes logistiques du WMS, une ligne par commande.
+    columns:
+      - name: NumeroCommande
+        description: Numéro de commande, commun au site et au WMS.
+        data_tests: [unique, not_null]
+      - name: EntrepotKey
+        description: Entrepôt de préparation.
+        data_tests:
+          - relationships: {arguments: {to: ref('DimEntrepot'), field: EntrepotKey}}
+      - name: TransporteurKey
+        description: Transporteur (-1 si la commande n'est pas expédiée).
+        data_tests:
+          - relationships: {arguments: {to: ref('DimTransporteur'), field: TransporteurKey}}
+      - name: DelaiPreparationHeures
+        description: Heures entre la prise en charge par le WMS et l'expédition.
+
+  - name: FaitStockJour
+    description: Photo quotidienne du stock par produit et par entrepôt, jamais vidée (modèle incrémental).
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "CONCAT(DateId, '|', ProduitKey, '|', EntrepotKey)"
+    columns:
+      - name: QuantiteDisponible
+        description: Stock physique moins les quantités réservées.
+
+  - name: FaitMeteoJour
+    description: Météo quotidienne par entrepôt (observations et prévisions).
+    columns:
+      - name: DateId
+        description: Jour concerné.
+        data_tests:
+          - relationships: {arguments: {to: ref('DimDate'), field: DateId}}
+      - name: EstPrevision
+        description: Vrai pour les jours à venir.

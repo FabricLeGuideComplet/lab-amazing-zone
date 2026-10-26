@@ -1,0 +1,102 @@
+/// Objectifs de chiffre d'affaires hors taxes de la direction commerciale, par mois et par univers. Saisis depuis la page « Saisie des objectifs » du rapport Pilotage des ventes et de la logistique (fonction de données Saisie - Objectifs de vente), stockés dans la table saisie.objectif_vente du Warehouse.
+table Objectifs
+	lineageTag: bcf9adb3-651d-573e-8a5c-e63c9031fba9
+	sourceLineageTag: [saisie].[objectif_vente]
+
+	/// Objectif de chiffre d'affaires hors taxes fixé par la direction commerciale.
+	measure 'Objectif CA HT' = SUM(Objectifs[ObjectifHT])
+		formatString: #,0 €
+		lineageTag: 9133e49e-8563-5acc-bd03-121c40d95792
+
+	/// Chiffre d'affaires hors taxes rapporté à l'objectif de la direction commerciale.
+	measure 'Atteinte de l''objectif' = DIVIDE([CA HT], [Objectif CA HT])
+		formatString: 0.0 %
+		lineageTag: 3b899262-0beb-5464-9091-2ab7a7a5fbdf
+
+	/// Premier jour du mois choisi dans le segment de la page de saisie, au format attendu par la fonction de données (vide si plusieurs mois sont sélectionnés).
+	measure 'Mois de saisie' = IF(HASONEVALUE(Calendrier[AnneeMois]), FORMAT(MIN(Calendrier[Date]), "yyyy-MM-dd"))
+		displayFolder: Saisie
+		lineageTag: a5c03803-fbee-5ee5-b815-44b705a906e3
+
+	/// Compte de l'utilisateur connecté, enregistré comme auteur de la saisie.
+	measure 'Utilisateur connecté' = USERPRINCIPALNAME()
+		displayFolder: Saisie
+		lineageTag: 33da0509-06a1-5b76-8391-c0f7c3f20ad1
+
+	/// Objectif enregistré pour l'univers et le mois sélectionnés, affiché sur la page de saisie.
+	measure 'Objectif enregistré' = IF(HASONEVALUE(Calendrier[AnneeMois]) && HASONEVALUE(Produit[Univers]), [Objectif CA HT])
+		formatString: #,0 €
+		displayFolder: Saisie
+		lineageTag: c10f533a-9a01-595e-9481-e4d21251ef40
+
+	/// Univers choisi dans le segment de la page de saisie, transmis à la fonction de données (vide si plusieurs univers sont sélectionnés).
+	measure 'Univers de saisie' = SELECTEDVALUE(Produit[Univers])
+		displayFolder: Saisie
+		lineageTag: 3c1d7a52-5b0e-4f0b-9a63-6a3c0e8f0b11
+
+	/// Premier jour du mois de l'objectif.
+	column Mois
+		dataType: dateTime
+		isHidden
+		formatString: mm/yyyy
+		lineageTag: 2cef17cb-8c9f-514b-be60-63e9b2d68984
+		sourceLineageTag: Mois
+		summarizeBy: none
+		sourceColumn: Mois
+
+		annotation SummarizationSetBy = User
+
+	/// Univers de produits de l'objectif, rattaché à l'univers du catalogue.
+	column Univers
+		dataType: string
+		isHidden
+		lineageTag: b4ffb8f9-35ee-51e3-a7c7-ffeeec3c1c35
+		sourceLineageTag: Univers
+		summarizeBy: none
+		sourceColumn: Univers
+
+		annotation SummarizationSetBy = User
+
+	column ObjectifHT
+		dataType: decimal
+		isHidden
+		formatString: #,0 €
+		lineageTag: f7130de2-5d6f-5b6c-930b-dda2dff0ee4a
+		sourceLineageTag: ObjectifHT
+		summarizeBy: none
+		sourceColumn: ObjectifHT
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = User
+
+	/// Compte de l'utilisateur qui a saisi l'objectif.
+	column 'Saisi par'
+		dataType: string
+		lineageTag: c750aac9-80f9-5dc0-b4f3-ecbc1db75084
+		sourceLineageTag: SaisiPar
+		summarizeBy: none
+		sourceColumn: SaisiPar
+
+		annotation SummarizationSetBy = User
+
+	/// Date et heure de la saisie (UTC).
+	column 'Saisi le'
+		dataType: dateTime
+		formatString: dd/mm/yyyy hh:nn
+		lineageTag: 95ff8891-cc90-5d6e-bc1b-ec01654a22df
+		sourceLineageTag: SaisiLe
+		summarizeBy: none
+		sourceColumn: SaisiLe
+
+		annotation SummarizationSetBy = User
+
+	partition Objectifs = entity
+		mode: directLake
+		source
+			entityName: objectif_vente
+			schemaName: saisie
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+

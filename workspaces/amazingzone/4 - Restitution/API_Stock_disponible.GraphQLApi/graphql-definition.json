@@ -1,0 +1,32 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/graphqlApi/definition/1.0.0/schema.json",
+  "datasources": [
+    {
+      "objects": [
+        {
+          "actions": {
+            "Query": "Enabled",
+            "Query_by_pk": "Enabled",
+            "Create": "Disabled",
+            "Update": "Disabled",
+            "Delete": "Disabled"
+          },
+          "fieldMappings": {
+            "code_entrepot": "code_entrepot",
+            "date_maj_wms": "date_maj_wms",
+            "quantite_disponible": "quantite_disponible",
+            "sku": "sku"
+          },
+          "graphqlType": "stock_disponible",
+          "isUserDefinedKeyField": false,
+          "relationships": [],
+          "sourceObject": "api.stock_disponible",
+          "sourceObjectType": "Table"
+        }
+      ],
+      "sourceItemId": "ca7e5c09-9bab-8e93-4719-0a319c883cd6",
+      "sourceType": "Warehouse",
+      "sourceWorkspaceId": "00000000-0000-0000-0000-000000000000"
+    }
+  ]
+}

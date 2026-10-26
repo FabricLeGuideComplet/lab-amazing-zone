@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "ceec2539b7c39aa9dd70",
+  "displayName": "Saisie des objectifs",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280
+}

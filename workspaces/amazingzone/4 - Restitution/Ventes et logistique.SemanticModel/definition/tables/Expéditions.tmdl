@@ -1,0 +1,159 @@
+/// Commandes logistiques du WMS, une ligne par commande : entrepôt de préparation, transporteur et délai entre la prise en charge et l'expédition. La relation active avec le calendrier porte sur la date d'expédition.
+table Expéditions
+	lineageTag: 090757c0-1949-5a80-9819-8c02c87f8cff
+	sourceLineageTag: [gold].[FaitExpedition]
+
+	/// Nombre de commandes expédiées, datées par leur jour d'expédition.
+	measure 'Nombre d''expéditions' = CALCULATE(COUNTROWS('Expéditions'), NOT ISBLANK('Expéditions'[DateExpeditionId]))
+		formatString: #,0
+		lineageTag: 18425495-13c5-5d09-aec1-9421c0243157
+
+	/// Nombre de commandes transmises au WMS, datées par leur jour de prise en charge.
+	measure 'Commandes prises en charge' = CALCULATE(COUNTROWS('Expéditions'), USERELATIONSHIP('Expéditions'[DatePriseEnChargeId], Calendrier[DateId]))
+		formatString: #,0
+		lineageTag: ac767616-c6dd-5c72-907a-7224a92a9f18
+
+	/// Nombre d'articles des commandes expédiées.
+	measure 'Articles expédiés' = CALCULATE(SUM('Expéditions'[NbArticles]), NOT ISBLANK('Expéditions'[DateExpeditionId]))
+		formatString: #,0
+		lineageTag: 95838d52-fdca-5b33-92f0-cd98e236aa2d
+
+	/// Délai moyen, en heures, entre la prise en charge par le WMS et l'expédition.
+	measure 'Délai moyen de préparation (h)' = AVERAGE('Expéditions'[DelaiPreparationHeures])
+		formatString: #,0.0
+		lineageTag: a822b568-3c63-5950-8455-0baff3678c25
+
+	/// Part des commandes expédiées moins de 24 heures après leur prise en charge.
+	measure '% expédiées sous 24 h' = DIVIDE(CALCULATE(COUNTROWS('Expéditions'), 'Expéditions'[EstExpedieeSous24h] = TRUE()), [Nombre d'expéditions])
+		formatString: 0.0 %
+		lineageTag: f45f7e7a-e9c0-552f-af45-7f713287bfe0
+
+	column NumeroCommande
+		dataType: string
+		isHidden
+		lineageTag: 7be2cae6-c9c9-5aff-9156-6f3d20823976
+		sourceLineageTag: NumeroCommande
+		summarizeBy: none
+		sourceColumn: NumeroCommande
+
+		annotation SummarizationSetBy = User
+
+	column DatePriseEnChargeId
+		dataType: int64
+		isHidden
+		lineageTag: 6d0db732-5ca8-5b73-85c8-0b8fe99f84ae
+		sourceLineageTag: DatePriseEnChargeId
+		summarizeBy: none
+		sourceColumn: DatePriseEnChargeId
+
+		annotation SummarizationSetBy = User
+
+	column DateExpeditionId
+		dataType: int64
+		isHidden
+		lineageTag: 0c67011a-3f98-5faf-b2ab-5557b44964f1
+		sourceLineageTag: DateExpeditionId
+		summarizeBy: none
+		sourceColumn: DateExpeditionId
+
+		annotation SummarizationSetBy = User
+
+	column EntrepotKey
+		dataType: int64
+		isHidden
+		lineageTag: c1ef293a-5cc4-5601-973c-743ce960e100
+		sourceLineageTag: EntrepotKey
+		summarizeBy: none
+		sourceColumn: EntrepotKey
+
+		annotation SummarizationSetBy = User
+
+	column TransporteurKey
+		dataType: int64
+		isHidden
+		lineageTag: c3069afc-7e7a-5fcd-ab73-f12d16ea0230
+		sourceLineageTag: TransporteurKey
+		summarizeBy: none
+		sourceColumn: TransporteurKey
+
+		annotation SummarizationSetBy = User
+
+	column ClientKey
+		dataType: int64
+		isHidden
+		lineageTag: eaf6fdd8-b57e-593b-880c-733070a69f11
+		sourceLineageTag: ClientKey
+		summarizeBy: none
+		sourceColumn: ClientKey
+
+		annotation SummarizationSetBy = User
+
+	/// Statut de la commande dans le WMS : Allouée, Prélevée, Emballée, Expédiée ou Annulée.
+	column 'Statut logistique'
+		dataType: string
+		lineageTag: 77ab9464-f560-56a8-89b0-d774cb9971d0
+		sourceLineageTag: StatutLogistique
+		summarizeBy: none
+		sourceColumn: StatutLogistique
+
+		annotation SummarizationSetBy = User
+
+	column NbLignes
+		dataType: int64
+		isHidden
+		lineageTag: 9364ee66-2658-5757-af75-5c37954d01f8
+		sourceLineageTag: NbLignes
+		summarizeBy: sum
+		sourceColumn: NbLignes
+
+		annotation SummarizationSetBy = User
+
+	column NbArticles
+		dataType: int64
+		isHidden
+		lineageTag: 3753124c-7b9b-5e0e-826c-a09f65d6ad49
+		sourceLineageTag: NbArticles
+		summarizeBy: sum
+		sourceColumn: NbArticles
+
+		annotation SummarizationSetBy = User
+
+	column DelaiPreparationHeures
+		dataType: decimal
+		isHidden
+		lineageTag: 47a0958d-fc93-5d39-96eb-47fd5531df27
+		sourceLineageTag: DelaiPreparationHeures
+		summarizeBy: none
+		sourceColumn: DelaiPreparationHeures
+
+		annotation SummarizationSetBy = User
+
+	column EstExpedieeSous24h
+		dataType: boolean
+		isHidden
+		lineageTag: 7aefef50-eae3-5831-aa52-170c8d5c437e
+		sourceLineageTag: EstExpedieeSous24h
+		summarizeBy: none
+		sourceColumn: EstExpedieeSous24h
+
+		annotation SummarizationSetBy = User
+
+	column DateChargement
+		dataType: dateTime
+		isHidden
+		lineageTag: ea7842a9-ef04-5c4e-923e-963cb340b5ce
+		sourceLineageTag: DateChargement
+		summarizeBy: none
+		sourceColumn: DateChargement
+
+		annotation SummarizationSetBy = User
+
+	partition Expéditions = entity
+		mode: directLake
+		source
+			entityName: FaitExpedition
+			schemaName: gold
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+

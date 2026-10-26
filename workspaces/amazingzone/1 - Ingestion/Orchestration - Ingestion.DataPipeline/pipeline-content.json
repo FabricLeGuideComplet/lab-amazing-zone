@@ -1,0 +1,205 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "InvokeCopyJob",
+        "typeProperties": {
+          "copyJobId": "4cde7c10-0772-40ac-a8b1-57c7097d4e26",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "externalReferences": {
+          "connection": "ddf02699-4ad3-49de-be49-48ec88d184aa"
+        },
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Ingestion WMS",
+        "description": "Copie incrémentale des tables du WMS (Copy Job « Ingestion - WMS »)",
+        "dependsOn": []
+      },
+      {
+        "type": "IfCondition",
+        "typeProperties": {
+          "expression": {
+            "value": "@or(pipeline().parameters.forcer_tout, equals(int(formatDateTime(convertFromUtc(utcNow(), 'Romance Standard Time'), 'HH')), 6))",
+            "type": "Expression"
+          },
+          "ifTrueActivities": [
+            {
+              "type": "WebActivity",
+              "typeProperties": {
+                "method": "GET",
+                "relativeUrl": "secrets/open-meteo-cle-api?api-version=7.4",
+                "headers": {}
+              },
+              "externalReferences": {
+                "connection": "4b7e2f48-03c6-4b4b-8d1f-aa17441eef70"
+              },
+              "policy": {
+                "timeout": "0.00:05:00",
+                "retry": 1,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": true
+              },
+              "name": "Cle API meteo",
+              "description": "Lit la clé de l'API commerciale Open-Meteo dans le coffre kv-amazingzone-lab (connexion « Key Vault - SP AmazingZone », principal de service authentifié par certificat). Sortie sécurisée : la valeur n'apparaît pas dans le hub de surveillance.",
+              "dependsOn": []
+            },
+            {
+              "type": "TridentNotebook",
+              "typeProperties": {
+                "notebookId": "8ac4b570-c281-afbc-4ee2-9c716e03ab39",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "parameters": {
+                  "JOURS_PASSES": {
+                    "value": "7",
+                    "type": "int"
+                  },
+                  "JOURS_PREVISION": {
+                    "value": "4",
+                    "type": "int"
+                  },
+                  "OFFRE_COMMERCIALE": {
+                    "value": false,
+                    "type": "bool"
+                  },
+                  "CLE_API": {
+                    "value": {
+                      "value": "@activity('Cle API meteo').output.value",
+                      "type": "Expression"
+                    },
+                    "type": "string"
+                  }
+                }
+              },
+              "policy": {
+                "timeout": "0.01:00:00",
+                "retry": 1,
+                "retryIntervalInSeconds": 300,
+                "secureInput": true,
+                "secureOutput": false
+              },
+              "name": "Previsions meteo",
+              "description": "Notebook « Ingestion - Météo » : prévisions Open-Meteo des entrepôts (tables meteo.weather_forecast et meteo.weather_forecast_issued). Entrée sécurisée : la clé d'API transmise en paramètre n'apparaît pas dans le hub de surveillance.",
+              "dependsOn": [
+                {
+                  "activity": "Cle API meteo",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            }
+          ],
+          "ifFalseActivities": []
+        },
+        "name": "Meteo le matin",
+        "description": "Prévisions chargées une fois par jour, lors de l'exécution de 6 h (ou sur demande avec forcer_tout)",
+        "dependsOn": []
+      },
+      {
+        "type": "IfCondition",
+        "typeProperties": {
+          "expression": {
+            "value": "@or(pipeline().parameters.forcer_tout, and(equals(dayOfWeek(convertFromUtc(utcNow(), 'Romance Standard Time')), 1), equals(int(formatDateTime(convertFromUtc(utcNow(), 'Romance Standard Time'), 'HH')), 6)))",
+            "type": "Expression"
+          },
+          "ifTrueActivities": [
+            {
+              "type": "RefreshDataflow",
+              "typeProperties": {
+                "dataflowId": "c4da816d-d95c-b662-4a96-9c4727d40f33",
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "notifyOption": "NoNotification",
+                "dataflowType": "DataflowFabric",
+                "executeMashupQueriesOnly": true
+              },
+              "policy": {
+                "timeout": "0.01:00:00",
+                "retry": 1,
+                "retryIntervalInSeconds": 300,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Referentiels Excel",
+              "description": "Dataflow Gen2 « Ingestion - Referentiels Excel » : taux de change et référentiel géographique (schéma referentiels)",
+              "dependsOn": []
+            }
+          ],
+          "ifFalseActivities": []
+        },
+        "name": "Referentiels le lundi matin",
+        "description": "Les référentiels Excel évoluent rarement : actualisation hebdomadaire, le lundi à 6 h (ou sur demande avec forcer_tout)",
+        "dependsOn": []
+      },
+      {
+        "type": "IfCondition",
+        "typeProperties": {
+          "expression": {
+            "value": "@or(pipeline().parameters.forcer_tout, equals(int(formatDateTime(convertFromUtc(utcNow(), 'Romance Standard Time'), 'HH')), 6))",
+            "type": "Expression"
+          },
+          "ifTrueActivities": [
+            {
+              "type": "InvokePipeline",
+              "typeProperties": {
+                "parameters": {},
+                "waitOnCompletion": true,
+                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                "pipelineId": "7a69ed93-75f0-83d3-4e2c-08499404308d",
+                "operationType": "InvokeFabricPipeline"
+              },
+              "externalReferences": {
+                "connection": "db2144c4-1645-4688-80ff-59116a057705"
+              },
+              "policy": {
+                "timeout": "0.12:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Transformation",
+              "description": "Pipeline « Orchestration - Transformation » : Bronze synchronisé, Silver et Gold par dbt, modèle sémantique actualisé",
+              "dependsOn": []
+            }
+          ],
+          "ifFalseActivities": []
+        },
+        "name": "Transformation le matin",
+        "description": "À 6 h (ou avec forcer_tout), une fois les trois ingestions réussies, lance la transformation et attend sa fin",
+        "dependsOn": [
+          {
+            "activity": "Ingestion WMS",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Meteo le matin",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Referentiels le lundi matin",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "forcer_tout": {
+        "type": "bool",
+        "defaultValue": false
+      }
+    }
+  }
+}

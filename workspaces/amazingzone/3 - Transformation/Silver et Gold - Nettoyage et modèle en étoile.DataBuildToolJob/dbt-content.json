@@ -1,0 +1,29 @@
+{
+  "project": {
+    "projectType": "OneLake",
+    "folderPath": "dbt"
+  },
+  "profile": {
+    "profileType": "DataWarehouse",
+    "schema": "dbo",
+    "externalReferences": {},
+    "connectionSettings": {
+      "name": "AmazingZoneWH",
+      "properties": {
+        "type": "DataWarehouse",
+        "typeProperties": {
+          "workspaceId": "0875373d-96cd-4d0e-b4e7-5fc5cd327cb8",
+          "artifactId": "9c883cd6-0a31-4719-8e93-9babca7e5c09",
+          "endPoint": "xpuudm5uch6ezlvpconr4xjvpm-hu3xkcgnsyhe3nhhl7c42mt4xa.datawarehouse.fabric.microsoft.com"
+        }
+      }
+    }
+  },
+  "command": {
+    "operation": "build",
+    "arguments": {
+      "exclude": "tag:avertissement",
+      "threads": 4
+    }
+  }
+}

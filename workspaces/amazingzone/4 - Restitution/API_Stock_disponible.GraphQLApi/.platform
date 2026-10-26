@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "GraphQLApi",
+    "displayName": "API_Stock_disponible"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "be97a17b-794f-a009-48bb-ddc8117badcb"
+  }
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Product_Category_Mapping",
+    "path": "/Tables/ecommerce",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/dbo/Product_Category_Mapping",
+        "itemId": "4bdd986e-e59c-4fa8-ad19-56cfac074e8e",
+        "workspaceId": "dbcb05e0-dcf7-4944-be24-6969f2349cd1"
+      }
+    }
+  },
+  {
+    "name": "Product",
+    "path": "/Tables/ecommerce",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/dbo/Product",
+        "itemId": "4bdd986e-e59c-4fa8-ad19-56cfac074e8e",
+        "workspaceId": "dbcb05e0-dcf7-4944-be24-6969f2349cd1"
+      }
+    }
+  },
+  {
+    "name": "OrderItem",
+    "path": "/Tables/ecommerce",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/dbo/OrderItem",
+        "itemId": "4bdd986e-e59c-4fa8-ad19-56cfac074e8e",
+        "workspaceId": "dbcb05e0-dcf7-4944-be24-6969f2349cd1"
+      }
+    }
+  },
+  {
+    "name": "Order",
+    "path": "/Tables/ecommerce",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/dbo/Order",
+        "itemId": "4bdd986e-e59c-4fa8-ad19-56cfac074e8e",
+        "workspaceId": "dbcb05e0-dcf7-4944-be24-6969f2349cd1"
+      }
+    }
+  },
+  {
+    "name": "Customer",
+    "path": "/Tables/ecommerce",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/dbo/Customer",
+        "itemId": "4bdd986e-e59c-4fa8-ad19-56cfac074e8e",
+        "workspaceId": "dbcb05e0-dcf7-4944-be24-6969f2349cd1"
+      }
+    }
+  },
+  {
+    "name": "Category",
+    "path": "/Tables/ecommerce",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/dbo/Category",
+        "itemId": "4bdd986e-e59c-4fa8-ad19-56cfac074e8e",
+        "workspaceId": "dbcb05e0-dcf7-4944-be24-6969f2349cd1"
+      }
+    }
+  }
+]

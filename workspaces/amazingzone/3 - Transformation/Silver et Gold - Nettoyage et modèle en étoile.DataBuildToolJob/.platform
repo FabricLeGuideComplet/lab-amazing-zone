@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataBuildToolJob",
+    "displayName": "Silver et Gold - Nettoyage et modèle en étoile"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "643f7296-df61-a625-447c-2af82f6f4199"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Pilotage des ventes et de la logistique",
+    "description": "Rapport d'entreprise sur le modèle Ventes et logistique : ventes, logistique et météo, stock et délais (chapitre 6)."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "dbc8ebe3-211a-999d-4422-067642792c3e"
+  }
+}

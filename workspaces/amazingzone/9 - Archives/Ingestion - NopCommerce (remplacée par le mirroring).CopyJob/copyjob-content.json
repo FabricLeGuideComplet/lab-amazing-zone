@@ -1,0 +1,1556 @@
+{
+  "properties": {
+    "jobMode": "Batch",
+    "source": {
+      "type": "AzureSqlTable",
+      "connectionSettings": {
+        "type": "AzureSqlDatabase",
+        "typeProperties": {
+          "database": "amazingdb"
+        },
+        "externalReferences": {
+          "connection": "fe1e91ea-b6e4-462f-b400-bc07e7a40e41"
+        }
+      }
+    },
+    "destination": {
+      "type": "LakehouseTable",
+      "connectionSettings": {
+        "type": "Lakehouse",
+        "typeProperties": {
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "artifactId": "8d1ef2af-cebe-a672-401b-e450f6523eec",
+          "rootFolder": "Tables"
+        }
+      }
+    },
+    "policy": {
+      "timeout": "0.12:00:00",
+      "retry": 0
+    }
+  },
+  "activities": [
+    {
+      "id": "38393949-9901-45c8-abbe-cd2941658227",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Category"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Category"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "7758bbd7-ef10-472d-a850-8739785dead7",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Country"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Country"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "a911bbc5-50da-45cf-bb4b-72f995ea9e0d",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Customer"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Customer"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "5f9d0f6c-ea43-492f-96b6-68deb5cc258f",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Order"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Order"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "16dd486a-9004-44a8-a81c-4eadab57b655",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "OrderItem"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "OrderItem"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "ff478c7e-b670-44a0-84e7-b44db4f31564",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Product"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Product"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "Id",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "Id",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "Name",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "400"
+              },
+              "destination": {
+                "name": "Name",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "MetaKeywords",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "400"
+              },
+              "destination": {
+                "name": "MetaKeywords",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "MetaTitle",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "400"
+              },
+              "destination": {
+                "name": "MetaTitle",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "Sku",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "400"
+              },
+              "destination": {
+                "name": "Sku",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "ManufacturerPartNumber",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "400"
+              },
+              "destination": {
+                "name": "ManufacturerPartNumber",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "Gtin",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "400"
+              },
+              "destination": {
+                "name": "Gtin",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "RequiredProductIds",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "1000"
+              },
+              "destination": {
+                "name": "RequiredProductIds",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "AllowedQuantities",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "1000"
+              },
+              "destination": {
+                "name": "AllowedQuantities",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "ProductTypeId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ProductTypeId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ParentGroupedProductId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ParentGroupedProductId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "VisibleIndividually",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "VisibleIndividually",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "ShortDescription",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "MAX"
+              },
+              "destination": {
+                "name": "ShortDescription",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "FullDescription",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "MAX"
+              },
+              "destination": {
+                "name": "FullDescription",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "AdminComment",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "MAX"
+              },
+              "destination": {
+                "name": "AdminComment",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "ProductTemplateId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ProductTemplateId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "VendorId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "VendorId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ShowOnHomepage",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "ShowOnHomepage",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "MetaDescription",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "MAX"
+              },
+              "destination": {
+                "name": "MetaDescription",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "AllowCustomerReviews",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "AllowCustomerReviews",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "ApprovedRatingSum",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ApprovedRatingSum",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "NotApprovedRatingSum",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "NotApprovedRatingSum",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ApprovedTotalReviews",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ApprovedTotalReviews",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "NotApprovedTotalReviews",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "NotApprovedTotalReviews",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "SubjectToAcl",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "SubjectToAcl",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "LimitedToStores",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "LimitedToStores",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "IsGiftCard",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "IsGiftCard",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "GiftCardTypeId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "GiftCardTypeId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "OverriddenGiftCardAmount",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "OverriddenGiftCardAmount",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "RequireOtherProducts",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "RequireOtherProducts",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "AutomaticallyAddRequiredProducts",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "AutomaticallyAddRequiredProducts",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "IsDownload",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "IsDownload",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "DownloadId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "DownloadId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "UnlimitedDownloads",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "UnlimitedDownloads",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "MaxNumberOfDownloads",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "MaxNumberOfDownloads",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "DownloadExpirationDays",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "DownloadExpirationDays",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "DownloadActivationTypeId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "DownloadActivationTypeId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "HasSampleDownload",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "HasSampleDownload",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "SampleDownloadId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "SampleDownloadId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "HasUserAgreement",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "HasUserAgreement",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "UserAgreementText",
+                "type": "String",
+                "physicalType": "nvarchar",
+                "length": "MAX"
+              },
+              "destination": {
+                "name": "UserAgreementText",
+                "physicalType": "string"
+              }
+            },
+            {
+              "source": {
+                "name": "IsRecurring",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "IsRecurring",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "RecurringCycleLength",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "RecurringCycleLength",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "RecurringCyclePeriodId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "RecurringCyclePeriodId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "RecurringTotalCycles",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "RecurringTotalCycles",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "IsRental",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "IsRental",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "RentalPriceLength",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "RentalPriceLength",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "RentalPricePeriodId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "RentalPricePeriodId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "IsShipEnabled",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "IsShipEnabled",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "IsFreeShipping",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "IsFreeShipping",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "ShipSeparately",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "ShipSeparately",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "AdditionalShippingCharge",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "AdditionalShippingCharge",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "DeliveryDateId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "DeliveryDateId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "IsTaxExempt",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "IsTaxExempt",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "TaxCategoryId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "TaxCategoryId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ManageInventoryMethodId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ManageInventoryMethodId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ProductAvailabilityRangeId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ProductAvailabilityRangeId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "UseMultipleWarehouses",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "UseMultipleWarehouses",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "WarehouseId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "WarehouseId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "StockQuantity",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "StockQuantity",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "DisplayStockAvailability",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "DisplayStockAvailability",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "DisplayStockQuantity",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "DisplayStockQuantity",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "MinStockQuantity",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "MinStockQuantity",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "LowStockActivityId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "LowStockActivityId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "NotifyAdminForQuantityBelow",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "NotifyAdminForQuantityBelow",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "BackorderModeId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "BackorderModeId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "AllowBackInStockSubscriptions",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "AllowBackInStockSubscriptions",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "OrderMinimumQuantity",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "OrderMinimumQuantity",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "OrderMaximumQuantity",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "OrderMaximumQuantity",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "AllowAddingOnlyExistingAttributeCombinations",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "AllowAddingOnlyExistingAttributeCombinations",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "DisplayAttributeCombinationImagesOnly",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "DisplayAttributeCombinationImagesOnly",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "NotReturnable",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "NotReturnable",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "DisableBuyButton",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "DisableBuyButton",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "DisableWishlistButton",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "DisableWishlistButton",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "AvailableForPreOrder",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "AvailableForPreOrder",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "PreOrderAvailabilityStartDateTimeUtc",
+                "type": "DateTime",
+                "physicalType": "datetime2",
+                "precision": 6
+              },
+              "destination": {
+                "name": "PreOrderAvailabilityStartDateTimeUtc",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "CallForPrice",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "CallForPrice",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "Price",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "Price",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "OldPrice",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "OldPrice",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "ProductCost",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "ProductCost",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "CustomerEntersPrice",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "CustomerEntersPrice",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "MinimumCustomerEnteredPrice",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "MinimumCustomerEnteredPrice",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "MaximumCustomerEnteredPrice",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "MaximumCustomerEnteredPrice",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "BasepriceEnabled",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "BasepriceEnabled",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "BasepriceAmount",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "BasepriceAmount",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "BasepriceUnitId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "BasepriceUnitId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "BasepriceBaseAmount",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "BasepriceBaseAmount",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "BasepriceBaseUnitId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "BasepriceBaseUnitId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "MarkAsNew",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "MarkAsNew",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "MarkAsNewStartDateTimeUtc",
+                "type": "DateTime",
+                "physicalType": "datetime2",
+                "precision": 6
+              },
+              "destination": {
+                "name": "MarkAsNewStartDateTimeUtc",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "MarkAsNewEndDateTimeUtc",
+                "type": "DateTime",
+                "physicalType": "datetime2",
+                "precision": 6
+              },
+              "destination": {
+                "name": "MarkAsNewEndDateTimeUtc",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "Weight",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "Weight",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "Length",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "Length",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "Width",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "Width",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "Height",
+                "type": "Decimal",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              },
+              "destination": {
+                "name": "Height",
+                "physicalType": "decimal",
+                "scale": 4,
+                "precision": 18
+              }
+            },
+            {
+              "source": {
+                "name": "AvailableStartDateTimeUtc",
+                "type": "DateTime",
+                "physicalType": "datetime2",
+                "precision": 6
+              },
+              "destination": {
+                "name": "AvailableStartDateTimeUtc",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "AvailableEndDateTimeUtc",
+                "type": "DateTime",
+                "physicalType": "datetime2",
+                "precision": 6
+              },
+              "destination": {
+                "name": "AvailableEndDateTimeUtc",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "DisplayOrder",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "DisplayOrder",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "Published",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "Published",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "Deleted",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "Deleted",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "CreatedOnUtc",
+                "type": "DateTime",
+                "physicalType": "datetime2",
+                "precision": 6
+              },
+              "destination": {
+                "name": "CreatedOnUtc",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "UpdatedOnUtc",
+                "type": "DateTime",
+                "physicalType": "datetime2",
+                "precision": 6
+              },
+              "destination": {
+                "name": "UpdatedOnUtc",
+                "physicalType": "timestamp"
+              }
+            },
+            {
+              "source": {
+                "name": "AgeVerification",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "AgeVerification",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "MinimumAgeToPurchase",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "MinimumAgeToPurchase",
+                "physicalType": "integer"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "24ecad9c-c40c-4364-8062-bb78d1f4d1ad",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Product_Category_Mapping"
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "partitionOption": "None",
+          "writeBehavior": "Overwrite",
+          "datasetSettings": {
+            "schema": "dbo",
+            "table": "Product_Category_Mapping"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator",
+          "mappings": [
+            {
+              "source": {
+                "name": "Id",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "Id",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "CategoryId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "CategoryId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ProductId",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "ProductId",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "IsFeaturedProduct",
+                "type": "Boolean",
+                "physicalType": "bit"
+              },
+              "destination": {
+                "name": "IsFeaturedProduct",
+                "physicalType": "boolean"
+              }
+            },
+            {
+              "source": {
+                "name": "DisplayOrder",
+                "type": "Int32",
+                "physicalType": "int"
+              },
+              "destination": {
+                "name": "DisplayOrder",
+                "physicalType": "integer"
+              }
+            },
+            {
+              "source": {
+                "name": "ExtractionDate",
+                "type": "String"
+              },
+              "destination": {
+                "name": "ExtractionDate",
+                "physicalType": "string"
+              }
+            }
+          ]
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        },
+        "auditColumns": [
+          {
+            "name": "ExtractionDate",
+            "value": "$$NOW"
+          }
+        ]
+      }
+    }
+  ]
+}

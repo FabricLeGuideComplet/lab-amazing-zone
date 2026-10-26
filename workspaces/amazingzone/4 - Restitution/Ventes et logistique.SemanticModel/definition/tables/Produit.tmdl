@@ -1,0 +1,158 @@
+/// Catalogue des produits. Le prix de vente et la catégorie sont historisés : chaque changement crée une nouvelle version, et une vente est rattachée à la version valide à la date de la commande.
+table Produit
+	lineageTag: 70c6b1c2-86db-5e21-bdd5-0f2c6e046950
+	sourceLineageTag: [gold].[DimProduit]
+
+	column ProduitKey
+		dataType: int64
+		isHidden
+		lineageTag: b1ab2d47-8d5e-5bfb-9236-7e21756889b5
+		sourceLineageTag: ProduitKey
+		summarizeBy: none
+		sourceColumn: ProduitKey
+
+		annotation SummarizationSetBy = User
+
+	/// Identifiant du produit dans le site e-commerce, commun à toutes ses versions.
+	column 'Identifiant produit'
+		dataType: int64
+		lineageTag: 45bd0fb6-b6c2-5cdf-b12b-a1df151d0561
+		sourceLineageTag: ProduitId
+		summarizeBy: none
+		sourceColumn: ProduitId
+
+		annotation SummarizationSetBy = User
+
+	/// Référence article, commune au site e-commerce et au WMS.
+	column SKU
+		dataType: string
+		lineageTag: b7e8062e-a38f-54d8-8131-c51dbce68038
+		sourceLineageTag: Sku
+		summarizeBy: none
+		sourceColumn: Sku
+
+		annotation SummarizationSetBy = User
+
+	/// Libellé du produit.
+	column Produit
+		dataType: string
+		lineageTag: d7629eac-7479-526b-b15e-fa31f863ff4d
+		sourceLineageTag: Produit
+		summarizeBy: none
+		sourceColumn: Produit
+
+		annotation SummarizationSetBy = User
+
+	/// Univers du produit (catégorie de premier niveau du catalogue).
+	column Univers
+		dataType: string
+		lineageTag: c90b5622-f3db-54de-8f6a-38df3182b27a
+		sourceLineageTag: Univers
+		summarizeBy: none
+		sourceColumn: Univers
+
+		annotation SummarizationSetBy = User
+
+	/// Catégorie principale du produit, à la date de la version.
+	column Catégorie
+		dataType: string
+		lineageTag: 19b5b97f-1d06-5b77-a264-a427ccfcc50f
+		sourceLineageTag: Categorie
+		summarizeBy: none
+		sourceColumn: Categorie
+
+		annotation SummarizationSetBy = User
+
+	/// Prix catalogue hors taxes de la version.
+	column 'Prix de vente HT'
+		dataType: decimal
+		formatString: #,0.00 €
+		lineageTag: 2a4adce4-4e53-598a-bb58-20b23899ba1e
+		sourceLineageTag: PrixVenteHT
+		summarizeBy: none
+		sourceColumn: PrixVenteHT
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = User
+
+	column 'Coût d''achat unitaire'
+		dataType: decimal
+		isHidden
+		formatString: #,0.00 €
+		lineageTag: 3e390325-820c-5837-a01c-e817214cb37b
+		sourceLineageTag: CoutAchat
+		summarizeBy: none
+		sourceColumn: CoutAchat
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = User
+
+	column 'Début de validité'
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		displayFolder: Historisation
+		lineageTag: 04512b88-cd44-5f62-8fad-359f6ca5bc59
+		sourceLineageTag: DateDebutValidite
+		summarizeBy: none
+		sourceColumn: DateDebutValidite
+
+		annotation SummarizationSetBy = User
+
+	column 'Fin de validité'
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		displayFolder: Historisation
+		lineageTag: 722d0c04-d4a0-5812-9806-fa7ce3a88b7c
+		sourceLineageTag: DateFinValidite
+		summarizeBy: none
+		sourceColumn: DateFinValidite
+
+		annotation SummarizationSetBy = User
+
+	/// Vrai pour la version actuellement en vigueur.
+	column 'Version courante'
+		dataType: boolean
+		displayFolder: Historisation
+		lineageTag: 976e8046-9195-565c-9203-a5b2d3632d36
+		sourceLineageTag: EstVersionCourante
+		summarizeBy: none
+		sourceColumn: EstVersionCourante
+
+		annotation SummarizationSetBy = User
+
+	column DateChargement
+		dataType: dateTime
+		isHidden
+		lineageTag: d36b393c-ad29-5432-a34a-8e0a16f0fc90
+		sourceLineageTag: DateChargement
+		summarizeBy: none
+		sourceColumn: DateChargement
+
+		annotation SummarizationSetBy = User
+
+	hierarchy Catalogue
+		lineageTag: 27ce95cb-33c8-54e9-9fac-be122fedd9fe
+
+		level Univers
+			lineageTag: d4cde42b-dfad-54b1-ba7f-6bc759ff1ce6
+			column: Univers
+
+		level Catégorie
+			lineageTag: 7e75300e-2c69-525f-b736-9faff7b6da94
+			column: Catégorie
+
+		level Produit
+			lineageTag: 34ad32f9-dfae-5603-b562-6d8a74c112e4
+			column: Produit
+
+	partition Produit = entity
+		mode: directLake
+		source
+			entityName: DimProduit
+			schemaName: gold
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+

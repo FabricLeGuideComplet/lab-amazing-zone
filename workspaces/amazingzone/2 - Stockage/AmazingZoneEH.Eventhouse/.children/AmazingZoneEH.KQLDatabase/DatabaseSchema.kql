@@ -1,0 +1,28 @@
+// KQL script
+// Use management commands in this script to configure your database items, such as tables, functions, materialized views, and more.
+
+
+.create-merge table sensors (eventType:string, sensorId:string, timestamp:datetime, metrics:dynamic) 
+.create-or-alter table sensors ingestion json mapping 'sensors_mapping'
+```
+[{"Properties":{"Path":"$['eventType']"},"column":"eventType","datatype":""},{"Properties":{"Path":"$['sensorId']"},"column":"sensorId","datatype":""},{"Properties":{"Path":"$['timestamp']"},"column":"timestamp","datatype":""},{"Properties":{"Path":"$['metrics']"},"column":"metrics","datatype":""}]
+```
+.create-merge table logsweb (records:dynamic, EventProcessedUtcTime:datetime, PartitionId:string, EventEnqueuedUtcTime:datetime) 
+.create-or-alter table logsweb ingestion json mapping 'logsweb_mapping'
+```
+[{"Properties":{"Path":"$['records']"},"column":"records","datatype":""},{"Properties":{"Path":"$['EventProcessedUtcTime']"},"column":"EventProcessedUtcTime","datatype":""},{"Properties":{"Path":"$['PartitionId']"},"column":"PartitionId","datatype":""},{"Properties":{"Path":"$['EventEnqueuedUtcTime']"},"column":"EventEnqueuedUtcTime","datatype":""}]
+```
+.create-merge table wms_events (eventId:string, eventType:string, eventTime:string, warehouse:string, sku:string, orderNo:string, location:string, quantity:long, carrier:string) 
+.create-or-alter function with (skipvalidation = "true") fn_ParseWebLogs() {
+logsweb
+| mv-expand records
+| where tostring(records.['category']) in ("AppServiceHTTPLogs", "AppServiceAppLogs")
+| project 
+    dateLog               = todatetime(records.['time']),
+    Type                  = tostring(records.['category']),
+    ResultCode            = tostring(records.properties.ScStatus),
+    DurationMs            = todouble(records.properties.TimeTaken),
+    Success               = toboolean(iff(records.properties.Result == "Success" or toint(records.properties.ScStatus) < 400, true, false))
+//    ClientCity            = tostring(records.properties.ClientCity),            // Restera vide/null car non fourni dans les logs HTTP bruts
+//    ClientCountryOrRegion = tostring(records.properties.ClientCountryOrRegion)  // Restera vide/null car non fourni dans les logs HTTP bruts
+}

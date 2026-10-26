@@ -1,0 +1,9 @@
+# Secrets et fichiers locaux
+.env
+*.pem
+*.pfx
+*_ed25519
+known_hosts*
+__pycache__/
+*.pyc
+.venv/

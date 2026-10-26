@@ -1,0 +1,84 @@
+# Paramétrage du déploiement par fabric-cicd (installation/deployer_fabric.py).
+# Chaque entrée remplace une valeur propre à l'environnement de l'auteur par celle de votre environnement :
+#   - $workspace / $items : identifiants des éléments déployés dans votre espace, résolus par fabric-cicd ;
+#   - $ENV:NOM : variable d'environnement (fichier .env), pour ce qui vit hors de l'espace (connexions, SharePoint).
+# Les références entre éléments d'un même dépôt (logicalId des fichiers .platform) sont résolues
+# par fabric-cicd sans paramétrage.
+
+find_replace:
+  # Espace de travail de développement (métadonnées des notebooks, Dataflow, modèle sémantique, job dbt, alerte)
+  - find_value: "0875373d-96cd-4d0e-b4e7-5fc5cd327cb8"
+    replace_value:
+      LAB: "$workspace.$id"
+
+  # Lakehouse AmazingZoneLK (Lakehouse par défaut des notebooks, destination du Dataflow)
+  - find_value: "f6523eec-e450-401b-a672-cebe8d1ef2af"
+    replace_value:
+      LAB: "$items.Lakehouse.AmazingZoneLK.$id"
+
+  # Warehouse AmazingZoneWH (source Direct Lake du modèle « Ventes et logistique », cible du job dbt)
+  - find_value: "9c883cd6-0a31-4719-8e93-9babca7e5c09"
+    replace_value:
+      LAB: "$items.Warehouse.AmazingZoneWH.$id"
+
+  # Point de terminaison SQL de l'espace (job dbt, pipeline archivé par métadonnées)
+  - find_value: "xpuudm5uch6ezlvpconr4xjvpm-hu3xkcgnsyhe3nhhl7c42mt4xa.datawarehouse.fabric.microsoft.com"
+    replace_value:
+      LAB: "$items.Warehouse.AmazingZoneWH.$sqlendpoint"
+
+  # Modèle sémantique actualisé en fin d'« Orchestration - Transformation »
+  - find_value: "53505de3-3037-4538-b2d4-6bd2b4e1b522"
+    replace_value:
+      LAB: "$items.SemanticModel.Ventes et logistique.$id"
+
+  # Base KQL et URI de requête de l'Eventhouse (modèle « Analyse des journaux du site »)
+  - find_value: "0e1406d4-4530-4c1f-9419-46c8a9e29c71"
+    replace_value:
+      LAB: "$items.KQLDatabase.AmazingZoneEH.$id"
+  - find_value: "https://trd-7u2rbremdr7tjzdzyd.z7.kusto.fabric.microsoft.com"
+    replace_value:
+      LAB: "$items.Eventhouse.AmazingZoneEH.$queryserviceuri"
+
+  # Tableau de bord surveillé par l'alerte « Alerte - Disponibilité du site »
+  - find_value: "e0c40589-802f-4407-9c08-7eea2d4bde8d"
+    replace_value:
+      LAB: "$items.KQLDashboard.Tableau de bord - Journaux du site.$id"
+
+  # Raccourcis ecommerce du Lakehouse vers la base mirrorée amazingdb de l'espace « AmazingZone - Mirroring »
+  - find_value: "dbcb05e0-dcf7-4944-be24-6969f2349cd1"
+    replace_value:
+      LAB: "$ENV:FABRIC_ESPACE_MIRRORING_ID"
+  - find_value: "4bdd986e-e59c-4fa8-ad19-56cfac074e8e"
+    replace_value:
+      LAB: "$ENV:MIRRORING_AMAZINGDB_ID"
+
+  # Connexions Fabric (créées à la main, voir installation/07-fabric-espaces-et-elements.md)
+  - find_value: "dafbe60c-6a9e-435b-8ee1-10abc7c93e4d"   # PostgreSQL - WMS (passerelle)
+    replace_value:
+      LAB: "$ENV:CONNEXION_POSTGRESQL_WMS"
+  - find_value: "ddf02699-4ad3-49de-be49-48ec88d184aa"   # Copy job - SP AmazingZone
+    replace_value:
+      LAB: "$ENV:CONNEXION_COPYJOB_SP"
+  - find_value: "db2144c4-1645-4688-80ff-59116a057705"   # Pipeline - SP AmazingZone
+    replace_value:
+      LAB: "$ENV:CONNEXION_PIPELINE_SP"
+  - find_value: "3e6211cb-15c3-4ec1-860f-441d8ae40f32"   # dbt job - SP AmazingZone
+    replace_value:
+      LAB: "$ENV:CONNEXION_DBT_SP"
+  - find_value: "fd054e4c-d2b1-433f-b39f-7a449ed3fc6d"   # Modèle sémantique - SP AmazingZone
+    replace_value:
+      LAB: "$ENV:CONNEXION_MODELE_SEMANTIQUE_SP"
+  - find_value: "4b7e2f48-03c6-4b4b-8d1f-aa17441eef70"   # Key Vault - SP AmazingZone
+    replace_value:
+      LAB: "$ENV:CONNEXION_KEYVAULT_SP"
+  - find_value: "e1a9fd22-4af0-4417-bcba-48d7ae1e1305"   # Event Hub - Journaux du site (fabric-listen)
+    replace_value:
+      LAB: "$ENV:CONNEXION_EVENTHUB_JOURNAUX"
+  - find_value: "fe1e91ea-b6e4-462f-b400-bc07e7a40e41"   # SQL - NopCommerce (Copy Job archivé)
+    replace_value:
+      LAB: "$ENV:CONNEXION_SQL_NOPCOMMERCE_SP"
+
+  # Site SharePoint Finance (référentiels Excel du Dataflow, budget du modèle sémantique)
+  - find_value: "mariietardygmail.sharepoint.com"
+    replace_value:
+      LAB: "$ENV:SHAREPOINT_HOTE"

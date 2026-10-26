@@ -1,0 +1,418 @@
+{
+  "properties": {
+    "jobMode": "CDC",
+    "source": {
+      "type": "PostgreSqlTable",
+      "connectionSettings": {
+        "type": "PostgreSql",
+        "typeProperties": {
+          "database": "postgres"
+        },
+        "externalReferences": {
+          "connection": "dafbe60c-6a9e-435b-8ee1-10abc7c93e4d"
+        }
+      }
+    },
+    "destination": {
+      "type": "LakehouseTable",
+      "connectionSettings": {
+        "type": "Lakehouse",
+        "typeProperties": {
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "artifactId": "8d1ef2af-cebe-a672-401b-e450f6523eec",
+          "rootFolder": "Tables"
+        }
+      }
+    },
+    "policy": {
+      "timeout": "0.12:00:00",
+      "retry": 0
+    }
+  },
+  "activities": [
+    {
+      "id": "0c7f8d3b-88f3-55ba-b996-e2931aa7b9ae",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "warehouse"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "date_maj",
+                "type": "DateTime",
+                "physicalType": "timestamp with time zone"
+              }
+            ]
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "upsertSettings": {
+            "keys": [
+              "warehouse_id"
+            ]
+          },
+          "partitionOption": "None",
+          "writeBehavior": "Upsert",
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "warehouse"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "00188151-64f1-5e2f-9d0d-a059f42f122d",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "location"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "date_maj",
+                "type": "DateTime",
+                "physicalType": "timestamp with time zone"
+              }
+            ]
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "upsertSettings": {
+            "keys": [
+              "location_id"
+            ]
+          },
+          "partitionOption": "None",
+          "writeBehavior": "Upsert",
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "location"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "48fc9cce-f493-5d95-bdc9-16b2f52f32cf",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "item"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "date_maj",
+                "type": "DateTime",
+                "physicalType": "timestamp with time zone"
+              }
+            ]
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "upsertSettings": {
+            "keys": [
+              "item_id"
+            ]
+          },
+          "partitionOption": "None",
+          "writeBehavior": "Upsert",
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "item"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "84a002c0-e109-5db2-b0d0-76dcd55c4508",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "customer"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "date_maj",
+                "type": "DateTime",
+                "physicalType": "timestamp with time zone"
+              }
+            ]
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "upsertSettings": {
+            "keys": [
+              "customer_id"
+            ]
+          },
+          "partitionOption": "None",
+          "writeBehavior": "Upsert",
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "customer"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "748414ce-1d80-5475-955e-f02a94068e2a",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "inventory"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "date_maj",
+                "type": "DateTime",
+                "physicalType": "timestamp with time zone"
+              }
+            ]
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "upsertSettings": {
+            "keys": [
+              "inventory_id"
+            ]
+          },
+          "partitionOption": "None",
+          "writeBehavior": "Upsert",
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "inventory"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "c170d6e3-c8ed-5493-8bba-6fc79b76029b",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "orders"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "date_maj",
+                "type": "DateTime",
+                "physicalType": "timestamp with time zone"
+              }
+            ]
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "upsertSettings": {
+            "keys": [
+              "order_id"
+            ]
+          },
+          "partitionOption": "None",
+          "writeBehavior": "Upsert",
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "orders"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "cd34a8d5-75fd-5934-8fb6-9345f05b7f0d",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "order_line"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "date_maj",
+                "type": "DateTime",
+                "physicalType": "timestamp with time zone"
+              }
+            ]
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "upsertSettings": {
+            "keys": [
+              "order_line_id"
+            ]
+          },
+          "partitionOption": "None",
+          "writeBehavior": "Upsert",
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "order_line"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    },
+    {
+      "id": "70b3cb75-ec02-5bcd-ad78-0043b6210d77",
+      "properties": {
+        "source": {
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "shipment"
+          },
+          "changeDataSettings": {
+            "readMethod": "SnapshotPlusIncremental",
+            "columns": [
+              {
+                "name": "date_maj",
+                "type": "DateTime",
+                "physicalType": "timestamp with time zone"
+              }
+            ]
+          },
+          "partitionSettings": {
+            "partitionOption": "None"
+          }
+        },
+        "destination": {
+          "upsertSettings": {
+            "keys": [
+              "shipment_id"
+            ]
+          },
+          "partitionOption": "None",
+          "writeBehavior": "Upsert",
+          "datasetSettings": {
+            "schema": "wms",
+            "table": "shipment"
+          },
+          "applyVOrder": false
+        },
+        "enableStaging": false,
+        "translator": {
+          "type": "TabularTranslator"
+        },
+        "typeConversionSettings": {
+          "typeConversion": {
+            "allowDataTruncation": true,
+            "treatBooleanAsNumber": false
+          }
+        }
+      }
+    }
+  ]
+}

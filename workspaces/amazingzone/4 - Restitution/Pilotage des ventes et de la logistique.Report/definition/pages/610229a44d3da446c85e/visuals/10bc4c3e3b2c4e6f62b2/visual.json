@@ -1,0 +1,130 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "10bc4c3e3b2c4e6f62b2",
+  "position": {
+    "x": 20,
+    "y": 204,
+    "z": 2000,
+    "height": 250,
+    "width": 760,
+    "tabOrder": 2000
+  },
+  "visual": {
+    "visualType": "lineClusteredColumnComboChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Calendrier"
+                    }
+                  },
+                  "Property": "Mois et année"
+                }
+              },
+              "queryRef": "Calendrier.Mois et année",
+              "nativeQueryRef": "Mois et année",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Expéditions"
+                    }
+                  },
+                  "Property": "Nombre d'expéditions"
+                }
+              },
+              "queryRef": "Expéditions.Nombre d'expéditions",
+              "nativeQueryRef": "Nombre d'expéditions"
+            }
+          ]
+        },
+        "Y2": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Expéditions"
+                    }
+                  },
+                  "Property": "% expédiées sous 24 h"
+                }
+              },
+              "queryRef": "Expéditions.% expédiées sous 24 h",
+              "nativeQueryRef": "% expédiées sous 24 h"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Expéditions et part expédiée sous 24 heures'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

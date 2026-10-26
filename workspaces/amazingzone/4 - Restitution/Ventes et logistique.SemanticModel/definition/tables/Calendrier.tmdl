@@ -1,0 +1,175 @@
+/// Calendrier commun à toutes les tables de faits, du 1er janvier 2025 au 31 décembre 2027.
+table Calendrier
+	lineageTag: 31122444-fecf-5982-9db7-fa1b66be852b
+	sourceLineageTag: [gold].[DimDate]
+	dataCategory: Time
+
+	column DateId
+		dataType: int64
+		isHidden
+		lineageTag: c362162b-355f-5a3c-bfdc-988c928a52be
+		sourceLineageTag: DateId
+		summarizeBy: none
+		sourceColumn: DateId
+
+		annotation SummarizationSetBy = User
+
+	/// Jour calendaire.
+	column Date
+		dataType: dateTime
+		isHidden
+		isKey
+		formatString: dd/mm/yyyy
+		lineageTag: 8da25099-8079-5f13-abcd-aa8345efe69a
+		sourceLineageTag: Date
+		summarizeBy: none
+		sourceColumn: Date
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = User
+
+	/// Année civile.
+	column Année
+		dataType: int64
+		formatString: 0
+		lineageTag: 7a916ba0-d852-5558-9390-3bf76a5a80b8
+		sourceLineageTag: Annee
+		summarizeBy: none
+		sourceColumn: Annee
+
+		annotation SummarizationSetBy = User
+
+	column NumTrimestre
+		dataType: int64
+		isHidden
+		lineageTag: 3e6d9bf1-9311-5b1b-881d-b9560697ca4d
+		sourceLineageTag: NumTrimestre
+		summarizeBy: none
+		sourceColumn: NumTrimestre
+
+		annotation SummarizationSetBy = User
+
+	/// Trimestre civil (T1 à T4).
+	column Trimestre
+		dataType: string
+		lineageTag: 3cdbc16a-9b75-51c0-b1e0-4220ab1c51f1
+		sourceLineageTag: Trimestre
+		summarizeBy: none
+		sourceColumn: Trimestre
+		sortByColumn: NumTrimestre
+
+		annotation SummarizationSetBy = User
+
+	column NumMois
+		dataType: int64
+		isHidden
+		lineageTag: a73f3579-17b2-5c9d-adad-1163614e7f3e
+		sourceLineageTag: NumMois
+		summarizeBy: none
+		sourceColumn: NumMois
+
+		annotation SummarizationSetBy = User
+
+	/// Nom du mois, trié dans l'ordre du calendrier.
+	column Mois
+		dataType: string
+		lineageTag: f952c15e-954c-5b46-94a1-cbac0e20f754
+		sourceLineageTag: Mois
+		summarizeBy: none
+		sourceColumn: Mois
+		sortByColumn: NumMois
+
+		annotation SummarizationSetBy = User
+
+	column AnneeMois
+		dataType: int64
+		isHidden
+		lineageTag: c5161690-ab7e-5f12-9f2a-b9f56c6eccc9
+		sourceLineageTag: AnneeMois
+		summarizeBy: none
+		sourceColumn: AnneeMois
+
+		annotation SummarizationSetBy = User
+
+	/// Mois et année (par exemple « nov. 2025 »), pour les axes temporels.
+	column 'Mois et année'
+		dataType: string
+		lineageTag: 91e3bba6-7d05-5624-90f6-a8cb09075014
+		sourceLineageTag: MoisAnnee
+		summarizeBy: none
+		sourceColumn: MoisAnnee
+		sortByColumn: AnneeMois
+
+		annotation SummarizationSetBy = User
+
+	/// Numéro de semaine selon la norme ISO 8601.
+	column 'Semaine ISO'
+		dataType: int64
+		formatString: 0
+		lineageTag: 27390003-22fa-5d2d-b245-72ab20587a17
+		sourceLineageTag: NumSemaineIso
+		summarizeBy: none
+		sourceColumn: NumSemaineIso
+
+		annotation SummarizationSetBy = User
+
+	column NumJourSemaine
+		dataType: int64
+		isHidden
+		lineageTag: 0ddc5eb0-751c-51ac-81d4-51e1aa9df711
+		sourceLineageTag: NumJourSemaine
+		summarizeBy: none
+		sourceColumn: NumJourSemaine
+
+		annotation SummarizationSetBy = User
+
+	/// Jour de la semaine, du lundi au dimanche.
+	column 'Jour de la semaine'
+		dataType: string
+		lineageTag: f2efedd5-2879-5652-aceb-03ecbabc91c1
+		sourceLineageTag: JourSemaine
+		summarizeBy: none
+		sourceColumn: JourSemaine
+		sortByColumn: NumJourSemaine
+
+		annotation SummarizationSetBy = User
+
+	/// Vrai pour le samedi et le dimanche.
+	column Week-end
+		dataType: boolean
+		lineageTag: 4d182170-4b52-547e-b1c7-20ef2f274de0
+		sourceLineageTag: EstWeekEnd
+		summarizeBy: none
+		sourceColumn: EstWeekEnd
+
+		annotation SummarizationSetBy = User
+
+	hierarchy 'Année - Trimestre - Mois'
+		lineageTag: 80a55178-67f9-5629-ac00-7ba149f3663c
+
+		level Année
+			lineageTag: 79d47cb5-c68d-5b26-a39f-56e1c81970eb
+			column: Année
+
+		level Trimestre
+			lineageTag: 27f112ec-e353-5e71-9c20-2463397d5636
+			column: Trimestre
+
+		level Mois
+			lineageTag: 98689cff-945b-59db-a437-db3d6b6990aa
+			column: Mois
+
+		level Date
+			lineageTag: f04c0c75-2612-537c-bcd5-daffa320be18
+			column: Date
+
+	partition Calendrier = entity
+		mode: directLake
+		source
+			entityName: DimDate
+			schemaName: gold
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+

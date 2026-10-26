@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "Optimisation - Table sensors",
+    "description": "Compaction Job for LakeHouse table sensors"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "9751d689-7081-aaf1-427b-042dde698106"
+  }
+}

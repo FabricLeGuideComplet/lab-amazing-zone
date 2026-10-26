@@ -1,0 +1,175 @@
+/// Clients du site e-commerce. Un client est identifié par son compte sur le site ; la géographie est déduite de son code postal.
+table Client
+	lineageTag: 98b2c74d-d065-5b12-a425-43666108b3d9
+	sourceLineageTag: [gold].[DimClient]
+
+	column ClientKey
+		dataType: int64
+		isHidden
+		lineageTag: a3b117f2-ffac-5cd4-868a-463eb96a51df
+		sourceLineageTag: ClientKey
+		summarizeBy: none
+		sourceColumn: ClientKey
+
+		annotation SummarizationSetBy = User
+
+	/// Identifiant du compte client dans le site e-commerce.
+	column 'Identifiant client'
+		dataType: int64
+		lineageTag: 1a959c64-f65a-5d23-9e7d-890fbbb52908
+		sourceLineageTag: ClientId
+		summarizeBy: none
+		sourceColumn: ClientId
+
+		annotation SummarizationSetBy = User
+
+	/// Prénom et nom du client.
+	column Client
+		dataType: string
+		lineageTag: 812ded88-6503-5705-8015-fec9dba3a1d4
+		sourceLineageTag: NomComplet
+		summarizeBy: none
+		sourceColumn: NomComplet
+
+		annotation SummarizationSetBy = User
+
+	column Prénom
+		dataType: string
+		isHidden
+		lineageTag: 4822402e-bfaa-5b32-b400-acc8ef189242
+		sourceLineageTag: Prenom
+		summarizeBy: none
+		sourceColumn: Prenom
+
+		annotation SummarizationSetBy = User
+
+	column Nom
+		dataType: string
+		isHidden
+		lineageTag: dea809d0-62c1-5b3c-9346-37a36a20d2e7
+		sourceLineageTag: Nom
+		summarizeBy: none
+		sourceColumn: Nom
+
+		annotation SummarizationSetBy = User
+
+	/// Adresse e-mail du compte client.
+	column Email
+		dataType: string
+		lineageTag: 858a6024-668e-503e-b57f-196362fbc513
+		sourceLineageTag: Email
+		summarizeBy: none
+		sourceColumn: Email
+
+		annotation SummarizationSetBy = User
+
+	/// Homme ou Femme, tel que déclaré sur le site.
+	column Genre
+		dataType: string
+		lineageTag: 8cd12d50-08d6-5e57-b809-4df167ce68a4
+		sourceLineageTag: Genre
+		summarizeBy: none
+		sourceColumn: Genre
+
+		annotation SummarizationSetBy = User
+
+	column 'Code postal'
+		dataType: string
+		displayFolder: Géographie
+		lineageTag: d1666279-3fdb-5c0a-a3d5-0f71544a145a
+		sourceLineageTag: CodePostal
+		dataCategory: PostalCode
+		summarizeBy: none
+		sourceColumn: CodePostal
+
+		annotation SummarizationSetBy = User
+
+	column Ville
+		dataType: string
+		displayFolder: Géographie
+		lineageTag: 4435a12b-7566-56a1-b029-d5dbc2ec3391
+		sourceLineageTag: Ville
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: Ville
+
+		annotation SummarizationSetBy = User
+
+	column 'Code département'
+		dataType: string
+		isHidden
+		lineageTag: 0e7d99a6-73f5-5e2b-88b3-9b9add8f7548
+		sourceLineageTag: CodeDepartement
+		summarizeBy: none
+		sourceColumn: CodeDepartement
+
+		annotation SummarizationSetBy = User
+
+	column Département
+		dataType: string
+		displayFolder: Géographie
+		lineageTag: 4f015e11-e28e-5d9a-adb3-1dbe9498002d
+		sourceLineageTag: Departement
+		dataCategory: County
+		summarizeBy: none
+		sourceColumn: Departement
+
+		annotation SummarizationSetBy = User
+
+	/// Région administrative du client, issue du référentiel géographique.
+	column Région
+		dataType: string
+		displayFolder: Géographie
+		lineageTag: 413cfb7d-4250-57ff-b94b-742fa8501f4a
+		sourceLineageTag: Region
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = User
+
+	/// Date de création du compte sur le site.
+	column 'Date d''inscription'
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: af40487f-5219-5207-b36a-fb32d0f92e23
+		sourceLineageTag: DateInscription
+		summarizeBy: none
+		sourceColumn: DateInscription
+
+		annotation SummarizationSetBy = User
+
+	column DateChargement
+		dataType: dateTime
+		isHidden
+		lineageTag: f98d3308-7816-59e8-ae18-edefb6d6b7ff
+		sourceLineageTag: DateChargement
+		summarizeBy: none
+		sourceColumn: DateChargement
+
+		annotation SummarizationSetBy = User
+
+	hierarchy Géographie
+		lineageTag: e3ea302d-0ca9-580a-89b9-44b792665a99
+
+		level Région
+			lineageTag: b180f941-03b9-55dc-b096-5422dcb292d7
+			column: Région
+
+		level Département
+			lineageTag: fb49cd69-0386-56d0-9749-6e63a5d98ba5
+			column: Département
+
+		level Ville
+			lineageTag: 928dbf77-48a5-57fa-bd4a-9f988570aaa7
+			column: Ville
+
+	partition Client = entity
+		mode: directLake
+		source
+			entityName: DimClient
+			schemaName: gold
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+

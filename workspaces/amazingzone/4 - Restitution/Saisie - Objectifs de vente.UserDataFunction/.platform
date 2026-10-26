@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "UserDataFunction",
+    "displayName": "Saisie - Objectifs de vente"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "41cf86c9-9135-bd01-4372-40fc5d155f58"
+  }
+}

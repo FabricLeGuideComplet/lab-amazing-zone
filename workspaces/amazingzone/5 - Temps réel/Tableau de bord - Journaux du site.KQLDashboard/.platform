@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "KQLDashboard",
+    "displayName": "Tableau de bord - Journaux du site"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "2d4bde8d-7eea-9c08-4407-802fe0c40589"
+  }
+}

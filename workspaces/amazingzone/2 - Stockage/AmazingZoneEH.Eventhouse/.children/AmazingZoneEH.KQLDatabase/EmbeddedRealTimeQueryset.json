@@ -1,0 +1,46 @@
+{
+  "queryset": {
+    "version": "1.0.0",
+    "dataSources": [
+      {
+        "id": "ef9937d6-8d30-40c2-a5c7-937c417b5511",
+        "clusterUri": "",
+        "type": "Fabric",
+        "databaseItemId": "16141940-050c-9467-467e-3ee59afe9a4e"
+      }
+    ],
+    "tabs": [
+      {
+        "id": "dfe0ae5f-bea1-462c-a350-40a89a5b3edf",
+        "content": "//***********************************************************************************************************\n// Here are two articles to help you get started with KQL:\n// KQL reference guide - https://aka.ms/KQLguide\n// SQL - KQL conversions - https://aka.ms/sqlcheatsheet\n//***********************************************************************************************************\n\n// Use \"take\" to view a sample number of records in the table and check the data.\nYOUR_TABLE_HERE\n| take 100\n\n// See how many records are in the table.\nYOUR_TABLE_HERE\n| count\n\n// This query returns the number of ingestions per hour in the given table.\nYOUR_TABLE_HERE\n| summarize IngestionCount = count() by bin(ingestion_time(), 1h)\n\n",
+        "title": "Tab",
+        "dataSourceId": "ef9937d6-8d30-40c2-a5c7-937c417b5511"
+      },
+      {
+        "id": "0e9b06ec-3692-42ba-b27c-39f6bde9cace",
+        "content": "logsweb\n| mv-expand records\n\n//| extend Type = tostring(records.['Type'])\n//| summarize count() by Type\n\nlogsweb\n| mv-expand records\n| extend dateLog = records.['time']\n        , Type = records.['Type']\n        , Success = records.['Success']\n        , ResultCode = records.['ResultCode']\n        , DurationMs = records.['DurationMs']\n        , ClientCity = records.['ClientCity']\n        , ClientCountryOrRegion = records.['ClientCountryOrRegion']\n| where Type == \"AppRequests\"\n| project todatetime(dateLog), tostring(Type), tostring(ResultCode), todouble(DurationMs), toboolean(Success), ClientCity, ClientCountryOrRegion",
+        "title": "",
+        "dataSourceId": "ef9937d6-8d30-40c2-a5c7-937c417b5511"
+      },
+      {
+        "id": "1108f0af-bb98-4122-8f58-fab18c1a8132",
+        "content": ".create-or-alter function fn_ParseWebLogs() {\nlogsweb\n| mv-expand records\n| where tostring(records.['category']) in (\"AppServiceHTTPLogs\", \"AppServiceAppLogs\")\n| project \n    dateLog               = todatetime(records.['time']),\n    Type                  = tostring(records.['category']),\n    ResultCode            = tostring(records.properties.ScStatus),\n    DurationMs            = todouble(records.properties.TimeTaken),\n    Success               = toboolean(iff(records.properties.Result == \"Success\" or toint(records.properties.ScStatus) < 400, true, false))\n//    ClientCity            = tostring(records.properties.ClientCity),            // Restera vide/null car non fourni dans les logs HTTP bruts\n//    ClientCountryOrRegion = tostring(records.properties.ClientCountryOrRegion)  // Restera vide/null car non fourni dans les logs HTTP bruts\n}\n",
+        "title": "",
+        "dataSourceId": "ef9937d6-8d30-40c2-a5c7-937c417b5511"
+      },
+      {
+        "id": "db34b8a0-cdc2-4b53-8a1b-6ad4cf1aac05",
+        "content": "logsweb\n| mv-expand records\n| extend Type = tostring(records.['category'])\n| summarize count() by Type",
+        "title": "",
+        "dataSourceId": "ef9937d6-8d30-40c2-a5c7-937c417b5511"
+      },
+      {
+        "id": "f776820c-1494-4697-9a10-d175b502cae6",
+        "content": "fn_ParseWebLogs()",
+        "title": "",
+        "dataSourceId": "ef9937d6-8d30-40c2-a5c7-937c417b5511"
+      }
+    ],
+    "querysetType": "Embedded"
+  }
+}

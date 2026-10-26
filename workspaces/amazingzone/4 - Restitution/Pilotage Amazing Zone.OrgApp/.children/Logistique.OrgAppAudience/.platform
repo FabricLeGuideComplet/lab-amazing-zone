@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "OrgAppAudience",
+    "displayName": "Logistique"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "f60a88c4-1b96-8049-413e-48db898f5a8d"
+  }
+}

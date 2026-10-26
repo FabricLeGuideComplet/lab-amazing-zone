@@ -1,0 +1,133 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "c8ffaf79272037252abb",
+  "position": {
+    "x": 20,
+    "y": 86,
+    "z": 1000,
+    "height": 108,
+    "width": 1240,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Expéditions"
+                    }
+                  },
+                  "Property": "Nombre d'expéditions"
+                }
+              },
+              "queryRef": "Expéditions.Nombre d'expéditions",
+              "nativeQueryRef": "Nombre d'expéditions"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Expéditions"
+                    }
+                  },
+                  "Property": "% expédiées sous 24 h"
+                }
+              },
+              "queryRef": "Expéditions.% expédiées sous 24 h",
+              "nativeQueryRef": "% expédiées sous 24 h"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Expéditions"
+                    }
+                  },
+                  "Property": "Délai moyen de préparation (h)"
+                }
+              },
+              "queryRef": "Expéditions.Délai moyen de préparation (h)",
+              "nativeQueryRef": "Délai moyen de préparation (h)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Météo"
+                    }
+                  },
+                  "Property": "Jours d'intempérie"
+                }
+              },
+              "queryRef": "Météo.Jours d'intempérie",
+              "nativeQueryRef": "Jours d'intempérie"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "value": [
+        {
+          "properties": {
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

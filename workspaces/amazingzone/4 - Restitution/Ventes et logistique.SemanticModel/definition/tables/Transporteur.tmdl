@@ -1,0 +1,53 @@
+/// Transporteurs utilisés pour les expéditions.
+table Transporteur
+	lineageTag: b3f9df9e-62c1-5a42-b6b2-8fd74c0c340b
+	sourceLineageTag: [gold].[DimTransporteur]
+
+	column TransporteurKey
+		dataType: int64
+		isHidden
+		lineageTag: 3ae382ff-6416-5208-a298-a00f3cc9bdbb
+		sourceLineageTag: TransporteurKey
+		summarizeBy: none
+		sourceColumn: TransporteurKey
+
+		annotation SummarizationSetBy = User
+
+	column Transporteur
+		dataType: string
+		lineageTag: 2c2fe31d-4c49-55b2-8b21-053a0c370c8f
+		sourceLineageTag: Transporteur
+		summarizeBy: none
+		sourceColumn: Transporteur
+
+		annotation SummarizationSetBy = User
+
+	/// Standard, Express ou Retrait.
+	column 'Type de livraison'
+		dataType: string
+		lineageTag: 997c9df3-2ed6-50c2-81f9-03555d52fbd5
+		sourceLineageTag: TypeLivraison
+		summarizeBy: none
+		sourceColumn: TypeLivraison
+
+		annotation SummarizationSetBy = User
+
+	column DateChargement
+		dataType: dateTime
+		isHidden
+		lineageTag: 004b0d7d-7571-515d-9ed1-02315a943217
+		sourceLineageTag: DateChargement
+		summarizeBy: none
+		sourceColumn: DateChargement
+
+		annotation SummarizationSetBy = User
+
+	partition Transporteur = entity
+		mode: directLake
+		source
+			entityName: DimTransporteur
+			schemaName: gold
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+

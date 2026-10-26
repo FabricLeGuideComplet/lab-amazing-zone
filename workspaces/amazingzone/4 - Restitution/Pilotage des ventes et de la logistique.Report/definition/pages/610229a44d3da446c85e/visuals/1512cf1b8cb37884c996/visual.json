@@ -1,0 +1,154 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "1512cf1b8cb37884c996",
+  "position": {
+    "x": 800,
+    "y": 204,
+    "z": 4000,
+    "height": 500,
+    "width": 460,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Entrepôt"
+                    }
+                  },
+                  "Property": "Entrepôt"
+                }
+              },
+              "queryRef": "Entrepôt.Entrepôt",
+              "nativeQueryRef": "Entrepôt",
+              "active": true
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Expéditions"
+                    }
+                  },
+                  "Property": "Nombre d'expéditions"
+                }
+              },
+              "queryRef": "Expéditions.Nombre d'expéditions",
+              "nativeQueryRef": "Nombre d'expéditions"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Expéditions"
+                    }
+                  },
+                  "Property": "% expédiées sous 24 h"
+                }
+              },
+              "queryRef": "Expéditions.% expédiées sous 24 h",
+              "nativeQueryRef": "% expédiées sous 24 h"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Expéditions"
+                    }
+                  },
+                  "Property": "Délai moyen de préparation (h)"
+                }
+              },
+              "queryRef": "Expéditions.Délai moyen de préparation (h)",
+              "nativeQueryRef": "Délai moyen de préparation (h)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Météo"
+                    }
+                  },
+                  "Property": "Jours d'intempérie"
+                }
+              },
+              "queryRef": "Météo.Jours d'intempérie",
+              "nativeQueryRef": "Jours d'intempérie"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Performance par entrepôt'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

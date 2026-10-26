@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "Ingestion - WMS par métadonnées"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "c197c87e-2b3a-be8c-476d-9e523f3c7030"
+  }
+}

@@ -1,0 +1,70 @@
+/// Budget de chiffre d'affaires hors taxes de la direction financière, par mois et par univers de produits. Saisi dans un classeur Excel du site SharePoint Finance et importé dans le modèle (table en mode Import).
+table Budget
+	lineageTag: f85f8763-9665-4bdc-9b5b-b8ebf176c3fb
+
+	/// Budget de chiffre d'affaires hors taxes, défini par mois et par univers dans le classeur de la direction financière.
+	measure 'Budget CA HT' = SUM(Budget[MontantBudgetHT])
+		formatString: #,0 €
+		lineageTag: d1b2c3a4-0001-4b5c-9d00-000000000001
+
+	/// Écart entre le chiffre d'affaires hors taxes réalisé et le budget des mois déjà réalisés.
+	measure 'Écart au budget' = IF(NOT ISBLANK([Budget CA HT à date]), [CA HT] - [Budget CA HT à date])
+		formatString: +#,0 €;-#,0 €;0 €
+		lineageTag: d1b2c3a4-0002-4b5c-9d00-000000000002
+
+	/// Chiffre d'affaires hors taxes réalisé rapporté au budget des mois déjà réalisés.
+	measure 'Réalisation du budget' = DIVIDE([CA HT], [Budget CA HT à date])
+		formatString: 0.0 %
+		lineageTag: d1b2c3a4-0003-4b5c-9d00-000000000003
+
+	/// Budget hors taxes des seuls mois qui ont déjà des ventes, pour comparer le réalisé à un budget de même périmètre.
+	measure 'Budget CA HT à date' = SUMX(VALUES(Calendrier[AnneeMois]), IF(NOT ISBLANK([CA HT]), [Budget CA HT]))
+		formatString: #,0 €
+		lineageTag: d1b2c3a4-0004-4b5c-9d00-000000000004
+
+	/// Premier jour du mois budgété.
+	column Mois
+		dataType: dateTime
+		isHidden
+		formatString: mm/yyyy
+		lineageTag: 89345f9a-677c-4b00-af2e-4a77cedda51b
+		summarizeBy: none
+		sourceColumn: Mois
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Univers de produits budgété, rattaché à l'univers du catalogue.
+	column Univers
+		dataType: string
+		isHidden
+		lineageTag: a8f0f14c-2f7f-478d-a124-5105e0fb5878
+		summarizeBy: none
+		sourceColumn: Univers
+
+		annotation SummarizationSetBy = Automatic
+
+	column MontantBudgetHT
+		dataType: decimal
+		isHidden
+		formatString: #,0 €
+		lineageTag: 05397cfc-69bc-4658-9cfd-f38b15f41663
+		summarizeBy: none
+		sourceColumn: Budget CA HT
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Budget = m
+		mode: import
+		source =
+				let
+				  Source = Excel.Workbook(Web.Contents("https://mariietardygmail.sharepoint.com/sites/Finance/Documents%20partages/budget_ventes_2026.xlsx"), null, true),
+				  #"Navigation 1" = Source{[Item = "Budget", Kind = "Sheet"]}[Data],
+				  #"Promoted headers" = Table.PromoteHeaders(#"Navigation 1", [PromoteAllScalars = true]),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Mois", type date}, {"Univers", type text}, {"Budget CA HT", Currency.Type}})
+				in
+				  #"Changed column type"
+
+	annotation PBI_ResultType = Table
+

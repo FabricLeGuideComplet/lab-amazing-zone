@@ -1,0 +1,55 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {
+    "allowModernEvaluationEngine": true
+  },
+  "name": "Ingest - Excel",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "queriesMetadata": {
+    "taux_change": {
+      "queryId": "2502035f-adbb-4251-a42d-68f6d5557ce6",
+      "queryName": "taux_change",
+      "loadEnabled": false
+    },
+    "taux_change_DataDestination": {
+      "queryId": "591e2bf9-d571-4bde-80e4-ecd9a0db2a76",
+      "queryName": "taux_change_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "geographie": {
+      "queryId": "f3103ee4-41a8-4d49-ac1b-baaa5e4dce19",
+      "queryName": "geographie",
+      "loadEnabled": false
+    },
+    "geographie_DataDestination": {
+      "queryId": "c20f13c9-d7a6-436b-9c03-0e9b16ea63b2",
+      "queryName": "geographie_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    }
+  },
+  "connections": [
+    {
+      "path": "https://mariietardygmail.sharepoint.com",
+      "kind": "SharePoint",
+      "connectionId": "{\"ClusterId\":\"2b7dd43f-9c47-4615-98b2-b45e05b8a9f8\",\"DatasourceId\":\"92c57a40-cddf-414e-b65a-7ddf78da4932\"}"
+    },
+    {
+      "path": "https://mariietardygmail.sharepoint.com/sites/Finance/Documents partages/Taux de change/taux_de_change_vs_eur_2019_2026.xlsx",
+      "kind": "Web",
+      "connectionId": "{\"ClusterId\":\"2b7dd43f-9c47-4615-98b2-b45e05b8a9f8\",\"DatasourceId\":\"67eb25d7-16bd-441b-99a7-cfeee6f81c99\"}"
+    },
+    {
+      "path": "Lakehouse",
+      "kind": "Lakehouse",
+      "connectionId": "{\"ClusterId\":\"2b7dd43f-9c47-4615-98b2-b45e05b8a9f8\",\"DatasourceId\":\"7b0cd58f-4b01-4439-ac4e-8cd3b3e9a109\"}"
+    },
+    {
+      "path": "https://mariietardygmail.sharepoint.com/sites/Finance",
+      "kind": "Web",
+      "connectionId": "{\"ClusterId\":\"2b7dd43f-9c47-4615-98b2-b45e05b8a9f8\",\"DatasourceId\":\"f751a823-9fd2-4af9-8a3b-3eb81ba541aa\"}"
+    }
+  ]
+}

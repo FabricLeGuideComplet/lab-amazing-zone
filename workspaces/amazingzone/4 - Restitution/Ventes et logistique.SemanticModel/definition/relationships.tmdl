@@ -1,0 +1,75 @@
+relationship afaf94a6-1e5b-52da-8f16-4a11c608dc9d
+	fromColumn: Ventes.DateCommandeId
+	toColumn: Calendrier.DateId
+
+relationship 54ca05eb-483b-545b-bef7-ebbcc4d3dc5a
+	fromColumn: Ventes.ClientKey
+	toColumn: Client.ClientKey
+
+relationship 89bdc7a9-f8b6-5bd2-9de3-36701394d5bd
+	fromColumn: Ventes.ProduitKey
+	toColumn: Produit.ProduitKey
+
+relationship 5e937c71-1dbf-54ac-b57d-37264ff3ad53
+	fromColumn: Ventes.EntrepotKey
+	toColumn: Entrepôt.EntrepotKey
+
+relationship 4ab1c40e-3a4f-5129-9e56-75a4fa110a93
+	fromColumn: Expéditions.DateExpeditionId
+	toColumn: Calendrier.DateId
+
+relationship 882cf14a-9ddc-5fd5-ae7a-59131cb1072d
+	isActive: false
+	fromColumn: Expéditions.DatePriseEnChargeId
+	toColumn: Calendrier.DateId
+
+relationship c03b739e-aa88-55d2-955f-8bdc1db7bb54
+	fromColumn: Expéditions.EntrepotKey
+	toColumn: Entrepôt.EntrepotKey
+
+relationship ad89131b-d987-5d40-b5e0-41d401f58149
+	fromColumn: Expéditions.TransporteurKey
+	toColumn: Transporteur.TransporteurKey
+
+relationship 8205a4ad-6dca-5e7a-9904-da73f7da94fb
+	fromColumn: Expéditions.ClientKey
+	toColumn: Client.ClientKey
+
+relationship be168915-35be-50df-82e8-9fd7f9fc2fe5
+	fromColumn: Stock.DateId
+	toColumn: Calendrier.DateId
+
+relationship d091d479-322a-5d5d-9fc4-d5e27ade0605
+	fromColumn: Stock.ProduitKey
+	toColumn: Produit.ProduitKey
+
+relationship afff74e0-06c8-53e0-b238-d8aa672de107
+	fromColumn: Stock.EntrepotKey
+	toColumn: Entrepôt.EntrepotKey
+
+relationship 673487ae-9621-5b85-9c79-bb715dffae67
+	fromColumn: Météo.DateId
+	toColumn: Calendrier.DateId
+
+relationship cf9fe9b3-88c1-54b3-97fd-324f95aad0ad
+	fromColumn: Météo.EntrepotKey
+	toColumn: Entrepôt.EntrepotKey
+
+relationship cc029d25-525c-55be-a547-783cc7adf2a8
+	fromColumn: Budget.Mois
+	toColumn: Calendrier.Date
+
+relationship ef354685-ac06-52fa-8101-7874becdeb33
+	toCardinality: many
+	fromColumn: Budget.Univers
+	toColumn: Produit.Univers
+
+relationship 5ef5f030-2c63-520a-a0f6-eaab176c8974
+	fromColumn: Objectifs.Mois
+	toColumn: Calendrier.Date
+
+relationship 1fb02b07-b2f5-5ca1-9a0d-8fc69c9511e5
+	toCardinality: many
+	fromColumn: Objectifs.Univers
+	toColumn: Produit.Univers
+

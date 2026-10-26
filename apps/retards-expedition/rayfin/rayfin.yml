@@ -1,0 +1,38 @@
+id: retards-expedition
+name: retards-expedition
+version: 1.0.0
+services:
+  auth:
+    enabled: true
+    fabric:
+      enabled: true
+    password:
+      enabled: true
+    allowedRedirectUris:
+      - http://localhost:5173
+      - http://127.0.0.1:5173
+      - https://easy-falls-00fbea75a3-francecentral.webapp.fabricapps.net
+  data:
+    enabled: true
+    dialect: mssql
+  staticHosting:
+    enabled: true
+    folder: dist
+    buildCommand: npm run build:fabric
+    indexDocument: index.html
+    assetAccess: protected
+  storage:
+    enabled: false
+  functions:
+    enabled: false
+connectors:
+  - name: venteslogistique
+    type: fabric-semanticmodel
+    config:
+      workspaceId: 0875373d-96cd-4d0e-b4e7-5fc5cd327cb8
+      itemId: 53505de3-3037-4538-b2d4-6bd2b4e1b522
+    auth:
+      type: delegated
+    version: "1"
+    operations:
+      - name: executeQuery

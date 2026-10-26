@@ -1,0 +1,85 @@
+version: 2
+
+# Sources : couche Bronze du Lakehouse AmazingZoneLK, un schéma par système source, lue au travers de son point
+# de terminaison SQL (noms en trois parties, même espace de travail). Attention : comme le Warehouse, le point de
+# terminaison SQL utilise une collation sensible à la casse, y compris pour les noms de tables (ecommerce.Order,
+# pas ecommerce.order). Les tests déclarés ici s'exécutent avant les modèles qui en dépendent.
+sources:
+  - name: ecommerce
+    description: Site e-commerce NopCommerce (Azure SQL Database), raccourcis OneLake vers la base mirrorée.
+    database: AmazingZoneLK
+    schema: ecommerce
+    tables:
+      - name: Customer
+        description: Comptes clients du site.
+        columns:
+          - name: Id
+            data_tests: [unique, not_null]
+      - name: Order
+        description: Commandes du site.
+        columns:
+          - name: Id
+            data_tests: [unique, not_null]
+      - name: OrderItem
+        description: Lignes de commande.
+        columns:
+          - name: Id
+            data_tests: [unique, not_null]
+      - name: Product
+        description: Catalogue des produits.
+        columns:
+          - name: Id
+            data_tests: [unique, not_null]
+      - name: Category
+        description: Catégories du catalogue (deux niveaux, ParentCategoryId).
+      - name: Product_Category_Mapping
+        description: Association des produits à leurs catégories.
+
+  - name: wms
+    description: WMS PostgreSQL des entrepôts, chargé toutes les heures par le Copy Job « Ingestion - WMS ».
+    database: AmazingZoneLK
+    schema: wms
+    tables:
+      - name: orders
+        description: Commandes logistiques (une par commande du site transmise au WMS).
+        columns:
+          - name: order_id
+            data_tests: [unique, not_null]
+      - name: order_line
+      - name: shipment
+      - name: warehouse
+        columns:
+          - name: code
+            data_tests: [unique, not_null]
+      - name: inventory
+      - name: item
+      - name: location
+
+  - name: meteo
+    description: Prévisions Open-Meteo des entrepôts, chargées chaque matin par le notebook « Ingestion - Météo ».
+    database: AmazingZoneLK
+    schema: meteo
+    loaded_at_field: date_extraction_utc
+    freshness:
+      warn_after: {count: 26, period: hour}
+      error_after: {count: 50, period: hour}
+    tables:
+      - name: weather_forecast
+        description: Une ligne par site et par jour ; les valeurs consolidées des jours passés remplacent les prévisions.
+      - name: weather_forecast_issued
+        description: >
+          Chaque prévision telle qu'elle a été émise (date d'émission, échéance en jours), conservée en ajout.
+          Seule météo connue au moment de planifier : c'est elle que la table de caractéristiques utilise.
+
+  - name: referentiels
+    description: Référentiels Excel de SharePoint, chargés chaque lundi par le Dataflow « Ingestion - Referentiels Excel ».
+    database: AmazingZoneLK
+    schema: referentiels
+    tables:
+      - name: geographie
+        description: Départements, chefs-lieux et régions.
+        columns:
+          - name: code_departement
+            data_tests: [unique, not_null]
+      - name: taux_change
+        description: Taux de change annuels par devise (contre l'euro).

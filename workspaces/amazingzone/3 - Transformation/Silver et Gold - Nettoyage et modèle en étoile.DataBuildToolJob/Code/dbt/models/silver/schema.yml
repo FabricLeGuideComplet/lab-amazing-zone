@@ -1,0 +1,144 @@
+version: 2
+
+# Couche Silver du Warehouse : données nettoyées, typées, traduites et rapprochées, une table par modèle.
+# Les tests protègent la couche Gold : une donnée non conforme bloque la construction au lieu de la corrompre.
+models:
+  - name: client
+    description: Comptes clients du site e-commerce (hors comptes système, clients supprimés et e-mails invalides).
+    columns:
+      - name: client_id
+        description: Identifiant du compte dans NopCommerce (dbo.Customer.Id).
+        data_tests: [unique, not_null]
+      - name: email
+        description: Adresse e-mail normalisée (minuscules, sans espaces), clé de rapprochement avec le CRM.
+        data_tests: [unique, not_null]
+      - name: code_postal
+        description: Code postal de l'adresse du compte.
+      - name: code_departement
+        description: Département déduit du code postal (2A/2B pour la Corse, trois chiffres pour l'outre-mer).
+      - name: region
+        description: Région administrative, issue du référentiel géographique Excel.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+                tags: ['avertissement']
+      - name: date_inscription
+        description: Date de création du compte.
+  - name: produit
+    description: Catalogue du site e-commerce, avec la catégorie principale et l'univers de chaque produit.
+    columns:
+      - name: produit_id
+        description: Identifiant du produit dans NopCommerce (dbo.Product.Id).
+        data_tests: [unique, not_null]
+      - name: sku
+        description: Référence article, commune au site et au WMS.
+        data_tests: [unique, not_null]
+      - name: categorie
+        description: Catégorie principale (plus petit identifiant de catégorie associé au produit).
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+                tags: ['avertissement']
+      - name: prix_vente
+        description: Prix catalogue hors taxes, en euros. Historisé par le snapshot produit.
+        data_tests: [not_null]
+      - name: cout_achat
+        description: Coût d'achat unitaire hors taxes, en euros.
+  - name: commande_ligne
+    description: Lignes de commande du site e-commerce, statuts traduits en clair.
+    columns:
+      - name: ligne_id
+        description: Identifiant de la ligne (dbo.OrderItem.Id).
+        data_tests: [unique, not_null]
+      - name: numero_commande
+        description: Numéro de commande affiché au client, repris à l'identique par le WMS.
+        data_tests: [not_null]
+      - name: client_id
+        description: Compte client à l'origine de la commande.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('client')
+                field: client_id
+              config:
+                severity: warn
+                tags: ['avertissement']
+      - name: produit_id
+        description: Produit commandé.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('produit')
+                field: produit_id
+      - name: statut_commande
+        description: Statut de la commande sur le site.
+        data_tests:
+          - accepted_values:
+              arguments: {values: ['En attente', 'En cours', 'Terminée', 'Annulée']}
+      - name: montant_ht
+        description: Montant hors taxes de la ligne (prix unitaire × quantité), en euros.
+        data_tests: [not_null]
+  - name: commande_logistique
+    description: Commandes logistiques du WMS (une ligne par commande), avec l'entrepôt et l'expédition.
+    columns:
+      - name: numero_commande
+        description: Numéro de commande, identique à celui du site e-commerce.
+        data_tests: [unique, not_null]
+      - name: code_entrepot
+        description: Entrepôt de préparation (WH1 à WH4).
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('entrepot')
+                field: code_entrepot
+      - name: statut_logistique
+        description: Statut de la commande dans le WMS.
+        data_tests:
+          - accepted_values:
+              arguments: {values: ['Créée', 'Allouée', 'Prélevée', 'Emballée', 'Expédiée', 'Annulée']}
+  - name: stock
+    description: Stock courant du WMS par article et par entrepôt (le WMS ne conserve pas d'historique).
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "CONCAT(sku, '|', code_entrepot)"
+    columns:
+      - name: quantite_stock
+        description: Quantité physiquement en stock.
+      - name: quantite_reservee
+        description: Quantité réservée pour des commandes en cours de préparation.
+  - name: taux_change
+    description: Taux de change annuels contre l'euro, une ligne par devise et par année (dédoublonnés avec QUALIFY).
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "CONCAT(code_devise, '|', annee)"
+    columns:
+      - name: taux_change
+        description: Nombre d'unités de la devise pour un euro, moyenne annuelle.
+        data_tests: [not_null]
+  - name: entrepot
+    description: Les quatre entrepôts d'Amazing Zone, avec leurs coordonnées (seed coordonnees_entrepots).
+    columns:
+      - name: code_entrepot
+        description: Code de l'entrepôt dans le WMS.
+        data_tests: [unique, not_null]
+      - name: latitude
+        data_tests: [not_null]
+  - name: meteo_jour
+    description: Météo quotidienne de chaque entrepôt (valeurs consolidées et prévisions Open-Meteo), pour le reporting.
+    data_tests:
+      - unique:
+          arguments:
+            column_name: "CONCAT(code_entrepot, '|', CONVERT(VARCHAR(10), [date], 23))"
+    columns:
+      - name: code_entrepot
+        description: Entrepôt concerné.
+        data_tests:
+          - accepted_values:
+              arguments: {values: ['WH1', 'WH2', 'WH3', 'WH4']}
+      - name: est_jour_intemperie
+        description: Vrai si précipitations ≥ 10 mm, neige, ou rafales ≥ 70 km/h (règle validée avec la logistique).

@@ -1,0 +1,28 @@
+model Model
+	culture: fr-FR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: fr-FR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["Budget","DatabaseQuery"]
+
+annotation PBI_ProTooling = ["DirectLakeOnOneLakeInWeb","WebModelingEdit","DaxQueryView_Desktop","TMDLView_Desktop"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+ref table Calendrier
+ref table Client
+ref table Produit
+ref table Entrepôt
+ref table Transporteur
+ref table Ventes
+ref table Expéditions
+ref table Stock
+ref table Météo
+ref table Budget
+ref table Objectifs
+ref table Période
+

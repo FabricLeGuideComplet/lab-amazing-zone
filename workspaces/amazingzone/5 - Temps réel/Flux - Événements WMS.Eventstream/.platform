@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Eventstream",
+    "displayName": "Flux - Événements WMS"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "482f39a7-9b91-9871-438e-3e3c75e869b0"
+  }
+}

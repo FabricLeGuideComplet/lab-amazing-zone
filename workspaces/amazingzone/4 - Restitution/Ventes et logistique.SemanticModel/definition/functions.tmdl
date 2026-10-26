@@ -1,0 +1,12 @@
+/// Évolution d'une valeur par rapport à une référence, vide si la valeur l'est
+function 'AmazingZone.Evolution' =
+		( valeur : NUMERIC, reference : NUMERIC ) =>
+		        IF ( NOT ISBLANK ( valeur ), DIVIDE ( valeur - reference, reference ) )
+	lineageTag: b0d392ea-3668-4b37-bb2a-9f5f92010262
+
+/// Valeur d'une expression sur la même période de l'année précédente
+function 'AmazingZone.AnneePrecedente' =
+		( expression : SCALAR EXPR ) =>
+		        CALCULATE ( expression, SAMEPERIODLASTYEAR ( Calendrier[Date] ) )
+	lineageTag: 8c98b081-3d1a-4f29-8235-d775ff8960eb
+

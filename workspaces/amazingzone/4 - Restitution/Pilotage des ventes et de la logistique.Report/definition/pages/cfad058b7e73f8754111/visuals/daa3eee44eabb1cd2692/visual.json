@@ -1,0 +1,141 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "daa3eee44eabb1cd2692",
+  "position": {
+    "x": 20,
+    "y": 470,
+    "z": 3000,
+    "height": 234,
+    "width": 600,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Transporteur"
+                    }
+                  },
+                  "Property": "Type de livraison"
+                }
+              },
+              "queryRef": "Transporteur.Type de livraison",
+              "nativeQueryRef": "Type de livraison",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Transporteur"
+                    }
+                  },
+                  "Property": "Transporteur"
+                }
+              },
+              "queryRef": "Transporteur.Transporteur",
+              "nativeQueryRef": "Transporteur",
+              "active": false
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Expéditions"
+                    }
+                  },
+                  "Property": "Délai moyen de préparation (h)"
+                }
+              },
+              "queryRef": "Expéditions.Délai moyen de préparation (h)",
+              "nativeQueryRef": "Délai moyen de préparation (h)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Expéditions"
+                    }
+                  },
+                  "Property": "% expédiées sous 24 h"
+                }
+              },
+              "queryRef": "Expéditions.% expédiées sous 24 h",
+              "nativeQueryRef": "% expédiées sous 24 h"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Délai de préparation par mode de livraison'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

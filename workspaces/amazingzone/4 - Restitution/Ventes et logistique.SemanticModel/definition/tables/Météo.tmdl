@@ -1,0 +1,129 @@
+/// Météo quotidienne de chaque entrepôt (source Open-Meteo) : valeurs observées pour le passé, prévisions pour les jours à venir.
+table Météo
+	lineageTag: d58eba86-9c9c-519a-be01-af47562665d5
+	sourceLineageTag: [gold].[FaitMeteoJour]
+
+	/// Moyenne des températures maximales quotidiennes.
+	measure 'Température maximale moyenne' = AVERAGE('Météo'[TemperatureMax])
+		formatString: 0.0 °C
+		lineageTag: 47208782-7ce9-5175-bfda-c755ce04e8c9
+
+	/// Cumul des précipitations en millimètres.
+	measure 'Précipitations (mm)' = SUM('Météo'[PrecipitationsMm])
+		formatString: #,0.0
+		lineageTag: dffa6fa2-e24c-508a-bc6c-c1ba368bb79a
+
+	/// Nombre de jours d'intempérie par entrepôt (pluie forte, neige ou rafales violentes).
+	measure 'Jours d''intempérie' = CALCULATE(COUNTROWS('Météo'), 'Météo'[Jour d'intempérie] = TRUE())
+		formatString: #,0
+		lineageTag: 300f7bfb-7c2b-5702-b29c-7cc63a5fca51
+
+	column DateId
+		dataType: int64
+		isHidden
+		lineageTag: 3b1999cc-186d-5fac-8b16-721f4ea6b76c
+		sourceLineageTag: DateId
+		summarizeBy: none
+		sourceColumn: DateId
+
+		annotation SummarizationSetBy = User
+
+	column EntrepotKey
+		dataType: int64
+		isHidden
+		lineageTag: 7de12ab7-4718-5750-b693-69cf334992d1
+		sourceLineageTag: EntrepotKey
+		summarizeBy: none
+		sourceColumn: EntrepotKey
+
+		annotation SummarizationSetBy = User
+
+	column TemperatureMax
+		dataType: double
+		isHidden
+		lineageTag: 27fc9a32-0dbc-5237-a280-b93b36b4f365
+		sourceLineageTag: TemperatureMax
+		summarizeBy: none
+		sourceColumn: TemperatureMax
+
+		annotation SummarizationSetBy = User
+
+	column TemperatureMin
+		dataType: double
+		isHidden
+		lineageTag: 9af02272-5e05-519e-a5e0-9547f966e181
+		sourceLineageTag: TemperatureMin
+		summarizeBy: none
+		sourceColumn: TemperatureMin
+
+		annotation SummarizationSetBy = User
+
+	column PrecipitationsMm
+		dataType: double
+		isHidden
+		lineageTag: bbcbc06b-56c2-5c9b-8d82-8e68f1774b70
+		sourceLineageTag: PrecipitationsMm
+		summarizeBy: none
+		sourceColumn: PrecipitationsMm
+
+		annotation SummarizationSetBy = User
+
+	column NeigeCm
+		dataType: double
+		isHidden
+		lineageTag: 585ff7ab-de07-515d-b38b-9ec514dba2ac
+		sourceLineageTag: NeigeCm
+		summarizeBy: none
+		sourceColumn: NeigeCm
+
+		annotation SummarizationSetBy = User
+
+	column RafalesMaxKmh
+		dataType: double
+		isHidden
+		lineageTag: ff19cbfd-759f-59e4-b6df-63d8bc460226
+		sourceLineageTag: RafalesMaxKmh
+		summarizeBy: none
+		sourceColumn: RafalesMaxKmh
+
+		annotation SummarizationSetBy = User
+
+	/// Vrai si les précipitations atteignent 10 mm, s'il neige ou si les rafales atteignent 70 km/h.
+	column 'Jour d''intempérie'
+		dataType: boolean
+		lineageTag: d09a8d7c-e53d-56f1-861d-e2b25e1525cc
+		sourceLineageTag: EstJourIntemperie
+		summarizeBy: none
+		sourceColumn: EstJourIntemperie
+
+		annotation SummarizationSetBy = User
+
+	/// Vrai pour les jours à venir (prévision), faux pour les valeurs observées.
+	column Prévision
+		dataType: boolean
+		lineageTag: a33923c2-abb5-53af-882d-d8909b9be067
+		sourceLineageTag: EstPrevision
+		summarizeBy: none
+		sourceColumn: EstPrevision
+
+		annotation SummarizationSetBy = User
+
+	column DateChargement
+		dataType: dateTime
+		isHidden
+		lineageTag: 8610113c-2573-5785-8d77-9d456e30d53b
+		sourceLineageTag: DateChargement
+		summarizeBy: none
+		sourceColumn: DateChargement
+
+		annotation SummarizationSetBy = User
+
+	partition Météo = entity
+		mode: directLake
+		source
+			entityName: FaitMeteoJour
+			schemaName: gold
+			expressionSource: DatabaseQuery
+
+	changedProperty = Name
+

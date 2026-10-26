@@ -1,0 +1,17 @@
+DEFINE
+    VAR Expediees = FILTER ( 'Expéditions', NOT ISBLANK ( 'Expéditions'[DateExpeditionId] ) )
+    VAR DernierJour = MAXX ( Expediees, RELATED ( Calendrier[Date] ) )
+EVALUATE
+SELECTCOLUMNS (
+    FILTER (
+        Expediees,
+        'Expéditions'[EstExpedieeSous24h] = FALSE ()
+            && RELATED ( Calendrier[Date] ) > DernierJour - 14
+    ),
+    "NumeroCommande", 'Expéditions'[NumeroCommande],
+    "CodeEntrepot", RELATED ( 'Entrepôt'[Code entrepôt] ),
+    "Transporteur", RELATED ( Transporteur[Transporteur] ),
+    "DateExpedition", RELATED ( Calendrier[Date] ),
+    "DelaiHeures", 'Expéditions'[DelaiPreparationHeures]
+)
+ORDER BY [DateExpedition] DESC, [NumeroCommande]
