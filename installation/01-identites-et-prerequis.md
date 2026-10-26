@@ -93,3 +93,13 @@ Les intitulés évoluent d'une version du portail à l'autre ; cherchez-les par 
 
 Les commandes `az` des guides supposent une session ouverte avec votre compte (`az login`) et l'abonnement du
 lab sélectionné (`az account set --subscription <id>`).
+
+Si votre Azure CLI sert déjà à un autre locataire, celui d'un client par exemple, isolez la session du lab dans
+son propre dossier de configuration plutôt que de basculer d'un locataire à l'autre :
+
+```bash
+export AZURE_CONFIG_DIR=~/.azure-lab-amazingzone      # à exporter dans chaque terminal du lab
+az login --tenant <ID du locataire du lab>            # --use-device-code si le navigateur est sur une autre machine
+```
+
+Vos autres sessions `az` restent intactes.

@@ -75,10 +75,13 @@ MDP=$(openssl rand -base64 30 | tr -d '/+=' | cut -c1-32)
 az keyvault secret set --vault-name $KV -n wms-postgresql-fabric-ingestion --value "$MDP" -o none
 
 IP_PG=$(az vm show -d -g RG_WMS -n WMSpostgre --query publicIps -o tsv)
-ssh -i ~/.ssh/wmspostgre_ed25519 azureuser@$IP_PG \
-   "cd ~/wms && sudo -u postgres psql -v ON_ERROR_STOP=1 -d postgres -v mot_de_passe='$MDP' -f init/role_fabric_ingestion.sql"
+printf '%s\n' "$MDP" | ssh -i ~/.ssh/wmspostgre_ed25519 azureuser@$IP_PG \
+   "cd ~/wms && sudo -u postgres psql -v ON_ERROR_STOP=1 -d postgres -f init/role_fabric_ingestion.sql"
 unset MDP
 ```
+
+Le mot de passe voyage sur l'entrée standard de la session SSH : le script le lit avec `\prompt`, si bien qu'il
+n'apparaît ni dans une ligne de commande ni dans la liste des processus de la VM.
 
 Le script `wms/init/role_fabric_ingestion.sql` crée le rôle `fabric_ingestion` (ou change son mot de passe s'il
 existe), lui donne `CONNECT` sur la base, `USAGE` sur le schéma `wms` et `SELECT` sur ses tables, y compris celles

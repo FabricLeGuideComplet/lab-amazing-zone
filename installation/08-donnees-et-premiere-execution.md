@@ -1,8 +1,11 @@
 # 8. Données de démonstration et première exécution
 
 Tout est en place ; il reste à remplir les sources, puis à faire tourner la chaîne de bout en bout une première
-fois. L'ordre suit les dépendances : le générateur du site lit le référentiel géographique dans le Lakehouse, le
-générateur du WMS lit les commandes du site.
+fois. L'ordre suit les dépendances : le générateur du WMS lit les commandes du site. Les deux générateurs lisent le
+référentiel géographique dans sa copie versionnée, `referentiels/referentiel_geographique.xlsx` : les sections 8.2
+et 8.3 ne demandent ni Fabric ni la passerelle, et peuvent se jouer dès la fin des guides 2 et 3. L'option
+`--geo lakehouse` leur fait lire la table `referentiels.geographie` du Lakehouse à la place, si vous avez modifié le
+classeur déposé sur SharePoint.
 
 Avant de commencer :
 
@@ -28,13 +31,14 @@ SELECT COUNT(*), COUNT(DISTINCT [Code devise]) FROM referentiels.taux_change;   
 ## 8.2 Commandes du site e-commerce
 
 ```bash
-pip install pyodbc
+pip install pyodbc openpyxl
 python ecommerce/donnees_demo/generer_commandes.py --purge
 ```
 
 Le script, rejouable et à graine fixe, ajoute 600 clients français répartis sur les départements du référentiel,
 environ 4 000 commandes de janvier 2025 à octobre 2026 (saisonnalité de fin d'année, statuts de paiement et de
-livraison selon l'ancienneté) et un coût d'achat pour chaque produit. Les clients générés ont une adresse en
+livraison selon l'ancienneté) et un coût d'achat pour chaque produit. Il insère ligne à ligne : comptez cinq
+minutes environ depuis un poste en France. Les clients générés ont une adresse en
 `@demo.amazingzone.fr` ; `--purge` supprime ceux d'une exécution précédente avant de régénérer.
 
 Remettez ensuite les prix d'origine des trois produits qui serviront à la démonstration de l'historisation
@@ -48,8 +52,15 @@ sqlcmd -S $AMAZINGZONE_SQL_SERVEUR -d amazingdb --authentication-method ActiveDi
 La commande suppose [go-sqlcmd](https://learn.microsoft.com/sql/tools/sqlcmd/go-sqlcmd-utility) et une session
 `az login` avec un compte membre de `dp-equipedata` ; l'éditeur de requêtes du portail Azure convient aussi.
 
+Le générateur est déterministe : deux exécutions sur une installation neuve donnent exactement le même jeu,
+quelle que soit la version de Python (vérifié avec Python 3.12 et 3.14). Lors du rejeu de l'installation du
+26 octobre 2026, il a produit 4 098 commandes (4 103 avec les cinq du jeu nopCommerce), 5 442 lignes, et le WMS
+3 921 commandes logistiques et 3 751 expéditions. La base de l'auteur, produite par une version antérieure du
+script, en compte environ 1 % de moins (4 065 commandes, 3 897 dans le WMS) : les ordres de grandeur cités dans le
+livre et à la section 8.5 restent valables, pas les chiffres à l'unité.
+
 Le mirroring réplique les nouvelles lignes en quelques minutes. Dans l'espace « AmazingZone - Mirroring », la page
-**Surveiller la réplication** de `amazingdb` doit afficher environ 4 065 lignes pour `Order`.
+**Surveiller la réplication** de `amazingdb` doit afficher environ 4 100 lignes pour `Order`.
 
 ## 8.3 Données du WMS
 
@@ -62,8 +73,12 @@ python wms/donnees_demo/generer_wms.py > wms/donnees_demo/wms_demo.sql
 IP_PG=$(az vm show -d -g RG_WMS -n WMSpostgre --query publicIps -o tsv)
 scp -i ~/.ssh/wmspostgre_ed25519 wms/donnees_demo/wms_demo.sql azureuser@$IP_PG:~/wms/donnees_demo/
 ssh -i ~/.ssh/wmspostgre_ed25519 azureuser@$IP_PG \
-   "sudo -u postgres psql -v ON_ERROR_STOP=1 -d postgres -f ~/wms/donnees_demo/wms_demo.sql"
+   "cd ~/wms && sudo -u postgres psql -v ON_ERROR_STOP=1 -d postgres -f donnees_demo/wms_demo.sql"
 ```
+
+Le chemin relatif compte : sur Ubuntu 24.04, le dossier personnel `/home/azureuser` n'est pas lisible par le compte
+`postgres`, qui ne peut donc pas ouvrir `~/wms/...` par son chemin absolu (*Permission denied*). En se plaçant
+d'abord dans `~/wms`, comme aux guides 3 et 5, `psql` ouvre le fichier depuis le répertoire courant.
 
 Le fichier `wms_demo.sql` versionné correspond aux données de l'auteur ; régénérez-le comme ci-dessus pour qu'il
 corresponde aux vôtres. Avec le jeu de l'auteur, le WMS compte 3 897 commandes, 3 734 expéditions, 47 articles et

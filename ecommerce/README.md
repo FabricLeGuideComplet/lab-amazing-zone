@@ -15,8 +15,11 @@ l'ancienneté), et un coût d'achat pour chaque produit. Les clients générés 
 python generer_commandes.py --purge   # graine fixe : le jeu obtenu est toujours le même
 ```
 
-Le serveur et le point de terminaison SQL de Fabric se lisent dans les variables `AMAZINGZONE_SQL_SERVEUR`,
-`AMAZINGZONE_SQL_BASE` et `AMAZINGZONE_POINT_SQL_FABRIC` (voir `.env.exemple`). L'installation du site nopCommerce
+Les départements viennent de la copie versionnée du référentiel géographique,
+`referentiels/referentiel_geographique.xlsx` ; `--geo lakehouse` lit à la place la table `referentiels.geographie`
+du Lakehouse. Le serveur se lit dans les variables `AMAZINGZONE_SQL_SERVEUR` et `AMAZINGZONE_SQL_BASE`, le point
+de terminaison SQL de Fabric (option `--geo lakehouse` seulement) dans `AMAZINGZONE_POINT_SQL_FABRIC` (voir
+`.env.exemple`). L'installation du site nopCommerce
 est décrite dans `installation/02-site-ecommerce-nopcommerce.md`.
 
 Le WMS se régénère ensuite à partir de ces commandes (voir `wms/donnees_demo`).

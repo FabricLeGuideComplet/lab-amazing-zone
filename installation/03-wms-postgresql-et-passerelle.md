@@ -50,9 +50,10 @@ az vm create -g $RG -n WMSgateway --zone 1 \
    --vnet-name WMSpostgre-vnet --subnet default --private-ip-address 10.0.0.5 \
    --nsg WMSgateway-nsg --public-ip-sku Standard
 
-# Arrêt automatique chaque soir (heure UTC), par précaution
-az vm auto-shutdown -g $RG -n WMSpostgre --time 1900
-az vm auto-shutdown -g $RG -n WMSgateway --time 1900
+# Arrêt automatique chaque soir (heure UTC), par précaution. La région doit être celle des VM :
+# sans -l, la commande prend celle du groupe de ressources et échoue (InvalidScheduleLocation) si elles diffèrent.
+az vm auto-shutdown -g $RG -n WMSpostgre --time 1900 -l $REGION
+az vm auto-shutdown -g $RG -n WMSgateway --time 1900 -l $REGION
 ```
 
 L'arrêt automatique désalloue la VM à l'heure dite ; en fin de séance, désallouez-les sans attendre avec
@@ -68,8 +69,9 @@ ssh -i ~/.ssh/wmspostgre_ed25519 azureuser@$IP_PG
 Sur la VM :
 
 ```bash
-sudo apt update && sudo apt -y upgrade
-sudo apt install -y postgresql            # Ubuntu 24.04 fournit PostgreSQL 16
+# Mode non interactif : sinon needrestart ouvre une boîte de dialogue en fin de mise à jour
+sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql   # Ubuntu 24.04 fournit PostgreSQL 16
 psql --version                            # psql (PostgreSQL) 16.x
 
 # Écoute sur l'adresse privée (par défaut, PostgreSQL n'écoute que localhost)
@@ -137,6 +139,36 @@ Dans Fabric, **Paramètres > Gérer les connexions et les passerelles > Passerel
 passerelle `WMSgateway` apparaît en ligne. Ajoutez le groupe `dp-equipedata` à ses administrateurs, pour que la
 passerelle ne dépende pas d'un seul compte. Le connecteur PostgreSQL est fourni avec la passerelle : aucun pilote
 à installer. La connexion « PostgreSQL - WMS » qui l'utilise se crée au guide 7.
+
+### Variante : installation sans Bureau à distance
+
+L'installation du logiciel (étape 2) et le test réseau (étape 5) peuvent se faire depuis votre poste, avec la
+commande d'exécution d'Azure. Le programme d'installation accepte un mode silencieux :
+
+```powershell
+# installer_passerelle.ps1
+$ErrorActionPreference = 'Stop'
+(Test-NetConnection 10.0.0.4 -Port 5432 -WarningAction SilentlyContinue).TcpTestSucceeded   # True attendu
+$exe = "$env:TEMP\GatewayInstall.exe"
+Invoke-WebRequest -UseBasicParsing "https://go.microsoft.com/fwlink/?LinkId=2116849&clcid=0x409" -OutFile $exe
+$p = Start-Process $exe -ArgumentList '/quiet', 'ACCEPTEULA=yes' -Wait -PassThru
+"Code retour : $($p.ExitCode)"                                                               # 0 attendu
+Get-Service PBIEgwService | Format-Table Name, Status -AutoSize | Out-String                  # Running
+```
+
+```bash
+az vm run-command invoke -g RG_WMS -n WMSgateway --command-id RunPowerShellScript \
+   --scripts @installer_passerelle.ps1 --query "value[].message" -o tsv
+```
+
+Comptez une vingtaine de minutes : le programme télécharge la passerelle avant de l'installer, et la commande ne
+rend la main qu'à la fin. Lors du rejeu d'octobre 2026, la version installée était la 3000.338.2.
+
+L'inscription (étapes 3 et 4) demande toujours une connexion. Le module PowerShell `DataGateway` de Microsoft sait
+inscrire une passerelle sans interface, mais toutes ses commandes, `Install-DataGateway` compris, exigent d'abord
+`Connect-DataGatewayServiceAccount`, avec un compte ou un principal de service et son secret : il faudrait alors
+faire transiter ce secret jusqu'à la VM. Le lab s'en tient à l'inscription par le Bureau à distance, avec votre
+compte, qui ne prend que quelques minutes une fois le logiciel installé.
 
 La passerelle ne fonctionne que si la VM est démarrée : une ingestion lancée VM éteinte échoue avec
 `GatewayUnreachable`.
