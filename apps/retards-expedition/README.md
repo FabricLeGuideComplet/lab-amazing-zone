@@ -7,6 +7,7 @@ sur les quatorze derniers jours, lues dans le modèle sémantique « Ventes et l
 dans la base SQL de l'application, table `dbo.CauseRetards`).
 
 - Code : React + Vite + TypeScript, SDK Rayfin 1.36.2 (versions épinglées, voir `package.json`).
-- Déploiement : `npx rayfin login --tenant <tenant>` puis `npx rayfin up --workspace-id <espace> --item-name Suivi_retards_expedition`.
+- Déploiement : procédure complète dans `installation/07-fabric-espaces-et-elements.md`, section 7.8 (identifiants du
+  connecteur à remplacer, `npx rayfin login`, `npx rayfin up`, droits sur le modèle sémantique).
 - L'élément Fabric App n'est pas pris en charge par l'intégration Git de l'espace de travail : ce dossier est la seule
   source de vérité du code. `rayfin/.env` et `rayfin/.deployments.json` ne sont pas versionnés.

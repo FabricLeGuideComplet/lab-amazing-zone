@@ -163,7 +163,7 @@ Certains réglages ne passent pas par les définitions d'éléments et se font �
 | Alerte `Alerte - Disponibilité du site` | Remplacer le destinataire par votre adresse et réactiver la règle. |
 | Fonctions de données utilisateur | Ouvrir chaque élément et **Publier** : la publication installe les bibliothèques et active les points de terminaison. |
 | Application d'organisation `Pilotage Amazing Zone` | Non prise en charge par fabric-cicd : créez-la dans l'espace (Nouvel élément > Application d'organisation), ajoutez le rapport `Pilotage des ventes et de la logistique` et trois audiences, `Direction`, `Logistique` et `Finance`, dans cet ordre (chapitre 6). |
-| Fabric App `Suivi_retards_expedition` | Facultatif : déployée depuis `apps/retards-expedition` avec la CLI Rayfin (voir son `README.md`). Elle lit le modèle `Ventes et logistique`. |
+| Fabric App `Suivi_retards_expedition` | Facultatif, section 7.8 : elle ne passe ni par fabric-cicd ni par l'intégration Git. |
 
 Lancez enfin une fois la procédure stockée `tech.ingestWMS` dans le Warehouse si vous utilisez le pipeline archivé
 « Ingestion - WMS par métadonnées » : elle régénère sa table de configuration `tech.ingestWMS_config`.
@@ -183,3 +183,71 @@ curl -s -H "Authorization: Bearer $(az account get-access-token --resource https
   "https://api.fabric.microsoft.com/v1/workspaces/$FABRIC_ESPACE_ID/eventstreams/$WMS_EVENTSTREAM_ID/topology" \
   | python3 -c 'import sys,json; [print(s["id"], s["name"]) for s in json.load(sys.stdin)["sources"]]'
 ```
+
+## 7.8 Fabric App « Suivi des retards d'expédition » (facultatif)
+
+L'application du chapitre 6 liste, pour chaque chef d'entrepôt, les commandes expédiées au-delà de 24 heures sur
+les quatorze derniers jours de données, et lui fait saisir la cause du retard. Elle lit le modèle sémantique
+`Ventes et logistique` par une requête DAX (`apps/retards-expedition/rayfin/retards.dax`) et enregistre les causes
+dans sa propre base, une SQL Database créée avec l'application. L'intégration Git de Fabric ne prend pas en charge
+les Fabric Apps : le dossier `apps/retards-expedition` est la seule source du code, et l'application se déploie
+avec la CLI Rayfin.
+
+Prérequis :
+
+- Node.js 20 ou plus (guide 1) et le paramètre de locataire des Fabric Apps activé (guide 1, préversions) ;
+- le modèle `Ventes et logistique` déployé, ses informations d'identification renseignées (section 7.6) et la
+  chaîne exécutée au moins une fois (guide 8), sans quoi la liste reste vide ;
+- le paramètre de locataire **API REST d'exécution de requêtes sur les modèles sémantiques** (Dataset Execute
+  Queries REST API) activé ; il l'est par défaut.
+
+### Pointer le connecteur sur votre modèle
+
+Le connecteur `venteslogistique` de `rayfin/rayfin.yml` référence l'espace et le modèle sémantique par leurs
+identifiants. La CLI Rayfin exige des valeurs littérales à cet endroit, pas des variables : remplacez celles du
+lab de l'auteur par les vôtres.
+
+```bash
+set -a; . ./.env; set +a
+cd apps/retards-expedition
+TOKEN=$(az account get-access-token --resource https://api.fabric.microsoft.com --query accessToken -o tsv)
+MODELE_VENTES_ID=$(curl -s -H "Authorization: Bearer $TOKEN" \
+  "https://api.fabric.microsoft.com/v1/workspaces/$FABRIC_ESPACE_ID/semanticModels" \
+  | python3 -c 'import sys,json; print([m["id"] for m in json.load(sys.stdin)["value"] if m["displayName"] == "Ventes et logistique"][0])')
+sed -i "s/workspaceId: .*/workspaceId: $FABRIC_ESPACE_ID/; s/itemId: .*/itemId: $MODELE_VENTES_ID/" rayfin/rayfin.yml
+grep -A3 "config:" rayfin/rayfin.yml          # vérifier les deux identifiants
+```
+
+### Déployer
+
+```bash
+npm ci                                         # versions exactes du package-lock.json
+npx rayfin login --tenant $AZURE_TENANT_ID     # avec votre compte, pas le principal de service
+npx rayfin up --workspace-id $FABRIC_ESPACE_ID --item-name Suivi_retards_expedition
+npx rayfin up status                           # santé des points de terminaison
+```
+
+`rayfin up` construit le site, le publie et applique le schéma de données. Au premier déploiement, il crée dans
+l'espace l'élément Fabric App `Suivi_retards_expedition`, sa base SQL Database du même nom (table
+`dbo.CauseRetards`, issue de l'entité `rayfin/data/CauseRetard.ts`) et la fonction de données utilisateur
+`Suivi_retards_expedition_connector`, par laquelle passe la requête DAX. Il ajoute aussi l'adresse publique de
+l'application à `allowedRedirectUris` dans `rayfin.yml` et écrit `rayfin/.deployments.json` (non versionné). Les
+éléments sont créés à la racine de l'espace : rangez-les dans le dossier « 4 - Restitution » et laissez-les hors
+de la synchronisation Git, puisque `rayfin up` les recrée.
+
+Pour un changement ultérieur du code ou de l'entité, relancez simplement `npx rayfin up`.
+
+### Accès et vérification
+
+La requête DAX s'exécute sous l'identité de la personne connectée (authentification déléguée) : chaque utilisateur
+de l'application doit pouvoir lire le modèle `Ventes et logistique` et en avoir l'autorisation **Générer** (Build).
+Les membres de l'espace de travail l'ont déjà ; pour les autres, partagez le modèle avec ces deux droits.
+
+Ouvrez l'application depuis l'espace de travail : la liste affiche les expéditions en retard des quatorze derniers
+jours de données, par entrepôt. Saisissez une cause pour une commande, puis contrôlez la ligne dans la base :
+
+```sql
+-- Base SQL Database Suivi_retards_expedition, éditeur de requêtes
+SELECT TOP 10 * FROM dbo.CauseRetards ORDER BY saisiLe DESC;
+```
+
