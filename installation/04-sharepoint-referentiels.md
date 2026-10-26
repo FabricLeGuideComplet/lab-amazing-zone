@@ -16,7 +16,7 @@ Dataflow lit SharePoint avec le principal de service du lab, limité à ce seul 
 | Fichier (dossier `referentiels/` du dépôt) | Emplacement dans « Documents partagés » | Feuille lue | Table ou élément alimenté |
 |---|---|---|---|
 | `referentiel_geographique.xlsx` | `Referentiels/` | `Départements` | `referentiels.geographie` (101 départements, régions 2016) |
-| `taux_de_change_vs_eur_2019_2026.xlsx` (non versionné, voir 4.2) | `Taux de change/` | `Taux de change vs EUR` | `referentiels.taux_change` |
+| `taux_de_change_vs_eur_2019_2026.xlsx` (voir 4.2) | `Taux de change/` | `Taux de change vs EUR` | `referentiels.taux_change` |
 | `budget_ventes_2026.xlsx` | racine de la bibliothèque | `Budget` | table `Budget` (Import) du modèle « Ventes et logistique » : 84 lignes, un mois par univers de produits, 800 000 € |
 
 Les chemins complets lus par le lab sont donc :
@@ -32,8 +32,8 @@ Le nom d'hôte `<locataire>.sharepoint.com` est remplacé au déploiement par la
 
 ## 4.2 Classeur des taux de change
 
-Le classeur n'est pas versionné dans ce dépôt. Si vous le reconstituez, respectez la structure attendue par le
-Dataflow : une feuille `Taux de change vs EUR`, une ligne d'en-tête, puis une ligne par pays.
+Le classeur du dépôt contient une feuille `Taux de change vs EUR` : une ligne d'en-tête, puis une ligne par pays
+(251 pays). Si vous le remplacez par vos propres taux, gardez cette structure, celle qu'attend le Dataflow.
 
 | Colonne | Contenu | Exemple |
 |---|---|---|

@@ -87,8 +87,6 @@ captures du livre.
 
 - Aucun secret : mots de passe, clés et certificats se créent pendant l'installation et vivent dans votre fichier
   `.env` (jamais versionné, voir `.env.exemple`) ou dans le coffre de clés.
-- Le classeur des taux de change (`taux_de_change_vs_eur_2019_2026.xlsx`) n'est pas versionné ; le guide 4 décrit
-  sa structure.
 - Le Lakehouse généré par le lien Fabric Dataverse et les éléments de staging des Dataflows : Fabric les crée
   lui-même.
 - La définition du tableau de bord temps réel « Tableau de bord - Journaux du site » : l'intégration Git de Fabric
