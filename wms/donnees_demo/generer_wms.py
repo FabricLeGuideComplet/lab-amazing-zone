@@ -13,12 +13,16 @@ avec les statuts de livraison du site.
   - une expédition par commande expédiée, avec transporteur et délai réaliste,
   - un stock courant par article et par entrepôt.
 
+La région du client vient du référentiel géographique versionné
+(referentiels/referentiel_geographique.xlsx), ou du Lakehouse avec --geo lakehouse.
+
 Le script écrit un fichier SQL (tables vidées puis rechargées) à exécuter sur
 la VM avec psql, après la migration 002 :
 
     python generer_wms.py > wms_demo.sql
     sudo -u postgres psql -v ON_ERROR_STOP=1 -d postgres -f wms_demo.sql
 """
+import argparse
 import json
 import os
 import random
@@ -27,12 +31,16 @@ import sys
 import urllib.parse
 import urllib.request
 from datetime import timedelta
+from pathlib import Path
+from types import SimpleNamespace
 
+import openpyxl
 import pyodbc
 
 SERVEUR_SQL = os.environ.get("AMAZINGZONE_SQL_SERVEUR", "amazingserver.database.windows.net")
 SERVEUR_LK = os.environ.get("AMAZINGZONE_POINT_SQL_FABRIC",
                             "xpuudm5uch6ezlvpconr4xjvpm-hu3xkcgnsyhe3nhhl7c42mt4xa.datawarehouse.fabric.microsoft.com")
+FICHIER_GEO = Path(__file__).resolve().parents[2] / "referentiels" / "referentiel_geographique.xlsx"
 
 ENTREPOTS = [
     ("WH1", "Entrepôt principal - Saran (Orléans)"),
@@ -65,6 +73,20 @@ def connexion(serveur, base):
                           attrs_before={1256: struct.pack(f"<I{len(t)}s", len(t), t)}, timeout=180)
 
 
+def referentiel_geographique(source):
+    """Départements du référentiel géographique : copie versionnée du classeur (par défaut), ou table
+    referentiels.geographie du Lakehouse si le classeur de SharePoint a été modifié depuis."""
+    if source == "lakehouse":
+        with connexion(SERVEUR_LK, "AmazingZoneLK") as lk:
+            cur = lk.cursor().execute("SELECT * FROM referentiels.geographie ORDER BY code_departement")
+            entete = [c[0] for c in cur.description]
+            return [SimpleNamespace(**dict(zip(entete, l))) for l in cur.fetchall()]
+    feuille = openpyxl.load_workbook(FICHIER_GEO, read_only=True)["Départements"]
+    entete, *lignes = feuille.iter_rows(values_only=True)
+    return sorted((SimpleNamespace(**dict(zip(entete, l))) for l in lignes if l[0]),
+                  key=lambda g: g.code_departement)
+
+
 def departement(cp):
     if not cp:
         return None
@@ -87,9 +109,12 @@ def copie(table, colonnes, lignes):
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--geo", choices=["fichier", "lakehouse"], default="fichier",
+                    help="source du référentiel géographique (défaut : referentiels/referentiel_geographique.xlsx)")
+    args = ap.parse_args()
     random.seed(2026)
-    with connexion(SERVEUR_LK, "AmazingZoneLK") as lk:
-        regions = dict(lk.cursor().execute("SELECT code_departement, region FROM referentiels.geographie").fetchall())
+    regions = {g.code_departement: g.region for g in referentiel_geographique(args.geo)}
     with connexion(SERVEUR_SQL, "amazingdb") as cn:
         cur = cn.cursor()
         produits = cur.execute("SELECT Id, Sku, Name FROM dbo.Product WHERE Sku IS NOT NULL AND Deleted = 0").fetchall()

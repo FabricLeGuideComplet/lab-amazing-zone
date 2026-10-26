@@ -4,8 +4,10 @@ Génère un jeu de données de démonstration cohérent dans la base NopCommerce
 saisonnalité, lignes de commande, coûts produits.
 
 Les clients sont répartis sur les départements du référentiel géographique
-(referentiels.geographie, chargé par le Dataflow « Ingestion - Referentiels Excel »), afin que la
-géographie se rapproche ensuite sans perte dans les couches Silver et Gold.
+(referentiels/referentiel_geographique.xlsx, le classeur que le Dataflow « Ingestion - Referentiels
+Excel » charge dans referentiels.geographie), afin que la géographie se rapproche ensuite sans perte
+dans les couches Silver et Gold. Le script ne dépend donc pas de Fabric ; --geo lakehouse lit la table
+du Lakehouse à la place, si le classeur de SharePoint a été modifié.
 
 Le script est rejouable : il ne touche pas aux clients et commandes existants
 (ceux du jeu NopCommerce d'origine) et n'insère que des clients dont l'adresse
@@ -15,7 +17,7 @@ les données générées par une exécution précédente.
 Authentification : principal de service du lab (variables AZURE_TENANT_ID,
 AZURE_CLIENT_ID, AZURE_CLIENT_SECRET), qui est db_owner de la base.
 
-    python generer_commandes.py [--purge] [--clients 600] [--graine 2026]
+    python generer_commandes.py [--purge] [--clients 600] [--graine 2026] [--geo fichier|lakehouse]
 """
 import argparse
 import json
@@ -26,7 +28,10 @@ import urllib.parse
 import urllib.request
 import uuid
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from types import SimpleNamespace
 
+import openpyxl
 import pyodbc
 
 SERVEUR_SQL = os.environ.get("AMAZINGZONE_SQL_SERVEUR", "amazingserver.database.windows.net")
@@ -34,7 +39,7 @@ BASE_SQL = os.environ.get("AMAZINGZONE_SQL_BASE", "amazingdb")
 # Point de terminaison SQL du Lakehouse AmazingZoneLK (lecture du référentiel géographique)
 SERVEUR_LK = os.environ.get("AMAZINGZONE_POINT_SQL_FABRIC",
                             "xpuudm5uch6ezlvpconr4xjvpm-hu3xkcgnsyhe3nhhl7c42mt4xa.datawarehouse.fabric.microsoft.com")
-BASE_LK = "AmazingZoneLK"
+FICHIER_GEO = Path(__file__).resolve().parents[2] / "referentiels" / "referentiel_geographique.xlsx"
 DOMAINE = "demo.amazingzone.fr"
 
 DEBUT = datetime(2025, 1, 1)
@@ -72,6 +77,20 @@ def connexion(serveur, base):
     attrs = {1256: struct.pack(f"<I{len(t)}s", len(t), t)}
     return pyodbc.connect(f"Driver={{ODBC Driver 18 for SQL Server}};Server={serveur};"
                           f"Database={base};Encrypt=yes", attrs_before=attrs, timeout=180)
+
+
+def referentiel_geographique(source):
+    """Départements du référentiel géographique : copie versionnée du classeur (par défaut), ou table
+    referentiels.geographie du Lakehouse si le classeur de SharePoint a été modifié depuis."""
+    if source == "lakehouse":
+        with connexion(SERVEUR_LK, "AmazingZoneLK") as lk:
+            cur = lk.cursor().execute("SELECT * FROM referentiels.geographie ORDER BY code_departement")
+            entete = [c[0] for c in cur.description]
+            return [SimpleNamespace(**dict(zip(entete, l))) for l in cur.fetchall()]
+    feuille = openpyxl.load_workbook(FICHIER_GEO, read_only=True)["Départements"]
+    entete, *lignes = feuille.iter_rows(values_only=True)
+    return sorted((SimpleNamespace(**dict(zip(entete, l))) for l in lignes if l[0]),
+                  key=lambda g: g.code_departement)
 
 
 def tirage(options):
@@ -120,13 +139,12 @@ def main():
     ap.add_argument("--purge", action="store_true")
     ap.add_argument("--clients", type=int, default=600)
     ap.add_argument("--graine", type=int, default=2026)
+    ap.add_argument("--geo", choices=["fichier", "lakehouse"], default="fichier",
+                    help="source du référentiel géographique (défaut : referentiels/referentiel_geographique.xlsx)")
     args = ap.parse_args()
     random.seed(args.graine)
 
-    # Référentiel géographique (départements) depuis le Lakehouse
-    with connexion(SERVEUR_LK, BASE_LK) as lk:
-        geo = lk.cursor().execute(
-            "SELECT code_departement, chef_lieu_departement FROM referentiels.geographie ORDER BY code_departement").fetchall()
+    geo = referentiel_geographique(args.geo)
     poids_geo = [GRANDS_DEPARTEMENTS.get(g.code_departement, 1) for g in geo]
 
     cn = connexion(SERVEUR_SQL, BASE_SQL)

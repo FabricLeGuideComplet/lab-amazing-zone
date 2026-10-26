@@ -37,7 +37,7 @@ Pour l'espace de développement seulement :
 5. Paramètres de l'espace > Ingénierie des données/science > Spark : le profil `writeHeavy` (V-Order désactivé)
    est celui des nouveaux espaces ; le lab le conserve, le chapitre 5 explique pourquoi.
 
-Facultatif, pour la gouvernance (chapitre 9) : Portail d'administration > **Domaines** > créez le domaine
+Facultatif, pour la gouvernance (chapitre 3) : Portail d'administration > **Domaines** > créez le domaine
 `Commerce`, administré par `dp-equipedata`, et rattachez-y les deux espaces.
 
 ## 7.3 Connexions
