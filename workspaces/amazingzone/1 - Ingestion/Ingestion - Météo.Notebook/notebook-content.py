@@ -35,8 +35,10 @@
 # - Aucune bibliothèque à installer : appel HTTP en bibliothèque standard, écriture avec `deltalake` (préinstallée).
 # - Les paramètres ci-dessous peuvent être surchargés par l'activité Notebook d'un pipeline.
 # - Offre commerciale : l'usage d'Open-Meteo par une entreprise relève de l'offre payante (point de terminaison
-#   customer-api et clé d'API). La clé est lue dans le coffre kv-amazingzone-lab par le pipeline « Orchestration -
-#   Ingestion » et transmise en paramètre sécurisé ; l'environnement de démonstration reste sur l'offre gratuite.
+#   customer-api et clé d'API), dont la clé est rangée dans le coffre kv-amazingzone-lab. Le dépôt montre les deux
+#   façons de la lire : par le notebook lui-même, avec notebookutils.credentials.getSecret (chapitre 4), sous l'identité
+#   qui l'exécute ; ou par le pipeline « Orchestration - Ingestion » (activité Web, chapitre 9), qui la transmet en
+#   paramètre sécurisé. L'environnement de démonstration reste sur l'offre gratuite.
 
 # PARAMETERS CELL ********************
 
@@ -54,7 +56,10 @@ TARGET_SCHEMA = "meteo"
 TARGET_TABLE = "weather_forecast"
 TABLE_EMISSIONS = "weather_forecast_issued"
 OFFRE_COMMERCIALE = False   # True : point de terminaison customer-api et clé d'API
-CLE_API = ""                # transmise par le pipeline (activité Web sur le coffre), jamais saisie ici
+CLE_API = ""                # transmise par le pipeline (activité Web sur le coffre), jamais saisie ici ;
+                            # vide : le notebook la lit lui-même dans le coffre
+COFFRE_URI = "https://kv-amazingzone-lab.vault.azure.net/"
+NOM_SECRET = "open-meteo-cle-api"
 
 # METADATA ********************
 
@@ -82,6 +87,13 @@ VARIABLES = [
     "rain_sum", "showers_sum", "snowfall_sum", "precipitation_sum",
     "wind_gusts_10m_max", "wind_direction_10m_dominant", "wind_speed_10m_max",
 ]
+
+# Clé de l'offre commerciale : transmise par le pipeline (activité Web sur le coffre, chapitre 9) ou, à défaut, lue ici
+# dans le coffre (chapitre 4). getSecret s'authentifie avec l'identité qui exécute le notebook : l'utilisateur en
+# exécution manuelle ; dans un pipeline, la connexion de l'activité Notebook (principal de service ou identité de
+# l'espace) ou, sans connexion, le dernier utilisateur à avoir modifié le pipeline.
+if OFFRE_COMMERCIALE and not CLE_API:
+    CLE_API = notebookutils.credentials.getSecret(COFFRE_URI, NOM_SECRET)
 
 
 def appeler_open_meteo(site: dict, tentatives: int = 3) -> pd.DataFrame:

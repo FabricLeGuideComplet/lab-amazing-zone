@@ -23,8 +23,8 @@
 # MARKDOWN ********************
 
 # # Variante : couche Silver en vues matérialisées (Materialized Lake Views)
-# # Amazing Zone construit ses couches Silver et Gold avec dbt dans le Warehouse AmazingZoneWH (job « Gold - Modèle
-# en étoile »). Ce notebook documente et déploie la **variante** de la couche Silver dans le Lakehouse, en vues
+# # Amazing Zone construit ses couches Silver et Gold avec dbt dans le Warehouse AmazingZoneWH (job
+# « Silver et Gold - Nettoyage et modèle en étoile »). Ce notebook documente et déploie la **variante** de la couche Silver dans le Lakehouse, en vues
 # matérialisées déclaratives, dans un schéma `silver_mlv` distinct pour ne pas la confondre avec la Silver du
 # Warehouse. Il n'est pas appelé par l'orchestration.
 # # - Sources : Bronze du Lakehouse (raccourcis `ecommerce` vers la base mirrorée, tables `wms`, `meteo`, `referentiels`).

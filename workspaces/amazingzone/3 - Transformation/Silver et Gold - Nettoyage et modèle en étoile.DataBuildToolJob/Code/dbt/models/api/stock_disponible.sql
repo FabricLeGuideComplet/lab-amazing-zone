@@ -1,5 +1,5 @@
 -- Stock disponible par article et par entrepôt, exposé au site e-commerce par l'API pour GraphQL
--- « API - Stock disponible ». Une table dédiée plutôt que silver.stock : seules les colonnes utiles au site
+-- « API_Stock_disponible ». Une table dédiée plutôt que silver.stock : seules les colonnes utiles au site
 -- sont exposées, et la clé primaire exigée par l'API est déclarée après chaque reconstruction (post_hook).
 -- Les ISNULL rendent les colonnes de la clé non nullables, condition pour déclarer la contrainte.
 {{ config(
