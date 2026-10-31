@@ -1,0 +1,248 @@
+{
+  "description": "Référence des tenant settings de sécurité d'Amazing Zone. Toute modification passe par une pull request ; le notebook « Contrôle - Tenant settings » compare chaque semaine l'état réel à ce fichier.",
+  "version": "2026-10-31",
+  "sources": [
+    "https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/powerbi.md",
+    "https://learn.microsoft.com/fabric/admin/tenant-settings-index"
+  ],
+  "parametres": [
+    {
+      "settingName": "PublishToWeb",
+      "titre": "Publish to web",
+      "attendu": {
+        "enabled": false,
+        "groupes": []
+      },
+      "justification": "Un rapport publié sur le web est lisible sans authentification par n'importe qui.",
+      "source": "ScubaGear (CISA), Power BI baseline MS.POWERBI.1.1v1"
+    },
+    {
+      "settingName": "AllowGuestUserToAccessSharedContent",
+      "titre": "Guest users can access Microsoft Fabric",
+      "attendu": {
+        "enabled": true,
+        "groupes": []
+      },
+      "justification": "Écart assumé : un compte invité existe dans le Lab. En production, restreindre à un groupe d'invités.",
+      "source": "ScubaGear (CISA), Power BI baseline MS.POWERBI.2.1v1"
+    },
+    {
+      "settingName": "ExternalSharingV2",
+      "titre": "Users can invite guest users to collaborate through item sharing and permissions",
+      "attendu": {
+        "enabled": false,
+        "groupes": []
+      },
+      "justification": "Les invitations d'externes passent par l'administration Entra, pas par le partage d'un élément.",
+      "source": "ScubaGear (CISA), Power BI baseline MS.POWERBI.3.1v1"
+    },
+    {
+      "settingName": "ShareLinkToEntireOrg",
+      "titre": "Allow shareable links to grant access to everyone in your organization",
+      "attendu": {
+        "enabled": false,
+        "groupes": []
+      },
+      "justification": "Un lien « toute l'organisation » contourne l'audience prévue ; on partage par application ou par groupe.",
+      "source": "Chapitre 9, Espaces, éléments et permissions"
+    },
+    {
+      "settingName": "EmailSubscriptionsToExternalUsers",
+      "titre": "Users can send email subscriptions to external users",
+      "attendu": {
+        "enabled": false,
+        "groupes": []
+      },
+      "justification": "Un abonnement envoie le contenu du rapport par courriel hors de l'organisation.",
+      "source": "Chapitre 9, Les tenant settings"
+    },
+    {
+      "settingName": "ServicePrincipalAccessPermissionAPIs",
+      "titre": "Service principals can call Fabric public APIs",
+      "attendu": {
+        "enabled": true,
+        "groupes": []
+      },
+      "justification": "Écart assumé : les identités d'espace de travail du Lab en dépendent. Cible : groupe dédié aux principaux de service.",
+      "source": "ScubaGear (CISA), Power BI baseline MS.POWERBI.4.1v1"
+    },
+    {
+      "settingName": "ServicePrincipalAccessGlobalAPIs",
+      "titre": "Service principals can create workspaces, connections, and deployment pipelines",
+      "attendu": {
+        "enabled": true,
+        "groupes": [
+          "dp-equipedata"
+        ]
+      },
+      "justification": "Seuls les principaux de service de l'équipe data créent espaces, connexions et pipelines de déploiement.",
+      "source": "ScubaGear (CISA), Power BI baseline MS.POWERBI.4.1v1"
+    },
+    {
+      "settingName": "AllowServicePrincipalsCreateAndUseProfiles",
+      "titre": "Allow service principals to create and use profiles",
+      "attendu": {
+        "enabled": false,
+        "groupes": []
+      },
+      "justification": "Profils de principal de service inutiles hors Power BI Embedded multi-locataire.",
+      "source": "ScubaGear (CISA), Power BI baseline MS.POWERBI.4.2v1"
+    },
+    {
+      "settingName": "AllowServicePrincipalsUseReadAdminAPIs",
+      "titre": "Service principals can access read-only admin APIs",
+      "attendu": {
+        "enabled": true,
+        "groupes": [
+          "dp-api-admin-lecture"
+        ]
+      },
+      "justification": "Nécessaire au notebook « Contrôle - Tenant settings » ; groupe dédié, réduit au seul principal de contrôle.",
+      "source": "Chapitre 9, Les tenant settings"
+    },
+    {
+      "settingName": "AllowServicePrincipalsUseWriteAdminAPIs",
+      "titre": "Service principals can access admin APIs used for updates",
+      "attendu": {
+        "enabled": false,
+        "groupes": []
+      },
+      "justification": "Les modifications se font à la main, après revue de la référence.",
+      "source": "Chapitre 9, Les tenant settings"
+    },
+    {
+      "settingName": "BlockResourceKeyAuthentication",
+      "titre": "Block ResourceKey Authentication",
+      "attendu": {
+        "enabled": true,
+        "groupes": []
+      },
+      "justification": "Aucun jeu de données de streaming ou push n'utilise de clé de ressource.",
+      "source": "ScubaGear (CISA), Power BI baseline MS.POWERBI.5.1v1"
+    },
+    {
+      "settingName": "RScriptVisual",
+      "titre": "Interact with and share R and Python visuals",
+      "attendu": {
+        "enabled": false,
+        "groupes": []
+      },
+      "justification": "Les visuels R et Python exécutent du code arbitraire ; aucun usage chez Amazing Zone.",
+      "source": "ScubaGear (CISA), Power BI baseline MS.POWERBI.6.1v1"
+    },
+    {
+      "settingName": "EimInformationProtectionEdit",
+      "titre": "Allow users to apply sensitivity labels for content",
+      "attendu": {
+        "enabled": true,
+        "groupes": []
+      },
+      "justification": "Les étiquettes Public, Interne et Confidentiel sont publiées dans Purview (stratégie « Amazing Zone - Étiquettes de confidentialité ») ; tous les utilisateurs peuvent les appliquer.",
+      "source": "ScubaGear (CISA), Power BI baseline MS.POWERBI.7.1v1"
+    },
+    {
+      "settingName": "EimInformationProtectionDownstreamInheritanceSetting",
+      "titre": "Automatically apply sensitivity labels to downstream content",
+      "attendu": {
+        "enabled": true,
+        "groupes": []
+      },
+      "justification": "L'étiquette d'un modèle se propage aux rapports et modèles qui en dérivent ; activé automatiquement avec le réglage précédent.",
+      "source": "Learn, Fabric : héritage des étiquettes en aval (downstream inheritance)"
+    },
+    {
+      "settingName": "CreateAppWorkspaces",
+      "titre": "Create workspaces",
+      "attendu": {
+        "enabled": true,
+        "groupes": [
+          "dp-equipedata"
+        ]
+      },
+      "justification": "La création d'espaces suit l'organisation décidée au chapitre 3.",
+      "source": "Chapitre 3, Organiser les espaces de travail"
+    },
+    {
+      "settingName": "GitIntegrationTenantSwitch",
+      "titre": "Users can synchronize workspace items with their Git repositories",
+      "attendu": {
+        "enabled": true,
+        "groupes": [
+          "dp-equipedata"
+        ]
+      },
+      "justification": "Seule l'équipe data relie des espaces à Git.",
+      "source": "Chapitre 7, Versionner le travail"
+    },
+    {
+      "settingName": "GitHubTenantSettings",
+      "titre": "Users can sync workspace items with GitHub repositories ",
+      "attendu": {
+        "enabled": false,
+        "groupes": []
+      },
+      "justification": "Le dépôt de travail est sur Azure DevOps.",
+      "source": "Chapitre 7, Versionner le travail"
+    },
+    {
+      "settingName": "AllowExternalDataSharingSwitch",
+      "titre": "External data sharing",
+      "attendu": {
+        "enabled": false,
+        "groupes": []
+      },
+      "justification": "Pas de partage de données OneLake avec d'autres tenants.",
+      "source": "Chapitre 9, Les tenant settings"
+    },
+    {
+      "settingName": "ElevatedGuestsTenant",
+      "titre": "Guest users can browse and access Fabric content",
+      "attendu": {
+        "enabled": false,
+        "groupes": []
+      },
+      "justification": "Les invités n'explorent pas le catalogue.",
+      "source": "Chapitre 9, Les tenant settings"
+    },
+    {
+      "settingName": "OneLakeForThirdParty",
+      "titre": "Users can access data stored in OneLake with apps external to Fabric",
+      "attendu": {
+        "enabled": true,
+        "groupes": []
+      },
+      "justification": "Nécessaire à OneLake Explorer et aux outils externes ; le paramètre ne se limite pas à un groupe.",
+      "source": "Chapitre 9, Les tenant settings"
+    },
+    {
+      "settingName": "WorkspaceBlockOutboundAccess",
+      "titre": "Configure workspace-level outbound network rules",
+      "attendu": {
+        "enabled": true,
+        "groupes": []
+      },
+      "justification": "Permet la protection d'accès sortant sur l'espace d'ingestion du WMS. Le désactiver retire l'OAP de tous les espaces.",
+      "source": "Chapitre 9, La sécurité périmétrique"
+    },
+    {
+      "settingName": "WorkspaceBlockInboundAccess",
+      "titre": "Configure workspace-level inbound network rules",
+      "attendu": {
+        "enabled": true,
+        "groupes": []
+      },
+      "justification": "Décidé explicitement : autorise les règles d'accès entrant par espace.",
+      "source": "Chapitre 9, La sécurité périmétrique"
+    },
+    {
+      "settingName": "ConfigureWorkspaceLevelIPFirewallRules",
+      "titre": "Configure workspace-level IP firewall rules and trusted resource instances ",
+      "attendu": {
+        "enabled": true,
+        "groupes": []
+      },
+      "justification": "Autorise le pare-feu IP par espace.",
+      "source": "Chapitre 9, La sécurité périmétrique"
+    }
+  ]
+}
