@@ -1,0 +1,44 @@
+/// Périmètre de chaque utilisateur (schéma securite du Warehouse, alimenté par dbt). Lue par le rôle
+/// « Lecteurs par entrepôt » ; masquée, et filtrée elle aussi pour qu'un lecteur ne voie que ses propres lignes.
+table 'Accès entrepôt'
+	isHidden
+	lineageTag: 266e114c-6230-4975-a1ce-95c71add734e
+	sourceLineageTag: [securite].[AccesEntrepot]
+
+	column Utilisateur
+		dataType: string
+		isHidden
+		lineageTag: 7cd9eb67-4982-437c-b1f1-aa7b6594fa73
+		sourceLineageTag: Utilisateur
+		summarizeBy: none
+		sourceColumn: Utilisateur
+
+		annotation SummarizationSetBy = User
+
+	column EntrepotKey
+		dataType: int64
+		isHidden
+		lineageTag: 7c72e7cc-4b30-4a39-8cb4-d3075faa8c64
+		sourceLineageTag: EntrepotKey
+		summarizeBy: none
+		sourceColumn: EntrepotKey
+
+		annotation SummarizationSetBy = User
+
+	column CodeEntrepot
+		dataType: string
+		isHidden
+		lineageTag: 592da1ac-0638-42bf-b0ea-22f08a42b466
+		sourceLineageTag: CodeEntrepot
+		summarizeBy: none
+		sourceColumn: CodeEntrepot
+
+		annotation SummarizationSetBy = User
+
+	partition 'Accès entrepôt' = entity
+		mode: directLake
+		source
+			entityName: AccesEntrepot
+			schemaName: securite
+			expressionSource: DatabaseQuery
+

@@ -1,0 +1,4 @@
+CREATE USER [SP-Fabric-AmazingZone] FOR EXTERNAL PROVIDER;
+
+
+GO

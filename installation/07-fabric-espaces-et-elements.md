@@ -118,6 +118,14 @@ Le script `installation/deployer_fabric.py` publie les éléments du dépôt dan
   déployés dans votre espace ;
 - les connexions, la base mirrorée et l'hôte SharePoint sont lus dans vos variables d'environnement.
 
+Avant de déployer, renseignez le périmètre de sécurité des entrepôts dans
+`workspaces/amazingzone/3 - Transformation/Silver et Gold - Nettoyage et modèle en étoile.DataBuildToolJob/Code/dbt/seeds/securite_entrepot.csv` :
+une ligne par utilisateur et par entrepôt autorisé (`WH1` à `WH4`, `?` pour le membre inconnu), avec des UPN qui
+existent dans votre locataire ; à défaut de mieux, votre propre compte sur les cinq codes. Le job dbt ajoute ces
+utilisateurs au rôle `lecteurs_gold` du Warehouse en fin d'exécution : un UPN inconnu du locataire le fait échouer
+(*Principal '…' not found during implicit user creation*, erreur 37580), et avec lui le pipeline de transformation.
+Le guide 10 détaille cette sécurité.
+
 ```bash
 pip install fabric-cicd azure-identity
 set -a; . ./.env; set +a
@@ -131,10 +139,11 @@ qu'avec `--avec-archives`.
 | Dossier | Éléments déployés |
 |---|---|
 | 1 - Ingestion | Copy Job `Ingestion - WMS`, Dataflow `Ingestion - Referentiels Excel`, notebooks `Ingestion - Météo` et `Ingestion - Météo historique`, pipeline `Orchestration - Ingestion` |
-| 2 - Stockage | Lakehouse `AmazingZoneLK` (schémas activés, raccourcis `ecommerce`), Warehouse `AmazingZoneWH` (projet SQL : schémas, tables, procédure `tech.ingestWMS`), Eventhouse `AmazingZoneEH` et sa base KQL (tables `logsweb`, `wms_events`, `sensors`, fonction `fn_ParseWebLogs`) |
+| 2 - Stockage | Lakehouse `AmazingZoneLK` (schémas activés, raccourcis `ecommerce`), Warehouse `AmazingZoneWH` (projet SQL : schémas, tables, procédure `tech.ingestWMS`, objets de sécurité du schéma `securite`), Eventhouse `AmazingZoneEH` et sa base KQL (tables `logsweb`, `wms_events`, `sensors`, fonction `fn_ParseWebLogs`) |
 | 3 - Transformation | Job dbt `Silver et Gold - Nettoyage et modèle en étoile`, notebooks `Bronze - Synchronisation SQL` et `Variante - Silver en vues matérialisées`, pipeline `Orchestration - Transformation` |
 | 4 - Restitution | Modèles sémantiques `Ventes et logistique` et `Analyse des journaux du site`, rapports `Pilotage des ventes et de la logistique` et `Analyse des journaux du site`, API GraphQL `API_Stock_disponible`, fonctions de données `Saisie - Objectifs de vente` et `Service - Stock disponible` |
 | 5 - Temps réel | Eventstreams `Flux - Journaux du site` et `Flux - Événements WMS`, ensemble de requêtes `Requêtes - Exploration KQL`, tableau de bord `Tableau de bord - Journaux du site`, alerte `Alerte - Disponibilité du site` |
+| 6 - Gouvernance | Notebook `Contrôle - Tenant settings`, planifié chaque lundi (guide 10) |
 
 Si une publication échoue, le message de fabric-cicd nomme l'élément. Les causes les plus fréquentes : une variable
 de `.env` vide ou erronée, une connexion non partagée avec le principal de service, une base mirrorée absente pour
@@ -164,6 +173,7 @@ Certains réglages ne passent pas par les définitions d'éléments et se font �
 | Fonctions de données utilisateur | Ouvrir chaque élément et **Publier** : la publication installe les bibliothèques et active les points de terminaison. |
 | Application d'organisation `Pilotage Amazing Zone` | Non prise en charge par fabric-cicd : créez-la dans l'espace (Nouvel élément > Application d'organisation), ajoutez le rapport `Pilotage des ventes et de la logistique` et trois audiences, `Direction`, `Logistique` et `Finance`, dans cet ordre (chapitre 6). |
 | Fabric App `Suivi_retards_expedition` | Facultatif, section 7.8 : elle ne passe ni par fabric-cicd ni par l'intégration Git. |
+| Sécurité du modèle `Ventes et logistique`, contrôle des tenant settings | Guide 10, une fois la première exécution du guide 8 réussie. |
 
 Lancez enfin une fois la procédure stockée `tech.ingestWMS` dans le Warehouse si vous utilisez le pipeline archivé
 « Ingestion - WMS par métadonnées » : elle régénère sa table de configuration `tech.ingestWMS_config`.

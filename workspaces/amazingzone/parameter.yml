@@ -78,6 +78,19 @@ find_replace:
     replace_value:
       LAB: "$ENV:CONNEXION_SQL_NOPCOMMERCE_SP"
 
+  # Coffre de clés (notebooks « Ingestion - Météo » et « Contrôle - Tenant settings », guide 5)
+  - find_value: "https://kv-amazingzone-lab.vault.azure.net/"
+    replace_value:
+      LAB: "$ENV:COFFRE_URI"
+
+  # Locataire et principal de service lus par « Contrôle - Tenant settings » (guide 10)
+  - find_value: "<AZURE_TENANT_ID>"
+    replace_value:
+      LAB: "$ENV:AZURE_TENANT_ID"
+  - find_value: "<AZURE_CLIENT_ID>"
+    replace_value:
+      LAB: "$ENV:AZURE_CLIENT_ID"
+
   # Site SharePoint Finance (référentiels Excel du Dataflow, budget du modèle sémantique)
   - find_value: "mariietardygmail.sharepoint.com"
     replace_value:

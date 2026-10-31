@@ -25,11 +25,34 @@ models:
     api:
       +schema: api
       +materialized: table
+    securite:
+      +schema: securite
+      +materialized: table
 
 seeds:
   amazingzone:
     +schema: silver
+    securite_entrepot:
+      +schema: securite
+      # Types explicites : sans --full-refresh, dbt vide la table du seed sans la recréer, et des types
+      # inférés du contenu (longueur du plus long UPN) refuseraient un utilisateur au nom plus long.
+      +column_types:
+        utilisateur: varchar(256)
+        code_entrepot: varchar(10)
 
 snapshots:
   amazingzone:
     +target_schema: snapshots
+
+# Sécurité au niveau des lignes et des colonnes du Warehouse (macros/securite.sql) : la politique, liée au
+# schéma, est retirée avant la reconstruction des tables puis recréée avec les rôles et les droits.
+on-run-start:
+  - "{{ securite_retirer() }}"
+on-run-end:
+  - "{{ securite_fonction() }}"
+  - "{{ securite_politique() }}"
+  - "{{ securite_roles() }}"
+
+vars:
+  # Identités qui voient tous les entrepôts : le principal de service qui exécute dbt et l'équipe Data.
+  securite_acces_complet: ["SP-Fabric-AmazingZone", "dp-equipedata"]

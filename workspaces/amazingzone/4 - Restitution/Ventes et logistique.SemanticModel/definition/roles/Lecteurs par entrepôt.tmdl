@@ -1,0 +1,21 @@
+/// Sécurité dynamique : chaque lecteur ne voit que les entrepôts qui lui sont attribués dans la table
+/// securite.AccesEntrepot du Warehouse (la direction y a tous les entrepôts). Le filtre sur Entrepôt se propage
+/// aux ventes, aux expéditions, au stock et à la météo par les relations existantes.
+role 'Lecteurs par entrepôt'
+	modelPermission: read
+
+	tablePermission Entrepôt =
+			[EntrepotKey]
+			    IN CALCULATETABLE (
+			        VALUES ( 'Accès entrepôt'[EntrepotKey] ),
+			        'Accès entrepôt'[Utilisateur] = USERPRINCIPALNAME ()
+			    )
+
+	tablePermission 'Accès entrepôt' = 'Accès entrepôt'[Utilisateur] = USERPRINCIPALNAME ()
+
+	tablePermission Client
+
+		columnPermission Email = none
+
+	annotation PBI_Id = 4229f88f7e2b4ee4ac099c1a0302a302
+

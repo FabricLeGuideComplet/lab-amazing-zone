@@ -11,9 +11,10 @@ documentée et déployable à part (schéma `silver_mlv`).
 | Gold | `AmazingZoneWH` schémas `gold` et `snapshots` (même job dbt) | Modèle en étoile : `DimDate`, `DimClient` (SCD 1), `DimProduit` (SCD 2 par le snapshot `snapshot_produit`, table `snapshots.produit`), `DimEntrepot`, `DimTransporteur`, `FaitVente`, `FaitExpedition`, `FaitStockJour` (photo quotidienne, incrémental), `FaitMeteoJour` |
 | ML | `AmazingZoneWH` schéma `ml` (même job dbt) | `charge_entrepot_jour` : table de caractéristiques pour prévoir la charge des entrepôts (prévision météo émise la veille, historique arrêté à J-2) |
 | Sémantique | « Ventes et logistique » | Modèle Direct Lake sur OneLake, mesures et descriptions ; mises à jour automatiques désactivées, recadrage en fin de pipeline |
+| Sécurité | `AmazingZoneWH` schéma `securite` (même job dbt, chapitre 9) | Seed `securite_entrepot` et table `AccesEntrepot` (utilisateur, entrepôt autorisé), source unique de la sécurité au niveau des lignes du Warehouse (politique `securite.politique_entrepot` sur les quatre faits, rôles `lecteurs_gold` et `acces_tous_entrepots`, colonne `DimClient.Email` refusée) et du rôle « Lecteurs par entrepôt » du modèle sémantique (OLS sur `Client[Email]`). Les objets de sécurité sont retirés en début d'exécution du job dbt et recréés à la fin (`macros/securite.sql`) |
 | Variante | `AmazingZoneLK` schéma `silver_mlv`, notebook « Variante - Silver en vues matérialisées » | Les sept vues Silver en Materialized Lake Views, avec `REFRESH_HINT` (préversion) ; non appelée par l'orchestration |
 
-Le projet dbt (19 modèles dont `api.stock_disponible` ajouté au chapitre 6, 1 seed, 1 snapshot, 78 tests dont 3 en sévérité `warn` étiquetés `avertissement`) vit
+Le projet dbt (20 modèles dont `api.stock_disponible` ajouté au chapitre 6 et `securite.AccesEntrepot` au chapitre 9, 2 seeds, 1 snapshot, 83 tests dont 3 en sévérité `warn` étiquetés `avertissement`) vit
 dans le dossier de l'élément : `workspaces/amazingzone/3 - Transformation/Silver et Gold - Nettoyage et modèle en étoile.DataBuildToolJob/Code/dbt`.
 C'est la seule source du projet ; développer en local sur un clone de ce dossier.
 

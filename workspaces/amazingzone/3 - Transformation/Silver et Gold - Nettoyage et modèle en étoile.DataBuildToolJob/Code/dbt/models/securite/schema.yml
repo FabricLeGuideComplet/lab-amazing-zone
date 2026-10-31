@@ -1,0 +1,25 @@
+version: 2
+
+# Schéma securite : périmètre de chaque utilisateur, source unique des deux sécurités au niveau des lignes
+# (T-SQL dans le Warehouse, DAX dans le modèle sémantique). Les objets de sécurité eux-mêmes (fonction,
+# politique, rôles) sont créés par les macros de macros/securite.sql, appelées en début et en fin d'exécution.
+seeds:
+  - name: securite_entrepot
+    description: Utilisateurs (UPN Entra ID) et codes des entrepôts qu'ils ont le droit de voir.
+    columns:
+      - name: utilisateur
+        data_tests: [not_null]
+      - name: code_entrepot
+        data_tests:
+          - not_null
+          - relationships: {arguments: {to: ref('DimEntrepot'), field: CodeEntrepot}}
+
+models:
+  - name: AccesEntrepot
+    description: Une ligne par utilisateur et par entrepôt autorisé, avec la clé de la dimension entrepôt.
+    columns:
+      - name: Utilisateur
+        description: UPN Entra ID, comparé à USER_NAME() dans le Warehouse et à USERPRINCIPALNAME() dans le modèle.
+        data_tests: [not_null]
+      - name: EntrepotKey
+        data_tests: [not_null]

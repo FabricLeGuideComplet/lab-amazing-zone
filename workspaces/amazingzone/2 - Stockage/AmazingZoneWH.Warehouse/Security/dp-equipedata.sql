@@ -1,0 +1,4 @@
+CREATE USER [dp-equipedata] FOR EXTERNAL PROVIDER;
+
+
+GO

@@ -27,6 +27,7 @@ Les sources sont à gauche, la plateforme Fabric à droite. Dans l'espace de dé
 | `wms/` | Base PostgreSQL du WMS : création, migrations, rôle de lecture, données de démonstration, simulateur temps réel. |
 | `referentiels/` | Classeurs Excel déposés sur SharePoint (référentiel géographique, budget des ventes). |
 | `modelisation/` | Description de la chaîne Bronze, Silver, Gold et de l'orchestration (chapitre 5). |
+| `gouvernance/` | Référence des tenant settings attendus, comparée chaque semaine à l'état réel du locataire (chapitre 9). |
 | `workspaces/amazingzone/` | Éléments Fabric de l'espace de développement, au format de l'intégration Git de Fabric, et `parameter.yml` pour fabric-cicd. |
 | `docs/` | Schéma d'architecture du lab (PNG et SVG). |
 | `apps/retards-expedition/` | Fabric App « Suivi des retards d'expédition » (chapitre 6). |
@@ -47,6 +48,7 @@ Les étapes s'enchaînent dans cet ordre, chacune renvoyant au guide détaillé 
 | 7 | [Espaces et éléments Fabric](installation/07-fabric-espaces-et-elements.md) | Capacité, espaces, identités d'espace, connexions, mirroring, déploiement des éléments |
 | 8 | [Données et première exécution](installation/08-donnees-et-premiere-execution.md) | Données de démonstration, premières ingestions, transformation, vérifications |
 | 9 | [Coûts et mise en veille](installation/09-couts-et-arret.md) | Ce qui est facturé en continu, ce qu'il faut arrêter après chaque séance |
+| 10 | [Sécurité et gouvernance](installation/10-securite-et-gouvernance.md) | Sécurité au niveau des lignes et des colonnes du Warehouse et du modèle sémantique, contrôle hebdomadaire des tenant settings (chapitre 9) |
 
 Les étapes 4 à 6 peuvent être différées : sans elles, le lab fonctionne sans les référentiels Excel, la clé
 d'API météo et les données du service client, et les chapitres correspondants restent lisibles à partir des

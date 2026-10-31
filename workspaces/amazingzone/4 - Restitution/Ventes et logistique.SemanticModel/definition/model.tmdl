@@ -25,4 +25,7 @@ ref table Météo
 ref table Budget
 ref table Objectifs
 ref table Période
+ref table 'Accès entrepôt'
+
+ref role 'Lecteurs par entrepôt'
 
