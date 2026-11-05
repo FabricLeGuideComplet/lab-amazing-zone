@@ -1,6 +1,6 @@
 {
   "description": "Référence des tenant settings de sécurité d'Amazing Zone. Toute modification passe par une pull request ; le notebook « Contrôle - Tenant settings » compare chaque semaine l'état réel à ce fichier.",
-  "version": "2026-10-31",
+  "version": "2026-11-04",
   "sources": [
     "https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/powerbi.md",
     "https://learn.microsoft.com/fabric/admin/tenant-settings-index"
@@ -243,6 +243,16 @@
       },
       "justification": "Autorise le pare-feu IP par espace.",
       "source": "Chapitre 9, La sécurité périmétrique"
+    },
+    {
+      "settingName": "RTHAnomalyDetectionTenantSwitch",
+      "titre": "Detect anomalies in Real-Time Intelligence (Preview)",
+      "attendu": {
+        "enabled": true,
+        "groupes": []
+      },
+      "justification": "Préversion activée pour le détecteur d'anomalies du chapitre 8 (temps de réponse du site). Désactivée, la création d'un détecteur échoue avec un message trompeur qui met en cause la région. En production, la réserver à un groupe tant qu'elle reste en préversion.",
+      "source": "Microsoft Learn, Anomaly Detection in Real-Time Intelligence (prérequis)"
     }
   ]
 }

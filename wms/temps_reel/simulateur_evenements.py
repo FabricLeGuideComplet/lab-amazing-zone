@@ -31,13 +31,31 @@ ESPACE = os.environ.get('FABRIC_ESPACE_ID', '0875373d-96cd-4d0e-b4e7-5fc5cd327cb
 EVENTSTREAM = os.environ.get('WMS_EVENTSTREAM_ID', '75e869b0-3e3c-438e-9871-9b91482f39a7')        # Flux - Événements WMS
 SOURCE = os.environ.get('WMS_EVENTSTREAM_SOURCE_ID', '3e02f1ab-b89d-41a8-8516-9c8c8ec0b854')     # WMSEvent (custom endpoint)
 
-# Référentiel du WMS (schéma wms) : entrepôts, emplacements et articles de démonstration
-ENTREPOTS = ['WH1', 'WH2', 'WH3', 'WH4']
+# Référentiel du WMS (schéma wms) : emplacements, et couples article × entrepôt réellement stockés, lus dans les
+# données de démonstration du WMS (bloc COPY t_stock de wms_demo.sql), pour que les événements portent sur le catalogue
 EMPLACEMENTS = {'RECEPTION': 'RCV-01', 'STOCKAGE': ['STO-01', 'STO-02'], 'PREPARATION': 'PICK-01', 'EXPEDITION': 'SHP-01'}
-ARTICLES = ['SKU-0001', 'SKU-0002', 'SKU-0003', 'SKU-0004', 'SKU-0005']
+DONNEES_DEMO = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'donnees_demo', 'wms_demo.sql')
+
+
+def articles_stockes():
+    couples, dans_bloc = set(), False
+    with open(DONNEES_DEMO, encoding='utf-8') as f:
+        for ligne in f:
+            if ligne.startswith('COPY t_stock'):
+                dans_bloc = True
+            elif dans_bloc and ligne.startswith('\\.'):
+                break
+            elif dans_bloc:
+                sku, entrepot = ligne.split('\t')[:2]
+                couples.add((sku, entrepot))
+    return sorted(couples)
+
+
+ARTICLES_ENTREPOTS = articles_stockes()
 TRANSPORTEURS = ['Colissimo', 'Chronopost', 'DPD', 'GLS']
-# Fréquence relative des types d'événements : l'activité d'un entrepôt est dominée par les mouvements de stock
-TYPES = [('STOCK_UPDATE', 5), ('PICKING_VALIDATED', 3), ('SHIPMENT', 2), ('RECEPTION', 1)]
+# Fréquence relative des types d'événements, et quantités choisies pour que réceptions et expéditions s'équilibrent en
+# moyenne : le stock en temps réel calculé dans l'Eventhouse oscille autour de la photo du WMS au lieu de dériver
+TYPES = [('STOCK_UPDATE', 4), ('PICKING_VALIDATED', 3), ('SHIPMENT', 4), ('RECEPTION', 1)]
 
 
 def chaine_de_connexion():
@@ -56,8 +74,7 @@ def chaine_de_connexion():
 
 def evenement():
     type_evt = random.choices([t for t, _ in TYPES], weights=[p for _, p in TYPES])[0]
-    entrepot = random.choice(ENTREPOTS)
-    article = random.choice(ARTICLES)
+    article, entrepot = random.choice(ARTICLES_ENTREPOTS)
     evt = {
         'eventId': str(uuid.uuid4()),
         'eventType': type_evt,
@@ -70,9 +87,9 @@ def evenement():
         'carrier': None,
     }
     if type_evt == 'RECEPTION':
-        evt.update(location=EMPLACEMENTS['RECEPTION'], quantity=random.choice([24, 48, 96, 120]))
-    elif type_evt == 'STOCK_UPDATE':
-        evt.update(location=random.choice(EMPLACEMENTS['STOCKAGE']), quantity=random.randint(-12, 30))
+        evt.update(location=EMPLACEMENTS['RECEPTION'], quantity=random.choice([6, 12, 24]))
+    elif type_evt == 'STOCK_UPDATE':  # ajustement d'inventaire, positif ou négatif
+        evt.update(location=random.choice(EMPLACEMENTS['STOCKAGE']), quantity=random.randint(-10, 10))
     elif type_evt == 'PICKING_VALIDATED':
         evt.update(location=EMPLACEMENTS['PREPARATION'], quantity=random.randint(1, 6),
                    orderNo=f'ORD{random.randint(3950000, 3999999)}')
@@ -94,7 +111,11 @@ def main():
     p.add_argument('--par-minute', type=int, default=60, help='événements émis par minute')
     p.add_argument('--duree', type=float, default=5, help='durée en minutes')
     p.add_argument('--une-salve', type=int, help='émet ce nombre d\'événements en une fois, puis s\'arrête')
+    p.add_argument('--sans-entrepot', action='append', default=[], metavar='CODE',
+                   help='simule la panne d\'un entrepôt, qui n\'émet plus rien (répétable : --sans-entrepot WH3)')
     a = p.parse_args()
+    if a.sans_entrepot:
+        ARTICLES_ENTREPOTS[:] = [(s, e) for s, e in ARTICLES_ENTREPOTS if e not in a.sans_entrepot]
 
     producteur = EventHubProducerClient.from_connection_string(chaine_de_connexion())
     with producteur:

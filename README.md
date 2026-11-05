@@ -23,7 +23,7 @@ Les sources sont à gauche, la plateforme Fabric à droite. Dans l'espace de dé
 | Dossier | Contenu |
 |---|---|
 | `installation/` | Procédure d'initialisation pas à pas et script de déploiement des éléments Fabric. |
-| `ecommerce/` | Données de démonstration du site nopCommerce (clients, commandes, coûts, scénario d'évolution des prix). |
+| `ecommerce/` | Données de démonstration du site nopCommerce (clients, commandes, coûts, scénario d'évolution des prix) et trafic simulé sur le site (`trafic_simule.py`, chapitre 8). |
 | `wms/` | Base PostgreSQL du WMS : création, migrations, rôle de lecture, données de démonstration, simulateur temps réel. |
 | `referentiels/` | Classeurs Excel déposés sur SharePoint (référentiel géographique, budget des ventes). |
 | `modelisation/` | Description de la chaîne Bronze, Silver, Gold et de l'orchestration (chapitre 5). |
@@ -31,6 +31,7 @@ Les sources sont à gauche, la plateforme Fabric à droite. Dans l'espace de dé
 | `workspaces/amazingzone/` | Éléments Fabric de l'espace de développement, au format de l'intégration Git de Fabric, et `parameter.yml` pour fabric-cicd. |
 | `docs/` | Schéma d'architecture du lab (PNG et SVG). |
 | `apps/retards-expedition/` | Fabric App « Suivi des retards d'expédition » (chapitre 6). |
+| `apps/entrepots-temps-reel/` | Fabric App « Entrepôts en temps réel » : état des entrepôts lu dans la copie OneLake de l'Eventhouse (chapitre 8). |
 
 ## Reconstruire le lab
 

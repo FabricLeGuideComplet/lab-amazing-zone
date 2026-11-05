@@ -1,0 +1,36 @@
+id: Suivi_entrepots_temps_reel
+name: Suivi_entrepots_temps_reel
+version: 1.0.0
+services:
+  auth:
+    enabled: true
+    fabric:
+      enabled: true
+    password:
+      enabled: true
+    allowedRedirectUris:
+      - http://localhost:5173
+      - http://127.0.0.1:5173
+      - https://nimble-drift-b702c99b76-francecentral.webapp.fabricapps.net
+  data:
+    enabled: false
+  staticHosting:
+    enabled: true
+    folder: dist
+    buildCommand: npm run build:fabric
+    indexDocument: index.html
+    assetAccess: protected
+  storage:
+    enabled: false
+  functions:
+    enabled: false
+connectors:
+  - name: evenementswms
+    type: fabric-sqlanalytics
+    config:
+      workspaceId: 0875373d-96cd-4d0e-b4e7-5fc5cd327cb8
+      itemId: 7ad867b8-afae-4a87-9f9d-b246eec5ea5e
+    auth:
+      type: delegated
+    operations:
+      - name: read
