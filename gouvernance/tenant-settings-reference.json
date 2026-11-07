@@ -265,6 +265,18 @@
       },
       "justification": "Écart assumé : Amazing Zone a choisi de ne pas ouvrir Copilot aux métiers dans un premier temps (chapitre 3). Le paramètre est activé pour la seule équipe data, parce que l'agent opérationnel du chapitre 8 en dépend (Copilot génère son plan de surveillance). À rouvrir quand les usages auront été cadrés.",
       "source": "Choix d'Amazing Zone (chapitre 3) ; prérequis de l'agent opérationnel (learn.microsoft.com/fabric/real-time-intelligence/operations-agent)"
+    },
+    {
+      "settingName": "ArtifactDeploymentPlanPreview",
+      "titre": "Users can create deployment plan (preview) items",
+      "attendu": {
+        "enabled": true,
+        "groupes": [
+          "dp-equipedata"
+        ]
+      },
+      "justification": "Préversion des plans de déploiement, réservée à l'équipe data pour les essais du chapitre 10 (ordre de déploiement et actions avant/après).",
+      "source": "Choix d'Amazing Zone (chapitre 10) ; learn.microsoft.com/fabric/cicd/deployment-plan/deployment-plan-overview"
     }
   ]
 }
