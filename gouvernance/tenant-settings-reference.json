@@ -1,6 +1,6 @@
 {
   "description": "Référence des tenant settings de sécurité d'Amazing Zone. Toute modification passe par une pull request ; le notebook « Contrôle - Tenant settings » compare chaque semaine l'état réel à ce fichier.",
-  "version": "2026-11-04",
+  "version": "2026-11-07",
   "sources": [
     "https://github.com/cisagov/ScubaGear/blob/main/PowerShell/ScubaGear/baselines/powerbi.md",
     "https://learn.microsoft.com/fabric/admin/tenant-settings-index"
@@ -253,6 +253,18 @@
       },
       "justification": "Préversion activée pour le détecteur d'anomalies du chapitre 8 (temps de réponse du site). Désactivée, la création d'un détecteur échoue avec un message trompeur qui met en cause la région. En production, la réserver à un groupe tant qu'elle reste en préversion.",
       "source": "Microsoft Learn, Anomaly Detection in Real-Time Intelligence (prérequis)"
+    },
+    {
+      "settingName": "EnableAOAI",
+      "titre": "Users can use Copilot, AI Agents and other AI experiences powered by Azure OpenAI",
+      "attendu": {
+        "enabled": true,
+        "groupes": [
+          "dp-equipedata"
+        ]
+      },
+      "justification": "Écart assumé : Amazing Zone a choisi de ne pas ouvrir Copilot aux métiers dans un premier temps (chapitre 3). Le paramètre est activé pour la seule équipe data, parce que l'agent opérationnel du chapitre 8 en dépend (Copilot génère son plan de surveillance). À rouvrir quand les usages auront été cadrés.",
+      "source": "Choix d'Amazing Zone (chapitre 3) ; prérequis de l'agent opérationnel (learn.microsoft.com/fabric/real-time-intelligence/operations-agent)"
     }
   ]
 }
