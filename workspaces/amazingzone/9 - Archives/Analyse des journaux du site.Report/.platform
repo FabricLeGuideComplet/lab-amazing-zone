@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Analyse des journaux du site"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "53ce1c9c-084b-8f5c-4d07-81c40927d27f"
+  }
+}

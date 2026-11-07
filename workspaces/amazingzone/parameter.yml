@@ -44,6 +44,16 @@ find_replace:
     replace_value:
       LAB: "$items.KQLDashboard.Tableau de bord - Journaux du site.$id"
 
+  # Flux surveillé par l'Activator « Alerte - Activité des entrepôts » (chapitre 8)
+  - find_value: "75e869b0-3e3c-438e-9871-9b91482f39a7"
+    replace_value:
+      LAB: "$items.Eventstream.Flux - Événements WMS.$id"
+
+  # Destinataire des e-mails des deux Activator (chapitre 8)
+  - find_value: "chsauget@mariietardygmail.onmicrosoft.com"
+    replace_value:
+      LAB: "$ENV:DESTINATAIRE_ALERTES"
+
   # Raccourcis ecommerce du Lakehouse vers la base mirrorée amazingdb de l'espace « AmazingZone - Mirroring »
   - find_value: "dbcb05e0-dcf7-4944-be24-6969f2349cd1"
     replace_value:

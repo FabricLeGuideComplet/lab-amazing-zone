@@ -1,1 +1,295 @@
-{}
+{
+  "schema_version": 90,
+  "flavor": "RTDashboard_Regular",
+  "changeDetection": {
+    "kind": "liveUpdates",
+    "minRefreshRate": "30s",
+    "fallbackRefreshRate": "1m",
+    "minRefreshRate_V2": "30s"
+  },
+  "tiles": [
+    {
+      "id": "64bf5d12-e496-5194-8617-51d117cb7c38",
+      "title": "Requêtes",
+      "visualType": "card",
+      "pageId": "0e316539-c817-5ca8-94ea-4a2215e13c6f",
+      "layout": {
+        "width": 4,
+        "height": 4,
+        "x": 0,
+        "y": 0
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "2b53ae91-a3be-50db-8b32-717c8d70d98d"
+      },
+      "visualOptions": {}
+    },
+    {
+      "id": "5a5cf463-e059-5ba7-9115-661ca240643f",
+      "title": "Taux d'erreur (%)",
+      "visualType": "card",
+      "pageId": "0e316539-c817-5ca8-94ea-4a2215e13c6f",
+      "layout": {
+        "width": 4,
+        "height": 4,
+        "x": 4,
+        "y": 0
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "a0fe4279-132d-5535-9228-a45e18b34fb2"
+      },
+      "visualOptions": {}
+    },
+    {
+      "id": "33c47db5-39cc-5001-ab55-a44d787ac982",
+      "title": "Minutes depuis la dernière requête reçue",
+      "visualType": "card",
+      "pageId": "0e316539-c817-5ca8-94ea-4a2215e13c6f",
+      "layout": {
+        "width": 5,
+        "height": 4,
+        "x": 8,
+        "y": 0
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "9a765ada-9a5e-55e0-a17b-219d62e017b3"
+      },
+      "visualOptions": {}
+    },
+    {
+      "id": "6356ab5f-367e-575b-9805-4be6e4f6a47e",
+      "title": "Temps de réponse P95 (ms)",
+      "visualType": "card",
+      "pageId": "0e316539-c817-5ca8-94ea-4a2215e13c6f",
+      "layout": {
+        "width": 5,
+        "height": 4,
+        "x": 13,
+        "y": 0
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "d57e8c9a-3d56-51ef-9929-7c3edf0a89a7"
+      },
+      "visualOptions": {}
+    },
+    {
+      "id": "b98b7535-ff8c-5db1-8de5-7b6af92d4628",
+      "title": "Requêtes et erreurs par minute",
+      "visualType": "timechart",
+      "pageId": "0e316539-c817-5ca8-94ea-4a2215e13c6f",
+      "layout": {
+        "width": 12,
+        "height": 7,
+        "x": 0,
+        "y": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "bc11b9ce-5f3c-5304-b1b8-b9ee95c433b3"
+      },
+      "visualOptions": {
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "anomalyColumns": null,
+        "multipleYAxes": {
+          "additional": [],
+          "showMultiplePanels": false,
+          "base": {
+            "horizontalLines": [],
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "columns": [],
+            "label": "",
+            "id": "-1"
+          }
+        },
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        }
+      }
+    },
+    {
+      "id": "8bef24a5-69ea-589c-b75f-a7ef64f6be5b",
+      "title": "Temps de réponse (ms)",
+      "visualType": "timechart",
+      "pageId": "0e316539-c817-5ca8-94ea-4a2215e13c6f",
+      "layout": {
+        "width": 12,
+        "height": 7,
+        "x": 12,
+        "y": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "324c3680-88e9-5ca8-a957-3ebb37411ab8"
+      },
+      "visualOptions": {
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "anomalyColumns": null,
+        "multipleYAxes": {
+          "additional": [],
+          "showMultiplePanels": false,
+          "base": {
+            "horizontalLines": [],
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "columns": [],
+            "label": "",
+            "id": "-1"
+          }
+        },
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        }
+      }
+    },
+    {
+      "id": "b21081e2-0269-50dc-9264-f8a5b8e8736a",
+      "title": "Codes de réponse",
+      "visualType": "table",
+      "pageId": "0e316539-c817-5ca8-94ea-4a2215e13c6f",
+      "layout": {
+        "width": 6,
+        "height": 4,
+        "x": 18,
+        "y": 0
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "6d4d24d3-3d4a-57d9-abc4-5af86a04468b"
+      },
+      "visualOptions": {}
+    }
+  ],
+  "baseQueries": [],
+  "parameters": [
+    {
+      "kind": "duration",
+      "displayName": "Période",
+      "description": "",
+      "beginVariableName": "_startTime",
+      "endVariableName": "_endTime",
+      "defaultValue": {
+        "kind": "dynamic",
+        "count": 1,
+        "unit": "hours"
+      },
+      "showOnPages": {
+        "kind": "all"
+      },
+      "id": "59c43663-dd40-5145-9e23-97a4c0b33de2"
+    }
+  ],
+  "dataSources": [
+    {
+      "kind": "kusto-trident",
+      "name": "AmazingZoneEH",
+      "clusterUri": "",
+      "databaseArtifactId": "0e1406d4-4530-4c1f-9419-46c8a9e29c71",
+      "database": "16141940-050c-9467-467e-3ee59afe9a4e",
+      "workspace": "00000000-0000-0000-0000-000000000000",
+      "id": "3cbb603b-df05-511d-a908-40f779ace9e0"
+    }
+  ],
+  "pages": [
+    {
+      "name": "Page 1",
+      "id": "0e316539-c817-5ca8-94ea-4a2215e13c6f"
+    }
+  ],
+  "queries": [
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "3cbb603b-df05-511d-a908-40f779ace9e0"
+      },
+      "text": "fn_ParseWebLogs()\n| where Type == \"AppServiceHTTPLogs\" and dateLog between (_startTime .. _endTime)\n| count",
+      "id": "2b53ae91-a3be-50db-8b32-717c8d70d98d",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "3cbb603b-df05-511d-a908-40f779ace9e0"
+      },
+      "text": "fn_ParseWebLogs()\n| where Type == \"AppServiceHTTPLogs\" and dateLog between (_startTime .. _endTime)\n| summarize TauxErreur = round(100.0 * countif(Success == false) / count(), 1)",
+      "id": "a0fe4279-132d-5535-9228-a45e18b34fb2",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "3cbb603b-df05-511d-a908-40f779ace9e0"
+      },
+      "text": "fn_ParseWebLogs()\n| where Type == \"AppServiceHTTPLogs\"\n| summarize Minutes = datetime_diff(\"minute\", now(), max(dateLog))",
+      "id": "9a765ada-9a5e-55e0-a17b-219d62e017b3",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "3cbb603b-df05-511d-a908-40f779ace9e0"
+      },
+      "text": "fn_ParseWebLogs()\n| where Type == \"AppServiceHTTPLogs\" and dateLog between (_startTime .. _endTime)\n| summarize P95 = round(percentile(DurationMs, 95), 0)",
+      "id": "d57e8c9a-3d56-51ef-9929-7c3edf0a89a7",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "3cbb603b-df05-511d-a908-40f779ace9e0"
+      },
+      "text": "fn_ParseWebLogs()\n| where Type == \"AppServiceHTTPLogs\" and dateLog between (_startTime .. _endTime)\n| summarize Requetes = count(), Erreurs = countif(Success == false) by bin(dateLog, 1m)\n| order by dateLog asc",
+      "id": "bc11b9ce-5f3c-5304-b1b8-b9ee95c433b3",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "3cbb603b-df05-511d-a908-40f779ace9e0"
+      },
+      "text": "fn_ParseWebLogs()\n| where Type == \"AppServiceHTTPLogs\" and dateLog between (_startTime .. _endTime)\n| summarize Mediane = percentile(DurationMs, 50), P95 = percentile(DurationMs, 95) by bin(dateLog, 1m)\n| order by dateLog asc",
+      "id": "324c3680-88e9-5ca8-a957-3ebb37411ab8",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "3cbb603b-df05-511d-a908-40f779ace9e0"
+      },
+      "text": "fn_ParseWebLogs()\n| where Type == \"AppServiceHTTPLogs\" and dateLog between (_startTime .. _endTime)\n| summarize Requetes = count() by ResultCode\n| order by Requetes desc",
+      "id": "6d4d24d3-3d4a-57d9-abc4-5af86a04468b",
+      "usedVariables": [
+        "_startTime",
+        "_endTime"
+      ]
+    }
+  ],
+  "embeddedApps": []
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "OperationsAgent",
+    "displayName": "Agent_Surveillance_Entrepots"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "7f89ab89-aac5-a432-4e6b-66ddeaa26183"
+  }
+}

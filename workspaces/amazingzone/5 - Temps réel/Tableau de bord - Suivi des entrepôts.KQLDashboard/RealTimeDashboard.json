@@ -1,0 +1,287 @@
+{
+  "schema_version": 90,
+  "flavor": "RTDashboard_Regular",
+  "changeDetection": {
+    "kind": "liveUpdates",
+    "minRefreshRate": "30s",
+    "fallbackRefreshRate": "1m",
+    "minRefreshRate_V2": "30s"
+  },
+  "tiles": [
+    {
+      "id": "abf1305e-c10f-51dd-8904-f0fe9974b665",
+      "title": "Événements reçus",
+      "visualType": "card",
+      "pageId": "0f410ab4-f927-5385-a9c6-97a6a1b404ab",
+      "layout": {
+        "width": 4,
+        "height": 4,
+        "x": 0,
+        "y": 0
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "9a774e00-d3cf-5d27-9742-6e665998c00e"
+      },
+      "visualOptions": {}
+    },
+    {
+      "id": "fb6bee28-c4b5-5834-bde7-cc3d15407b7d",
+      "title": "Entrepôts silencieux depuis plus de 15 minutes",
+      "visualType": "card",
+      "pageId": "0f410ab4-f927-5385-a9c6-97a6a1b404ab",
+      "layout": {
+        "width": 6,
+        "height": 4,
+        "x": 4,
+        "y": 0
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "c3c4404f-24f7-58ec-959d-c95fd8315dc3"
+      },
+      "visualOptions": {}
+    },
+    {
+      "id": "aa368e4a-01c2-5808-96f7-5918117b541c",
+      "title": "Dernier événement par entrepôt",
+      "visualType": "table",
+      "pageId": "0f410ab4-f927-5385-a9c6-97a6a1b404ab",
+      "layout": {
+        "width": 14,
+        "height": 4,
+        "x": 10,
+        "y": 0
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "4ee277dd-d9de-5c5e-a72c-572ef680985c"
+      },
+      "visualOptions": {}
+    },
+    {
+      "id": "d0a8e830-848c-595e-bb76-6afc82aa9f5d",
+      "title": "Activité par entrepôt",
+      "visualType": "map",
+      "pageId": "0f410ab4-f927-5385-a9c6-97a6a1b404ab",
+      "layout": {
+        "width": 10,
+        "height": 9,
+        "x": 0,
+        "y": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "6ab8a853-c482-5b8c-8928-0ea51f4465bf"
+      },
+      "visualOptions": {
+        "map__type": "bubble",
+        "map__latitudeColumn": "Latitude",
+        "map__longitudeColumn": "Longitude",
+        "map__labelColumn": "Entrepot",
+        "map__sizeColumn": "Evenements",
+        "map__sizeDisabled": false,
+        "map__geoType": "numeric",
+        "map__geoPointColumn": null
+      }
+    },
+    {
+      "id": "6d7f1067-4ca2-5661-965b-9a42ff7a2073",
+      "title": "Événements par minute et par type",
+      "visualType": "stackedcolumn",
+      "pageId": "0f410ab4-f927-5385-a9c6-97a6a1b404ab",
+      "layout": {
+        "width": 14,
+        "height": 9,
+        "x": 10,
+        "y": 4
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "f2cad976-d09c-5f75-88b9-cf23db9a6a39"
+      },
+      "visualOptions": {
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "anomalyColumns": null,
+        "multipleYAxes": {
+          "additional": [],
+          "showMultiplePanels": false,
+          "base": {
+            "horizontalLines": [],
+            "yAxisScale": "linear",
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "columns": [],
+            "label": "",
+            "id": "-1"
+          }
+        },
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        }
+      }
+    },
+    {
+      "id": "21e10be1-8ceb-5486-8ffc-d731540ced2f",
+      "title": "Stock disponible en temps réel (plus forts écarts depuis la photo du WMS)",
+      "visualType": "table",
+      "pageId": "0f410ab4-f927-5385-a9c6-97a6a1b404ab",
+      "layout": {
+        "width": 24,
+        "height": 8,
+        "x": 0,
+        "y": 13
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "45df3cf7-c361-5f28-b6e1-bc4d063cbed7"
+      },
+      "visualOptions": {}
+    }
+  ],
+  "baseQueries": [],
+  "parameters": [
+    {
+      "kind": "duration",
+      "displayName": "Période",
+      "description": "",
+      "beginVariableName": "_startTime",
+      "endVariableName": "_endTime",
+      "defaultValue": {
+        "kind": "dynamic",
+        "count": 1,
+        "unit": "hours"
+      },
+      "showOnPages": {
+        "kind": "all"
+      },
+      "id": "f8efc630-0102-5e29-9c74-c63c30dee17e"
+    },
+    {
+      "kind": "string",
+      "displayName": "Entrepôt",
+      "description": "",
+      "variableName": "_entrepots",
+      "selectionType": "array",
+      "includeAllOption": true,
+      "defaultValue": {
+        "kind": "all"
+      },
+      "dataSource": {
+        "kind": "query",
+        "columns": {
+          "value": "CodeEntrepot"
+        },
+        "queryRef": {
+          "kind": "query",
+          "queryId": "7b7e585f-327f-592e-a3d9-820213c3dc9d"
+        }
+      },
+      "showOnPages": {
+        "kind": "all"
+      },
+      "allIsNull": false,
+      "id": "53d0af74-8226-575e-8d5f-f3756e46927a"
+    }
+  ],
+  "dataSources": [
+    {
+      "kind": "kusto-trident",
+      "name": "AmazingZoneEH",
+      "clusterUri": "",
+      "databaseArtifactId": "0e1406d4-4530-4c1f-9419-46c8a9e29c71",
+      "database": "16141940-050c-9467-467e-3ee59afe9a4e",
+      "workspace": "00000000-0000-0000-0000-000000000000",
+      "id": "d5c522c7-9027-5029-bc0b-d5744743ee50"
+    }
+  ],
+  "pages": [
+    {
+      "name": "Page 1",
+      "id": "0f410ab4-f927-5385-a9c6-97a6a1b404ab"
+    }
+  ],
+  "queries": [
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "d5c522c7-9027-5029-bc0b-d5744743ee50"
+      },
+      "text": "wms_evenements\n| where DateEvenement between (_startTime .. _endTime) and CodeEntrepot in (_entrepots)\n| count",
+      "id": "9a774e00-d3cf-5d27-9742-6e665998c00e",
+      "usedVariables": [
+        "_startTime",
+        "_endTime",
+        "_entrepots"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "d5c522c7-9027-5029-bc0b-d5744743ee50"
+      },
+      "text": "mv_DernierEvenementEntrepot\n| summarize Silencieux = countif(DateEvenement < ago(15m))",
+      "id": "c3c4404f-24f7-58ec-959d-c95fd8315dc3",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "d5c522c7-9027-5029-bc0b-d5744743ee50"
+      },
+      "text": "mv_DernierEvenementEntrepot\n| extend SilenceMinutes = datetime_diff(\"minute\", now(), DateEvenement)\n| project CodeEntrepot, DernierEvenement = DateEvenement, TypeEvenement, SilenceMinutes\n| order by CodeEntrepot asc",
+      "id": "4ee277dd-d9de-5c5e-a72c-572ef680985c",
+      "usedVariables": []
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "d5c522c7-9027-5029-bc0b-d5744743ee50"
+      },
+      "text": "wms_evenements\n| where DateEvenement between (_startTime .. _endTime) and CodeEntrepot in (_entrepots)\n| summarize Evenements = count() by CodeEntrepot\n| join kind = inner (external_table(\"dim_entrepot\") | project CodeEntrepot, Entrepot, Latitude, Longitude) on CodeEntrepot\n| project Entrepot, Latitude, Longitude, Evenements",
+      "id": "6ab8a853-c482-5b8c-8928-0ea51f4465bf",
+      "usedVariables": [
+        "_startTime",
+        "_endTime",
+        "_entrepots"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "d5c522c7-9027-5029-bc0b-d5744743ee50"
+      },
+      "text": "wms_evenements\n| where DateEvenement between (_startTime .. _endTime) and CodeEntrepot in (_entrepots)\n| summarize Evenements = count() by bin(DateEvenement, 1m), TypeEvenement\n| order by DateEvenement asc",
+      "id": "f2cad976-d09c-5f75-88b9-cf23db9a6a39",
+      "usedVariables": [
+        "_startTime",
+        "_endTime",
+        "_entrepots"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "d5c522c7-9027-5029-bc0b-d5744743ee50"
+      },
+      "text": "fn_StockTempsReel()\n| where CodeEntrepot in (_entrepots) and MouvementsDepuisPhoto != 0\n| project CodeEntrepot, Sku, StockPhoto, MouvementsDepuisPhoto, StockTempsReel, DernierMouvement\n| top 20 by abs(MouvementsDepuisPhoto)",
+      "id": "45df3cf7-c361-5f28-b6e1-bc4d063cbed7",
+      "usedVariables": [
+        "_entrepots"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "d5c522c7-9027-5029-bc0b-d5744743ee50"
+      },
+      "text": "external_table(\"dim_entrepot\")\n| where CodeEntrepot != \"?\"\n| distinct CodeEntrepot\n| order by CodeEntrepot asc",
+      "id": "7b7e585f-327f-592e-a3d9-820213c3dc9d",
+      "usedVariables": []
+    }
+  ],
+  "embeddedApps": []
+}

@@ -11,9 +11,39 @@
     ],
     "tabs": [
       {
-        "id": "5f4c298c-c2eb-43dd-8a61-474a43fc8d2f",
-        "content": "//***********************************************************************************************************\n// Here are two articles to help you get started with KQL:\n// KQL reference guide - https://aka.ms/KQLguide\n// SQL - KQL conversions - https://aka.ms/sqlcheatsheet\n//***********************************************************************************************************\n\n// Use \"take\" to view a sample number of records in the table and check the data.\nsensors\n| take 100\n\n// See how many records are in the table.\nsensors\n| count\n\n// This query returns the number of ingestions per hour in the given table.\nsensors\n| summarize IngestionCount = count() by bin(ingestion_time(), 1h)\n\n\nsensors\n| extend metrics_json = todynamic(metrics) // Optionnel : nécessaire uniquement si la colonne est un string\n| project \n    eventType,\n    sensorId,\n    timestamp,\n    Temperature = todecimal(metrics_json.temperature_c),\n    Pressure = todecimal(metrics_json.pressure_hpa),\n    Humidity = todecimal(metrics_json.humidity_pct)\n",
-        "title": "Tab",
+        "id": "b8ebd463-63ec-58cd-aa4c-a0bfb7e17a6a",
+        "content": "// Activité des entrepôts sur la dernière heure, par tranche de cinq minutes et par type d'événement\nwms_evenements\n| where DateEvenement > ago(1h)\n| summarize Evenements = count() by bin(DateEvenement, 5m), TypeEvenement\n| render columnchart with (kind = stacked)\n",
+        "title": "Activité des entrepôts",
+        "dataSourceId": "38ab0a83-2077-4fdd-9942-1b81a8d2d6b3"
+      },
+      {
+        "id": "48c8d0d2-6f03-5b78-9f05-343454277354",
+        "content": "// Stock disponible en temps réel : la photo du traitement par lots, plus les mouvements reçus depuis\nfn_StockTempsReel()\n| where MouvementsDepuisPhoto != 0\n| project CodeEntrepot, Sku, StockPhoto, MouvementsDepuisPhoto, StockTempsReel, DernierMouvement\n| order by abs(MouvementsDepuisPhoto) desc\n",
+        "title": "Stock en temps réel",
+        "dataSourceId": "38ab0a83-2077-4fdd-9942-1b81a8d2d6b3"
+      },
+      {
+        "id": "ef3a50db-4d14-517e-8357-d6eefa8519ab",
+        "content": "// Entrepôts silencieux : aucun événement reçu depuis plus de quinze minutes\nmv_DernierEvenementEntrepot\n| extend Silence = now() - DateEvenement\n| project CodeEntrepot, DernierEvenement = DateEvenement, TypeEvenement, Silence\n| where Silence > 15m\n",
+        "title": "Entrepôts silencieux",
+        "dataSourceId": "38ab0a83-2077-4fdd-9942-1b81a8d2d6b3"
+      },
+      {
+        "id": "0d2b5c1d-a437-5ee1-b1c8-fc31b09db1b6",
+        "content": "// Journaux du site : volume, erreurs et temps de réponse par tranche de cinq minutes sur les dernières 24 heures\nfn_ParseWebLogs()\n| where dateLog > ago(24h) and Type == \"AppServiceHTTPLogs\"\n| summarize Requetes = count(), Erreurs = countif(Success == false), DureeP95Ms = percentile(DurationMs, 95) by bin(dateLog, 5m)\n| render timechart\n",
+        "title": "Journaux du site",
+        "dataSourceId": "38ab0a83-2077-4fdd-9942-1b81a8d2d6b3"
+      },
+      {
+        "id": "f976ff14-94d4-5fab-9f9b-01dc0a792c9f",
+        "content": "// Détection d'anomalies sur le temps de réponse moyen des pages visitées, heure par heure sur sept jours\n// (requetes_visiteurs écarte le trafic technique de nopCommerce ; les pages en erreur sont exclues)\nrequetes_visiteurs\n| where TypePage != \"Erreur\"\n| make-series DureeMoyenneMs = avg(DureeMs) default = 0\n    on DateRequete from ago(7d) to now() step 1h\n| extend (Anomalie, Score, Reference) = series_decompose_anomalies(DureeMoyenneMs, 2.5)\n| render anomalychart with (anomalycolumns = Anomalie)\n",
+        "title": "Anomalies du temps de réponse",
+        "dataSourceId": "38ab0a83-2077-4fdd-9942-1b81a8d2d6b3"
+      },
+      {
+        "id": "34780a22-c407-53a8-8be1-63bc49c8d53d",
+        "content": "// Le même résultat en T-SQL : l'ensemble de requêtes accepte aussi le SQL, traduit en KQL par le moteur\nSELECT TOP 10 CodeEntrepot, COUNT(*) AS Evenements\nFROM wms_evenements\nGROUP BY CodeEntrepot\nORDER BY Evenements DESC\n",
+        "title": "En T-SQL",
         "dataSourceId": "38ab0a83-2077-4fdd-9942-1b81a8d2d6b3"
       }
     ],

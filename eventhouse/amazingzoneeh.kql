@@ -1,0 +1,161 @@
+// Base KQL AmazingZoneEH (Eventhouse AmazingZoneEH) : schéma complet exporté le 07/11/2026
+// par .show database schema as csl script (chapitre 8 « Exploiter le temps réel »).
+// La définition Git de la base (workspaces/.../AmazingZoneEH.KQLDatabase/DatabaseSchema.kql) omet les tables
+// externes (stock_disponible_lot, dim_entrepot) et la disponibilité dans OneLake (policy mirroring) :
+// ce script les reprend. À exécuter dans l'ordre, sur une base vide, depuis un ensemble de requêtes.
+// Remplacer <ID_ESPACE> et <ID_WAREHOUSE_AMAZINGZONEWH> par les identifiants de votre espace et de votre Warehouse.
+
+.alter database policy retention @'{"SoftDeletePeriod":"365000.00:00:00","Recoverability":"Enabled"}'
+
+.alter database policy caching hotdata = time(36500.00:00:00) hotindex = time(36500.00:00:00)
+
+.alter-merge database policy streamingingestion "{\"IsEnabled\":true,\"HintAllocatedRate\":null,\"NumberOfRowStores\":null,\"SealIntervalLimit\":null,\"SealThresholdBytes\":null,\"UsageTags\":[],\"IsMaintenanceActive\":false}"
+
+.alter database policy ingestionbatching @'{"MaximumBatchingTimeSpan":"00:00:20","MaximumNumberOfItems":500,"MaximumRawDataSizeMB":300,"Origin":0}'
+
+.create-merge table sensors (eventType:string, sensorId:string, timestamp:datetime, metrics:dynamic) 
+
+.create-or-alter table sensors ingestion json mapping 'sensors_mapping'
+```
+[{"Properties":{"Path":"$['eventType']"},"column":"eventType","datatype":""},{"Properties":{"Path":"$['sensorId']"},"column":"sensorId","datatype":""},{"Properties":{"Path":"$['timestamp']"},"column":"timestamp","datatype":""},{"Properties":{"Path":"$['metrics']"},"column":"metrics","datatype":""}]
+```
+
+.create-merge table logsweb (records:dynamic, EventProcessedUtcTime:datetime, PartitionId:string, EventEnqueuedUtcTime:datetime) 
+
+.create-or-alter table logsweb ingestion json mapping 'logsweb_mapping'
+```
+[{"Properties":{"Path":"$['records']"},"column":"records","datatype":""},{"Properties":{"Path":"$['EventProcessedUtcTime']"},"column":"EventProcessedUtcTime","datatype":""},{"Properties":{"Path":"$['PartitionId']"},"column":"PartitionId","datatype":""},{"Properties":{"Path":"$['EventEnqueuedUtcTime']"},"column":"EventEnqueuedUtcTime","datatype":""}]
+```
+
+.create-merge table wms_events (eventId:string, eventType:string, eventTime:string, warehouse:string, sku:string, orderNo:string, location:string, quantity:long, carrier:string) 
+
+.create-merge table wms_evenements (IdEvenement:string, TypeEvenement:string, DateEvenement:datetime, CodeEntrepot:string, Sku:string, NumeroCommande:string, Emplacement:string, Quantite:long, Transporteur:string, MouvementStock:long) with (docstring = "Événements logistiques du WMS, typés à l\'ingestion par la stratégie de mise à jour de wms_events") 
+
+.create-merge table journaux_http (DateRequete:datetime, Methode:string, Page:string, CodeHttp:int, DureeMs:real, Succes:bool) 
+
+.create-merge table requetes_visiteurs (DateRequete:datetime, TypePage:string, Page:string, CodeHttp:int, DureeMs:real) 
+
+.create-or-alter function with (folder = "Typage", docstring = "Déplie les lots de journaux de l\'App Service ; Success n\'est renseigné que pour les journaux HTTP", skipvalidation = "true") fn_ParseWebLogs() {
+logsweb
+| mv-expand records
+| where tostring(records.['category']) in ("AppServiceHTTPLogs", "AppServiceAppLogs")
+| project
+    dateLog    = todatetime(records.['time']),
+    Type       = tostring(records.['category']),
+    ResultCode = tostring(records.properties.ScStatus),
+    DurationMs = todouble(records.properties.TimeTaken),
+    Success    = iff(tostring(records.['category']) == "AppServiceHTTPLogs",
+                     toint(records.properties.ScStatus) < 400, bool(null))
+}
+
+.create-or-alter function with (folder = "Typage", docstring = "Type les événements bruts du WMS et calcule leur effet sur le stock", skipvalidation = "true") fn_TypageEvenementsWMS() {
+    wms_events
+    | project
+        IdEvenement    = eventId,
+        TypeEvenement  = eventType,
+        DateEvenement  = todatetime(eventTime),
+        CodeEntrepot   = warehouse,
+        Sku            = sku,
+        NumeroCommande = orderNo,
+        Emplacement    = location,
+        Quantite       = quantity,
+        Transporteur   = carrier,
+        MouvementStock = case(eventType in ("RECEPTION", "STOCK_UPDATE"), quantity,
+                              eventType == "SHIPMENT", -quantity,
+                              long(0))
+}
+
+.create-or-alter function with (folder = "Restitution", docstring = "Stock disponible en temps réel : photo du traitement par lots, plus les mouvements reçus depuis", skipvalidation = "true") fn_StockTempsReel() {
+    let photo = external_table('stock_disponible_lot')
+        | project Sku = sku, CodeEntrepot = code_entrepot, StockPhoto = quantite_disponible, DatePhoto = date_maj_wms;
+    photo
+    | join kind = leftouter (mv_MouvementsStockHeure) on Sku, CodeEntrepot
+    | summarize StockPhoto = take_any(StockPhoto), DatePhoto = take_any(DatePhoto),
+                MouvementsDepuisPhoto = sumif(Mouvement, Heure >= bin(DatePhoto, 1h)),
+                DernierMouvement = maxif(Heure, Heure >= bin(DatePhoto, 1h))
+        by Sku, CodeEntrepot
+    | extend StockTempsReel = StockPhoto + MouvementsDepuisPhoto
+}
+
+.create-or-alter function with (folder = "Typage", docstring = "Une ligne par requête HTTP de l\'App Service, extraite des lots de journaux", skipvalidation = "true") fn_TypageJournauxHttp() {
+    logsweb
+    | mv-expand records
+    | where tostring(records.['category']) == "AppServiceHTTPLogs"
+    | project
+        DateRequete = todatetime(records.['time']),
+        Methode     = tostring(records.properties.CsMethod),
+        Page        = tostring(records.properties.CsUriStem),
+        CodeHttp    = toint(records.properties.ScStatus),
+        DureeMs     = todouble(records.properties.TimeTaken),
+        Succes      = toint(records.properties.ScStatus) < 400
+}
+
+.create-or-alter function with (folder = "Typage", docstring = "Requêtes des visiteurs du site, sans le trafic technique de nopCommerce (tâches planifiées, keepalive)", skipvalidation = "true") fn_RequetesVisiteurs() {
+    journaux_http
+    | where not(Page startswith "/scheduletask") and Page != "/keepalive/index"
+    | project DateRequete,
+              TypePage = case(Page == "/", "Accueil", Page startswith "/search", "Recherche", CodeHttp == 404, "Erreur", "Catalogue"),
+              Page, CodeHttp, DureeMs
+}
+
+.create-or-alter function with (folder = "Agents", docstring = "Santé des entrepôts pour l\'agent opérationnel : une ligne par entrepôt, toujours présente, horodatée à l\'instant de la requête, avec le silence déjà calculé", skipvalidation = "true") fn_SurveillanceEntrepots() {
+    external_table('dim_entrepot')
+    | where CodeEntrepot != "?"
+    | project CodeEntrepot, Entrepot
+    | join kind = leftouter (mv_DernierEvenementEntrepot | project CodeEntrepot, DernierEvenement = DateEvenement) on CodeEntrepot
+    | extend MinutesSansEvenement = iff(isnull(DernierEvenement), 9999, datetime_diff('minute', now(), DernierEvenement))
+    | project Timestamp = now() - 30s, CodeEntrepot, Entrepot, DernierEvenement, MinutesSansEvenement,
+              EntrepotMuet = MinutesSansEvenement > 15
+}
+
+.create-or-alter materialized-view with (DocString = "Mouvements de stock par article, entrepôt et heure", Folder = "Agrégats")  mv_MouvementsStockHeure on table wms_evenements { wms_evenements
+    | summarize Mouvement = sum(MouvementStock), Evenements = count() by CodeEntrepot, Sku, Heure = bin(DateEvenement, 1h) }
+
+.alter materialized-view mv_MouvementsStockHeure policy caching hotdata=time(31.00:00:00) hotindex=time(31.00:00:00)
+
+.create-or-alter materialized-view with (DocString = "Dernier événement reçu de chaque entrepôt", Folder = "Agrégats")  mv_DernierEvenementEntrepot on table wms_evenements { wms_evenements
+    | summarize arg_max(DateEvenement, *) by CodeEntrepot }
+
+.alter materialized-view mv_DernierEvenementEntrepot policy caching hotdata=time(31.00:00:00) hotindex=time(31.00:00:00)
+
+.create-or-alter external table stock_disponible_lot (sku:string, code_entrepot:string, quantite_disponible:int, date_maj_wms:datetime)
+                kind = delta
+                (
+                    h@"abfss://<ID_ESPACE>@onelake.dfs.fabric.microsoft.com/<ID_WAREHOUSE_AMAZINGZONEWH>/Tables/api/stock_disponible;impersonate"
+                )
+                with (docstring = "Stock disponible photographié par le traitement par lots (AmazingZoneWH, api.stock_disponible)")
+
+.create-or-alter external table dim_entrepot (EntrepotKey:long, CodeEntrepot:string, Entrepot:string, Ville:string, Latitude:real, Longitude:real, DateChargement:datetime)
+                kind = delta
+                (
+                    h@"abfss://<ID_ESPACE>@onelake.dfs.fabric.microsoft.com/<ID_WAREHOUSE_AMAZINGZONEWH>/Tables/gold/DimEntrepot;impersonate"
+                )
+                with (docstring = "Dimension entrepôt de la couche Gold (AmazingZoneWH, gold.DimEntrepot), pour les coordonnées et les libellés")
+
+.alter table logsweb policy retention @'{"SoftDeletePeriod":"90.00:00:00","Recoverability":"Enabled"}'
+
+.alter table logsweb policy caching hotdata = time(14.00:00:00) hotindex = time(14.00:00:00)
+
+.alter table wms_events policy retention @'{"SoftDeletePeriod":"30.00:00:00","Recoverability":"Enabled"}'
+
+.alter table wms_events policy caching hotdata = time(7.00:00:00) hotindex = time(7.00:00:00)
+
+.alter table wms_evenements policy retention @'{"SoftDeletePeriod":"730.00:00:00","Recoverability":"Enabled"}'
+
+.alter table wms_evenements policy caching hotdata = time(31.00:00:00) hotindex = time(31.00:00:00)
+
+.alter table wms_evenements policy mirroring h"{\"ConnectionStrings\":[],\"Format\":\"parquet\",\"Kind\":\"Delta\",\"StringPartitions\":[],\"DateTimePartitions\":[],\"PathFormat\":[],\"IsEnabled\":true,\"TargetLatencyInMinutes\":5,\"Backfill\":true}"
+
+.alter table journaux_http policy retention @'{"SoftDeletePeriod":"90.00:00:00","Recoverability":"Enabled"}'
+
+.alter table journaux_http policy caching hotdata = time(14.00:00:00) hotindex = time(14.00:00:00)
+
+.alter table requetes_visiteurs policy retention @'{"SoftDeletePeriod":"90.00:00:00","Recoverability":"Enabled"}'
+
+.alter table requetes_visiteurs policy caching hotdata = time(14.00:00:00) hotindex = time(14.00:00:00)
+
+.alter table wms_evenements policy update "[{\"IsEnabled\":true,\"Source\":\"wms_events\",\"Query\":\"fn_TypageEvenementsWMS()\",\"IsTransactional\":false,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null,\"IsAsync\":false}]"
+
+.alter table journaux_http policy update "[{\"IsEnabled\":true,\"Source\":\"logsweb\",\"Query\":\"fn_TypageJournauxHttp()\",\"IsTransactional\":false,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null,\"IsAsync\":false}]"
+
+.alter table requetes_visiteurs policy update "[{\"IsEnabled\":true,\"Source\":\"journaux_http\",\"Query\":\"fn_RequetesVisiteurs()\",\"IsTransactional\":false,\"PropagateIngestionProperties\":false,\"ManagedIdentity\":null,\"IsAsync\":false}]"

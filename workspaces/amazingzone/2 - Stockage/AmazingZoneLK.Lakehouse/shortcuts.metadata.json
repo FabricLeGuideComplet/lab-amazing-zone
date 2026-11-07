@@ -1,5 +1,18 @@
 [
   {
+    "name": "evenements",
+    "path": "/Tables/wms",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/wms_evenements",
+        "itemId": "16141940-050c-9467-467e-3ee59afe9a4e",
+        "workspaceId": "00000000-0000-0000-0000-000000000000",
+        "artifactType": "KustoDatabase"
+      }
+    }
+  },
+  {
     "name": "Product_Category_Mapping",
     "path": "/Tables/ecommerce",
     "target": {

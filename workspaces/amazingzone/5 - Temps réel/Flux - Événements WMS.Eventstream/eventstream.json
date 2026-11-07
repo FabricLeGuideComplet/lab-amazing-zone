@@ -9,6 +9,26 @@
   ],
   "destinations": [
     {
+      "id": "2ce0ef2c-0f98-50fc-ae80-6dd78063fb95",
+      "name": "iAg0Nm7C0ZI2fa2-5spdsv-ddb337ec-32ca-4538-85c2-8e3086b00318",
+      "type": "Activator",
+      "properties": {
+        "workspaceId": "00000000-0000-0000-0000-000000000000",
+        "itemId": "86b00318-8e30-85c2-4538-32caddb337ec",
+        "inputSerialization": {
+          "type": "Json",
+          "properties": {
+            "encoding": "UTF8"
+          }
+        }
+      },
+      "inputNodes": [
+        {
+          "name": "AmazingZoneES-stream"
+        }
+      ]
+    },
+    {
       "id": "5f9247ea-0d4e-42c9-a0f3-4739f544185e",
       "name": "AmazingZoneEH",
       "type": "Eventhouse",

@@ -8,6 +8,20 @@
       "itemType": "Report",
       "itemLogicalId": "dbc8ebe3-211a-999d-4422-067642792c3e",
       "displayName": "Pilotage des ventes et de la logistique"
+    },
+    {
+      "elementType": "item",
+      "elementId": "b88740e7-5698-4d9d-87f3-229d2b51bc9d",
+      "itemType": "KQLDashboard",
+      "itemLogicalId": "2d4bde8d-7eea-9c08-4407-802fe0c40589",
+      "displayName": "Tableau de bord - Journaux du site"
+    },
+    {
+      "elementType": "item",
+      "elementId": "a9584755-1fca-4b92-977e-5c07b42b7b30",
+      "itemType": "KQLDashboard",
+      "itemLogicalId": "ab051593-8b5e-b90d-4691-1bda46dc8418",
+      "displayName": "Tableau de bord - Suivi des entrepôts"
     }
   ]
 }

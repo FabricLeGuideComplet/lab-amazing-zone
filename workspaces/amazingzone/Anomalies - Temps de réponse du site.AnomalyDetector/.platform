@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "AnomalyDetector",
+    "displayName": "Anomalies - Temps de réponse du site"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "af2e9079-37d3-9e83-4565-454a7184320a"
+  }
+}

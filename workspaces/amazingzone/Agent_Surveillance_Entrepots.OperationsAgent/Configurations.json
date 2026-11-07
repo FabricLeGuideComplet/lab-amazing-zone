@@ -1,0 +1,242 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/operationsAgents/definition/1.0.0/schema.json",
+  "configuration": {
+    "instructions": "Tu surveilles la sant\u00E9 des quatre entrep\u00F4ts d\u0027Amazing Zone avec la fonction fn_SurveillanceEntrepots, et uniquement elle. Elle renvoie \u00E0 chaque ex\u00E9cution une ligne par entrep\u00F4t (CodeEntrepot, Entrepot), horodat\u00E9e par la colonne Timestamp, avec DernierEvenement, MinutesSansEvenement et le bool\u00E9en EntrepotMuet.\nUtilise CodeEntrepot comme identifiant de l\u0027objet surveill\u00E9 et Timestamp comme horodatage. N\u0027ajoute aucun filtre sur la date du dernier \u00E9v\u00E9nement.\nPr\u00E9viens le responsable logistique sur Teams quand EntrepotMuet devient vrai pour un entrep\u00F4t : indique le nom de l\u0027entrep\u00F4t, l\u0027heure du dernier \u00E9v\u00E9nement re\u00E7u et le nombre de minutes sans \u00E9v\u00E9nement. Ne propose aucune autre action.",
+    "dataSources": {
+      "16141940-050c-9467-467e-3ee59afe9a4e": {
+        "id": "16141940-050c-9467-467e-3ee59afe9a4e",
+        "type": "KustoDatabase",
+        "workspaceId": "00000000-0000-0000-0000-000000000000"
+      }
+    },
+    "actions": {}
+  },
+  "playbook": {
+    "OntologyDefinitions": {
+      "Entrepot__entrepot_muet_devient_vrai": {
+        "$type": "class",
+        "IRI": "Entrepot",
+        "DocumentId": "",
+        "Name": "Entrepot",
+        "Description": "One row per logistics warehouse monitored by fn_SurveillanceEntrepots, identified by CodeEntrepot, for each function execution row within scope.",
+        "DataLink": {
+          "$type": "kustogroundingtable",
+          "TableName": "fn_SurveillanceEntrepots"
+        }
+      },
+      "Entrepot__entrepot_muet_devient_vrai.Id": {
+        "$type": "data",
+        "IRI": "Id",
+        "DocumentId": "",
+        "Name": "Id",
+        "Description": "Entrep\u00F4t identifier for this observation, sourced from fn_SurveillanceEntrepots.CodeEntrepot.",
+        "DomainClassIRI": "Entrepot",
+        "RangeDataType": "string",
+        "Kind": 0,
+        "DataLink": {
+          "$type": "kustogroundingcol",
+          "ColumnName": "CodeEntrepot"
+        }
+      },
+      "Entrepot__entrepot_muet_devient_vrai.Timestamp": {
+        "$type": "data",
+        "IRI": "Timestamp",
+        "DocumentId": "",
+        "Name": "Timestamp",
+        "Description": "Horodatage de l\u2019observation pour cette ex\u00E9cution de fn_SurveillanceEntrepots, issu de la colonne Timestamp.",
+        "DomainClassIRI": "Entrepot",
+        "RangeDataType": "datetime",
+        "Kind": 2,
+        "DataLink": {
+          "$type": "kustogroundingcol",
+          "ColumnName": "Timestamp"
+        }
+      },
+      "Entrepot__entrepot_muet_devient_vrai.EntrepotMuet": {
+        "$type": "data",
+        "IRI": "EntrepotMuet",
+        "DocumentId": "",
+        "Name": "EntrepotMuet",
+        "Description": "Indique si l\u2019entrep\u00F4t est muet pour cette ex\u00E9cution, issu de fn_SurveillanceEntrepots.EntrepotMuet.",
+        "DomainClassIRI": "Entrepot",
+        "RangeDataType": "bool",
+        "Kind": 1,
+        "DataLink": {
+          "$type": "kustogroundingcol",
+          "ColumnName": "EntrepotMuet"
+        }
+      },
+      "Entrepot__entrepot_muet_devient_vrai.EntrepotNom": {
+        "$type": "data",
+        "IRI": "EntrepotNom",
+        "DocumentId": "",
+        "Name": "EntrepotNom",
+        "Description": "Nom lisible de l\u2019entrep\u00F4t, issu de la colonne Entrepot de fn_SurveillanceEntrepots.",
+        "DomainClassIRI": "Entrepot",
+        "RangeDataType": "string",
+        "Kind": 1,
+        "DataLink": {
+          "$type": "kustogroundingcol",
+          "ColumnName": "Entrepot"
+        }
+      },
+      "Entrepot__entrepot_muet_devient_vrai.DernierEvenement": {
+        "$type": "data",
+        "IRI": "DernierEvenement",
+        "DocumentId": "",
+        "Name": "DernierEvenement",
+        "Description": "Horodatage du dernier \u00E9v\u00E9nement re\u00E7u pour l\u2019entrep\u00F4t, issu de fn_SurveillanceEntrepots.DernierEvenement.",
+        "DomainClassIRI": "Entrepot",
+        "RangeDataType": "datetime",
+        "Kind": 1,
+        "DataLink": {
+          "$type": "kustogroundingcol",
+          "ColumnName": "DernierEvenement"
+        }
+      },
+      "Entrepot__entrepot_muet_devient_vrai.MinutesSansEvenement": {
+        "$type": "data",
+        "IRI": "MinutesSansEvenement",
+        "DocumentId": "",
+        "Name": "MinutesSansEvenement",
+        "Description": "Nombre de minutes \u00E9coul\u00E9es depuis le dernier \u00E9v\u00E9nement pour l\u2019entrep\u00F4t, issu de fn_SurveillanceEntrepots.MinutesSansEvenement.",
+        "DomainClassIRI": "Entrepot",
+        "RangeDataType": "long",
+        "Kind": 1,
+        "DataLink": {
+          "$type": "kustogroundingcol",
+          "ColumnName": "MinutesSansEvenement"
+        }
+      }
+    },
+    "RuleDefinitions": {
+      "9c5e413b-a8e9-4a49-a591-7d7aacbf0f1c": {
+        "Id": "9c5e413b-a8e9-4a49-a591-7d7aacbf0f1c",
+        "Name": "Entrepot Muet Devient Vrai",
+        "Description": "Pr\u00E9venir le responsable logistique sur Teams quand EntrepotMuet passe de faux \u00E0 vrai pour un entrep\u00F4t, en incluant dans l\u2019alerte le nom de l\u2019entrep\u00F4t, l\u2019heure du dernier \u00E9v\u00E9nement re\u00E7u et le nombre de minutes sans \u00E9v\u00E9nement.",
+        "ClassExpression": {
+          "$type": "kqldataquery",
+          "Expression": "declare query_parameters(startTime:datetime, endTime:datetime);\n// Entrepot entity materialization from fn_SurveillanceEntrepots: one row per entrep\u00F4t and function execution\nlet Entrepot =\n    [\u0027fn_SurveillanceEntrepots\u0027];\nEntrepot | where [\u0027Timestamp\u0027] between (startTime .. endTime)\n| project\n    Id = [\u0027CodeEntrepot\u0027],\n    Timestamp = [\u0027Timestamp\u0027],\n    EntrepotMuet = [\u0027EntrepotMuet\u0027],\n    EntrepotNom = [\u0027Entrepot\u0027],\n    DernierEvenement = [\u0027DernierEvenement\u0027],\n    MinutesSansEvenement = [\u0027MinutesSansEvenement\u0027]",
+          "Description": "Pr\u00E9venir le responsable logistique sur Teams quand EntrepotMuet passe de faux \u00E0 vrai pour un entrep\u00F4t, en incluant dans l\u2019alerte le nom de l\u2019entrep\u00F4t, l\u2019heure du dernier \u00E9v\u00E9nement re\u00E7u et le nombre de minutes sans \u00E9v\u00E9nement.",
+          "ProjectedColumns": [
+            "Id",
+            "Timestamp",
+            "EntrepotMuet"
+          ],
+          "TriggerType": 0,
+          "RcaSource": {
+            "$type": "kqlrcasource",
+            "SourceTable": "fn_SurveillanceEntrepots"
+          },
+          "ChartTemplate": {
+            "$type": "kqlcharttemplate",
+            "ValueField": "EntrepotMuet",
+            "TemplateEnvelope": "\u003Cchart_template rule_id=\u00229c5e413b-a8e9-4a49-a591-7d7aacbf0f1c\u0022 value_field=\u0022EntrepotMuet\u0022 trigger_type=\u0022AttributeTrigger\u0022\u003E\u003Cquery\u003E\u003C![CDATA[declare query_parameters(instanceId:string, startTime:datetime, endTime:datetime);\r\n[\u0027fn_SurveillanceEntrepots\u0027]\r\n| where [\u0027CodeEntrepot\u0027] == instanceId\r\n| where [\u0027Timestamp\u0027] between (startTime .. endTime)\r\n| project Timestamp = [\u0027Timestamp\u0027], Value = [\u0027EntrepotMuet\u0027]]]\u003E\u003C/query\u003E\u003C/chart_template\u003E"
+          }
+        },
+        "RuleCondition": {
+          "$type": "propertychangechangestotrue",
+          "DataPropertyName": "EntrepotMuet"
+        },
+        "LocalOntology": {
+          "Entrepot": {
+            "$type": "class",
+            "IRI": "Entrepot",
+            "DocumentId": "",
+            "Name": "Entrepot",
+            "Description": "One row per logistics warehouse monitored by fn_SurveillanceEntrepots, identified by CodeEntrepot, for each function execution row within scope.",
+            "DataLink": {
+              "$type": "kustogroundingtable",
+              "TableName": "fn_SurveillanceEntrepots"
+            }
+          },
+          "Id": {
+            "$type": "data",
+            "IRI": "Id",
+            "DocumentId": "",
+            "Name": "Id",
+            "Description": "Entrep\u00F4t identifier for this observation, sourced from fn_SurveillanceEntrepots.CodeEntrepot.",
+            "DomainClassIRI": "Entrepot",
+            "RangeDataType": "string",
+            "Kind": 0,
+            "DataLink": {
+              "$type": "kustogroundingcol",
+              "ColumnName": "CodeEntrepot"
+            }
+          },
+          "Timestamp": {
+            "$type": "data",
+            "IRI": "Timestamp",
+            "DocumentId": "",
+            "Name": "Timestamp",
+            "Description": "Horodatage de l\u2019observation pour cette ex\u00E9cution de fn_SurveillanceEntrepots, issu de la colonne Timestamp.",
+            "DomainClassIRI": "Entrepot",
+            "RangeDataType": "datetime",
+            "Kind": 2,
+            "DataLink": {
+              "$type": "kustogroundingcol",
+              "ColumnName": "Timestamp"
+            }
+          },
+          "EntrepotMuet": {
+            "$type": "data",
+            "IRI": "EntrepotMuet",
+            "DocumentId": "",
+            "Name": "EntrepotMuet",
+            "Description": "Indique si l\u2019entrep\u00F4t est muet pour cette ex\u00E9cution, issu de fn_SurveillanceEntrepots.EntrepotMuet.",
+            "DomainClassIRI": "Entrepot",
+            "RangeDataType": "bool",
+            "Kind": 1,
+            "DataLink": {
+              "$type": "kustogroundingcol",
+              "ColumnName": "EntrepotMuet"
+            }
+          },
+          "EntrepotNom": {
+            "$type": "data",
+            "IRI": "EntrepotNom",
+            "DocumentId": "",
+            "Name": "EntrepotNom",
+            "Description": "Nom lisible de l\u2019entrep\u00F4t, issu de la colonne Entrepot de fn_SurveillanceEntrepots.",
+            "DomainClassIRI": "Entrepot",
+            "RangeDataType": "string",
+            "Kind": 1,
+            "DataLink": {
+              "$type": "kustogroundingcol",
+              "ColumnName": "Entrepot"
+            }
+          },
+          "DernierEvenement": {
+            "$type": "data",
+            "IRI": "DernierEvenement",
+            "DocumentId": "",
+            "Name": "DernierEvenement",
+            "Description": "Horodatage du dernier \u00E9v\u00E9nement re\u00E7u pour l\u2019entrep\u00F4t, issu de fn_SurveillanceEntrepots.DernierEvenement.",
+            "DomainClassIRI": "Entrepot",
+            "RangeDataType": "datetime",
+            "Kind": 1,
+            "DataLink": {
+              "$type": "kustogroundingcol",
+              "ColumnName": "DernierEvenement"
+            }
+          },
+          "MinutesSansEvenement": {
+            "$type": "data",
+            "IRI": "MinutesSansEvenement",
+            "DocumentId": "",
+            "Name": "MinutesSansEvenement",
+            "Description": "Nombre de minutes \u00E9coul\u00E9es depuis le dernier \u00E9v\u00E9nement pour l\u2019entrep\u00F4t, issu de fn_SurveillanceEntrepots.MinutesSansEvenement.",
+            "DomainClassIRI": "Entrepot",
+            "RangeDataType": "long",
+            "Kind": 1,
+            "DataLink": {
+              "$type": "kustogroundingcol",
+              "ColumnName": "MinutesSansEvenement"
+            }
+          }
+        }
+      }
+    }
+  },
+  "shouldRun": false
+}

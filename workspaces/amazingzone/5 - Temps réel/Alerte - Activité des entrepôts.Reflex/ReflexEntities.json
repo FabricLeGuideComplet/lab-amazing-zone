@@ -1,0 +1,145 @@
+[
+  {
+    "uniqueIdentifier": "a4323184-d620-4124-aa69-486d4b6e6b33",
+    "payload": {
+      "name": "Flux - Événements WMS",
+      "description": "Container Description",
+      "type": "eventstreams"
+    },
+    "type": "container-v1"
+  },
+  {
+    "uniqueIdentifier": "2ce0ef2c-0f98-50fc-ae80-6dd78063fb95",
+    "payload": {
+      "name": "AmazingZoneES-stream event",
+      "metadata": {
+        "eventstreamArtifactId": "75e869b0-3e3c-438e-9871-9b91482f39a7",
+        "eventTypes": [
+          {
+            "name": "Flux - Événements WMS"
+          }
+        ]
+      },
+      "parentContainer": {
+        "targetUniqueIdentifier": "a4323184-d620-4124-aa69-486d4b6e6b33"
+      }
+    },
+    "type": "eventstreamSource-v1"
+  },
+  {
+    "uniqueIdentifier": "75fa0280-4432-423d-b241-7da963a2e11e",
+    "payload": {
+      "name": "AmazingZoneES-stream event",
+      "parentContainer": {
+        "targetUniqueIdentifier": "a4323184-d620-4124-aa69-486d4b6e6b33"
+      },
+      "definition": {
+        "type": "Event",
+        "instance": "{\"steps\":[{\"id\":\"2d3167b8-8d3a-41f6-b8b9-4b08863410c8\",\"name\":\"SourceEventStep\",\"rows\":[{\"arguments\":[{\"name\":\"entityId\",\"type\":\"string\",\"value\":\"2ce0ef2c-0f98-50fc-ae80-6dd78063fb95\"}],\"kind\":\"SourceReference\",\"name\":\"SourceSelector\"}]}],\"templateId\":\"SourceEvent\",\"templateVersion\":\"1.3.1\"}"
+      }
+    },
+    "type": "timeSeriesView-v1"
+  },
+  {
+    "uniqueIdentifier": "bd4ad506-f4ed-4e87-9b7c-4d79ab5ad32e",
+    "payload": {
+      "name": "warehouse",
+      "parentContainer": {
+        "targetUniqueIdentifier": "a4323184-d620-4124-aa69-486d4b6e6b33"
+      },
+      "definition": {
+        "type": "Object"
+      }
+    },
+    "type": "timeSeriesView-v1"
+  },
+  {
+    "uniqueIdentifier": "c9425934-9348-49a5-ac36-7009d48147dc",
+    "payload": {
+      "name": "warehouse",
+      "parentObject": {
+        "targetUniqueIdentifier": "bd4ad506-f4ed-4e87-9b7c-4d79ab5ad32e"
+      },
+      "parentContainer": {
+        "targetUniqueIdentifier": "a4323184-d620-4124-aa69-486d4b6e6b33"
+      },
+      "definition": {
+        "type": "Attribute",
+        "instance": "{\"steps\":[{\"id\":\"af0bed12-b82b-4f33-84fd-c9371bd0dce9\",\"name\":\"IdPartStep\",\"rows\":[{\"arguments\":[{\"name\":\"op\",\"type\":\"string\",\"value\":\"Text\"},{\"name\":\"format\",\"type\":\"string\",\"value\":\"\"}],\"kind\":\"TypeAssertion\",\"name\":\"TypeAssertion\"}]}],\"templateId\":\"IdentityPartAttribute\",\"templateVersion\":\"1.3.1\"}"
+      }
+    },
+    "type": "timeSeriesView-v1"
+  },
+  {
+    "uniqueIdentifier": "1b52df38-35b4-4194-9840-d09fcec802cf",
+    "payload": {
+      "name": "warehouse",
+      "parentObject": {
+        "targetUniqueIdentifier": "bd4ad506-f4ed-4e87-9b7c-4d79ab5ad32e"
+      },
+      "parentContainer": {
+        "targetUniqueIdentifier": "a4323184-d620-4124-aa69-486d4b6e6b33"
+      },
+      "definition": {
+        "type": "Attribute",
+        "instance": "{\"steps\":[{\"id\":\"c2df0341-1941-4609-a24b-f544787ef4df\",\"name\":\"IdStructureStep\",\"rows\":[{\"arguments\":[{\"arguments\":[{\"name\":\"entityId\",\"type\":\"string\",\"value\":\"c9425934-9348-49a5-ac36-7009d48147dc\"}],\"kind\":\"AttributeReference\",\"name\":\"idPart\",\"type\":\"complex\"}],\"kind\":\"IdPart\",\"name\":\"IdPart\"}]}],\"templateId\":\"IdentityTupleAttribute\",\"templateVersion\":\"1.3.1\"}"
+      }
+    },
+    "type": "timeSeriesView-v1"
+  },
+  {
+    "uniqueIdentifier": "2927d3b7-d60d-4da0-9180-1903465cb01a",
+    "payload": {
+      "name": "AmazingZoneES-stream event",
+      "parentObject": {
+        "targetUniqueIdentifier": "bd4ad506-f4ed-4e87-9b7c-4d79ab5ad32e"
+      },
+      "parentContainer": {
+        "targetUniqueIdentifier": "a4323184-d620-4124-aa69-486d4b6e6b33"
+      },
+      "definition": {
+        "type": "Event",
+        "instance": "{\"steps\":[{\"id\":\"d1840116-084e-4269-a493-a9c02d16d880\",\"name\":\"SplitEventStep\",\"rows\":[{\"arguments\":[{\"arguments\":[{\"name\":\"entityId\",\"type\":\"string\",\"value\":\"75fa0280-4432-423d-b241-7da963a2e11e\"}],\"kind\":\"EventReference\",\"name\":\"event\",\"type\":\"complex\"}],\"kind\":\"Event\",\"name\":\"EventSelector\"},{\"arguments\":[{\"name\":\"fieldName\",\"type\":\"string\",\"value\":\"warehouse\"},{\"arguments\":[{\"name\":\"entityId\",\"type\":\"string\",\"value\":\"c9425934-9348-49a5-ac36-7009d48147dc\"}],\"kind\":\"AttributeReference\",\"name\":\"idPart\",\"type\":\"complex\"}],\"kind\":\"FieldIdMapping\",\"name\":\"FieldIdMapping\"},{\"arguments\":[{\"name\":\"isAuthoritative\",\"type\":\"boolean\",\"value\":true}],\"kind\":\"EventOptions\",\"name\":\"SplitEventOptions\"}]}],\"templateId\":\"SplitEvent\",\"templateVersion\":\"1.3.1\"}"
+      }
+    },
+    "type": "timeSeriesView-v1"
+  },
+  {
+    "uniqueIdentifier": "c5f3a4a5-dfb4-4591-ae17-d724cf2d0ec2",
+    "payload": {
+      "name": "eventType",
+      "parentObject": {
+        "targetUniqueIdentifier": "bd4ad506-f4ed-4e87-9b7c-4d79ab5ad32e"
+      },
+      "parentContainer": {
+        "targetUniqueIdentifier": "a4323184-d620-4124-aa69-486d4b6e6b33"
+      },
+      "definition": {
+        "type": "Attribute",
+        "instance": "{\"steps\":[{\"id\":\"e68c7ed4-eaca-4d1a-877c-291c2d2e2c7c\",\"name\":\"EventSelectStep\",\"rows\":[{\"arguments\":[{\"arguments\":[{\"name\":\"entityId\",\"type\":\"string\",\"value\":\"2927d3b7-d60d-4da0-9180-1903465cb01a\"}],\"kind\":\"EventReference\",\"name\":\"event\",\"type\":\"complex\"}],\"kind\":\"Event\",\"name\":\"EventSelector\"},{\"arguments\":[{\"name\":\"fieldName\",\"type\":\"string\",\"value\":\"eventType\"}],\"kind\":\"EventField\",\"name\":\"EventFieldSelector\"}]},{\"id\":\"0fff6dc2-7eb6-48a2-aea1-77bc36837894\",\"name\":\"EventComputeStep\",\"rows\":[{\"arguments\":[{\"name\":\"op\",\"type\":\"string\",\"value\":\"Text\"},{\"name\":\"format\",\"type\":\"string\",\"value\":\"\"}],\"kind\":\"TypeAssertion\",\"name\":\"TypeAssertion\"}]}],\"templateId\":\"BasicEventAttribute\",\"templateVersion\":\"1.3.1\"}"
+      }
+    },
+    "type": "timeSeriesView-v1"
+  },
+  {
+    "uniqueIdentifier": "39447192-06ba-40f1-9fe5-763cf5b316a5",
+    "payload": {
+      "name": "Entrepôt silencieux depuis 10 minutes",
+      "parentObject": {
+        "targetUniqueIdentifier": "bd4ad506-f4ed-4e87-9b7c-4d79ab5ad32e"
+      },
+      "parentContainer": {
+        "targetUniqueIdentifier": "a4323184-d620-4124-aa69-486d4b6e6b33"
+      },
+      "definition": {
+        "type": "Rule",
+        "instance": "{\"templateId\":\"AttributeTrigger\",\"templateVersion\":\"1.3.1\",\"steps\":[{\"name\":\"ScalarSelectStep\",\"id\":\"59b72d13-51de-47cf-89a7-db1fc85980a3\",\"rows\":[{\"name\":\"AttributeSelector\",\"kind\":\"Attribute\",\"arguments\":[{\"kind\":\"AttributeReference\",\"type\":\"complex\",\"arguments\":[{\"name\":\"entityId\",\"type\":\"string\",\"value\":\"c5f3a4a5-dfb4-4591-ae17-d724cf2d0ec2\"}],\"name\":\"attribute\"}]}]},{\"name\":\"ScalarDetectStep\",\"id\":\"3ff2c8ae-9a85-429f-a4ab-68f619e1884f\",\"rows\":[{\"name\":\"NoHeartbeat\",\"kind\":\"NoHeartbeat\",\"arguments\":[{\"name\":\"duration\",\"type\":\"timeSpan\",\"value\":600000.0}]}]},{\"name\":\"ActStep\",\"id\":\"2c69d759-9d7e-4856-8456-b18ed2e6ba42\",\"rows\":[{\"name\":\"TeamsBinding\",\"kind\":\"TeamsMessage\",\"arguments\":[{\"name\":\"messageLocale\",\"type\":\"string\",\"value\":\"en-us\"},{\"name\":\"recipients\",\"type\":\"array\",\"values\":[{\"type\":\"string\",\"value\":\"chsauget@mariietardygmail.onmicrosoft.com\"}]},{\"name\":\"headline\",\"type\":\"array\",\"values\":[{\"type\":\"string\",\"value\":\"Entrepôt silencieux\"}]},{\"name\":\"optionalMessage\",\"type\":\"array\",\"values\":[{\"type\":\"string\",\"value\":\"Aucun événement reçu de cet entrepôt depuis 10 minutes\"}]},{\"name\":\"additionalInformation\",\"type\":\"array\",\"values\":[]}]}]}]}",
+        "settings": {
+          "shouldRun": true,
+          "shouldApplyRuleOnUpdate": false
+        }
+      }
+    },
+    "type": "timeSeriesView-v1"
+  }
+]

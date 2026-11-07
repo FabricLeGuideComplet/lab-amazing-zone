@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "KQLDashboard",
+    "displayName": "Tableau de bord - Suivi des entrepôts",
+    "description": "Activité des entrepôts et stock en temps réel, à partir des événements du WMS"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "ab051593-8b5e-b90d-4691-1bda46dc8418"
+  }
+}
