@@ -23,12 +23,14 @@ Les sources sont à gauche, la plateforme Fabric à droite. Dans l'espace de dé
 | Dossier | Contenu |
 |---|---|
 | `installation/` | Procédure d'initialisation pas à pas et script de déploiement des éléments Fabric. |
+| `deploiement/` et `azure-pipelines.yml` | Déploiement continu par fabric-cicd depuis Azure DevOps vers les espaces d'intégration, de test et de production (chapitre 10). |
 | `ecommerce/` | Données de démonstration du site nopCommerce (clients, commandes, coûts, scénario d'évolution des prix) et trafic simulé sur le site (`trafic_simule.py`, chapitre 8). |
 | `wms/` | Base PostgreSQL du WMS : création, migrations, rôle de lecture, données de démonstration, simulateur temps réel. |
 | `referentiels/` | Classeurs Excel déposés sur SharePoint (référentiel géographique, budget des ventes). |
 | `modelisation/` | Description de la chaîne Bronze, Silver, Gold et de l'orchestration (chapitre 5). |
 | `gouvernance/` | Référence des tenant settings attendus, comparée chaque semaine à l'état réel du locataire (chapitre 9). |
-| `workspaces/amazingzone/` | Éléments Fabric de l'espace de développement, au format de l'intégration Git de Fabric, et `parameter.yml` pour fabric-cicd. |
+| `workspaces/amazingzone/` | Éléments Fabric de l'espace de développement, au format de l'intégration Git de Fabric, `parameter.yml` pour fabric-cicd et un plan de déploiement en préversion (chapitre 10). |
+| `eventhouse/` | Schéma complet de la base KQL `AmazingZoneEH`, avec ce que sa définition Git omet : tables externes et disponibilité dans OneLake (chapitre 8). |
 | `docs/` | Schéma d'architecture du lab (PNG et SVG). |
 | `apps/retards-expedition/` | Fabric App « Suivi des retards d'expédition » (chapitre 6). |
 | `apps/entrepots-temps-reel/` | Fabric App « Entrepôts en temps réel » : état des entrepôts lu dans la copie OneLake de l'Eventhouse (chapitre 8). |
@@ -50,6 +52,7 @@ Les étapes s'enchaînent dans cet ordre, chacune renvoyant au guide détaillé 
 | 8 | [Données et première exécution](installation/08-donnees-et-premiere-execution.md) | Données de démonstration, premières ingestions, transformation, vérifications |
 | 9 | [Coûts et mise en veille](installation/09-couts-et-arret.md) | Ce qui est facturé en continu, ce qu'il faut arrêter après chaque séance |
 | 10 | [Sécurité et gouvernance](installation/10-securite-et-gouvernance.md) | Sécurité au niveau des lignes et des colonnes du Warehouse et du modèle sémantique, contrôle hebdomadaire des tenant settings (chapitre 9) |
+| 11 | [Industrialisation](installation/11-industrialisation.md) | Espaces de test et de production, pipeline Azure DevOps avec fédération d'identité et approbations, essai d'un pipeline et d'un plan de déploiement Fabric (chapitre 10) |
 
 Les étapes 4 à 6 peuvent être différées : sans elles, le lab fonctionne sans les référentiels Excel, la clé
 d'API météo et les données du service client, et les chapitres correspondants restent lisibles à partir des

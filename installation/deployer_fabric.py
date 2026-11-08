@@ -30,7 +30,7 @@ TYPES = ["Lakehouse", "Warehouse", "Eventhouse", "KQLDatabase", "Notebook", "Cop
 
 # Éléments du dossier « 9 - Archives », conservés pour les démonstrations du livre
 ARCHIVES = r"^(Ingestion - NopCommerce \(remplacée par le mirroring\)|Ingestion - WMS par métadonnées" \
-           r"|Optimisation - Table sensors|Test_RTDashboard)$"
+           r"|Optimisation - Table sensors|Test_RTDashboard|Analyse des journaux du site)$"
 
 
 def main():

@@ -1,0 +1,20 @@
+# Étapes communes aux trois environnements. La tâche AzureCLI@2 ouvre une session Azure CLI au nom du principal de
+# service SP-Fabric-AmazingZone par la connexion de service « fabric-deploiement » : fédération d'identité de
+# charge de travail, Entra ID fait confiance au jeton émis par Azure DevOps pour ce pipeline, aucun secret stocké.
+parameters:
+  - name: environnement
+    type: string
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: "3.12"
+  - task: AzureCLI@2
+    displayName: Déployer ${{ parameters.environnement }}
+    inputs:
+      azureSubscription: fabric-deploiement
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        pip install --quiet fabric-cicd==1.4.0 azure-identity
+        python deploiement/deployer.py --environnement ${{ parameters.environnement }}

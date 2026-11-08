@@ -1,0 +1,56 @@
+# Déploiement continu de la plateforme Amazing Zone (chapitre 10 « Industrialiser »).
+# Chaque fusion sur main déploie l'espace d'intégration ; le test puis la production attendent une approbation,
+# portée par les environnements Azure DevOps « AmazingZone - Test » et « AmazingZone - Prod ».
+# Le principal de service se connecte par fédération d'identité de charge de travail (connexion de service
+# « fabric-deploiement ») : aucun secret n'est stocké dans Azure DevOps.
+
+trigger:
+  branches:
+    include: [main]
+  paths:
+    include: [workspaces/amazingzone, deploiement, eventhouse]
+
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Integration
+    displayName: Intégration (AmazingZone - Dev)
+    jobs:
+      - job: deployer
+        steps:
+          - template: deploiement/etapes-deploiement.yml
+            parameters:
+              environnement: INTEGRATION
+
+  - stage: Test
+    displayName: Test (AmazingZone - Test)
+    dependsOn: Integration
+    jobs:
+      - deployment: deployer
+        environment: AmazingZone - Test
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - template: deploiement/etapes-deploiement.yml
+                  parameters:
+                    environnement: TEST
+
+  - stage: Prod
+    displayName: Production (AmazingZone - Prod)
+    dependsOn: Test
+    jobs:
+      - deployment: deployer
+        environment: AmazingZone - Prod
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - template: deploiement/etapes-deploiement.yml
+                  parameters:
+                    environnement: PROD

@@ -1,11 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
-    "type": "Report",
-    "displayName": "Analyse des journaux du site"
+    "type": "DeploymentPlan",
+    "displayName": "Plan - Base KQL avant Lakehouse"
   },
   "config": {
     "version": "2.0",
-    "logicalId": "53ce1c9c-084b-8f5c-4d07-81c40927d27f"
+    "logicalId": "4246ceea-8a9b-415b-9ab7-11bcf47cb281"
   }
 }

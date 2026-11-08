@@ -57,7 +57,7 @@ Relevez l'identifiant de chaque connexion (Paramètres de la connexion > ID de c
 | `dbt job - SP AmazingZone` | Job dbt | | Principal de service | Activité dbt d'« Orchestration - Transformation » | `CONNEXION_DBT_SP` |
 | `Modèle sémantique - SP AmazingZone` | Modèles sémantiques Power BI | | Principal de service | Activité d'actualisation du modèle « Ventes et logistique » | `CONNEXION_MODELE_SEMANTIQUE_SP` |
 | `Key Vault - SP AmazingZone` | Web v2 | URL de base `https://<coffre>.vault.azure.net/`, audience `https://vault.azure.net` | Principal de service avec certificat, lu par la référence `kv-amazingzone-lab` (certificat `cert-sp-fabric-sharepoint`) | Activité Web « Cle API meteo » | `CONNEXION_KEYVAULT_SP` |
-| `SharePoint - Finance (SP AmazingZone)` | Web | URL du site `https://<locataire>.sharepoint.com/sites/Finance` | Principal de service avec certificat, par la référence `kv-amazingzone-lab`. Créez-la avec **Ignorer le test de connexion** : le test échoue alors que la connexion fonctionne | Dataflow « Ingestion - Referentiels Excel » | liée à la main (section 7.6) |
+| `SharePoint - Finance (SP AmazingZone)` | Web | URL du site `https://<locataire>.sharepoint.com/sites/Finance` | Principal de service avec certificat, par la référence `kv-amazingzone-lab`. Créez-la avec **Ignorer le test de connexion** : le test échoue alors que la connexion fonctionne | Dataflow « Ingestion - Referentiels Excel », table `Budget` du modèle « Ventes et logistique » | liée à la main (section 7.6) ; `CONNEXION_SHAREPOINT_FINANCE` pour le déploiement continu (guide 11) |
 | `Event Hub - Journaux du site (fabric-listen)` | Azure Event Hubs | Espace de noms `<espace de noms>.servicebus.windows.net`, Event Hub `weblogs` | Clé d'accès partagé : stratégie `fabric-listen` et sa clé primaire | Eventstream « Flux - Journaux du site » | `CONNEXION_EVENTHUB_JOURNAUX` |
 | `SQL - NopCommerce (identité AmazingZone - Mirroring)` | Azure SQL Database | Serveur `<serveur>.database.windows.net`, base `amazingdb` | Identité de l'espace de travail | Mirroring (section 7.4) | |
 | `SQL - NopCommerce` (facultatif) | Azure SQL Database | Même serveur et base | Principal de service | Copy Job archivé « Ingestion - NopCommerce » | `CONNEXION_SQL_NOPCOMMERCE_SP` |
@@ -145,6 +145,9 @@ qu'avec `--avec-archives`.
 | 5 - Temps réel | Eventstreams `Flux - Journaux du site` et `Flux - Événements WMS`, ensemble de requêtes `Requêtes - Exploration KQL` (six onglets), tableaux de bord `Tableau de bord - Journaux du site` et `Tableau de bord - Suivi des entrepôts`, Activator `Alerte - Disponibilité du site` et `Alerte - Activité des entrepôts` |
 | 6 - Gouvernance | Notebook `Contrôle - Tenant settings`, planifié chaque lundi (guide 10) |
 | 9 - Archives (`--avec-archives`) | Modèle sémantique et rapport `Analyse des journaux du site`, remplacés au chapitre 8 par le tableau de bord temps réel |
+
+Le déploiement continu vers des espaces d'intégration, de test et de production (chapitre 10) passe par un autre
+script, `deploiement/deployer.py`, avec le même `parameter.yml` : il fait l'objet du guide 11.
 
 Si une publication échoue, le message de fabric-cicd nomme l'élément. Les causes les plus fréquentes : une variable
 de `.env` vide ou erronée, une connexion non partagée avec le principal de service, une base mirrorée absente pour

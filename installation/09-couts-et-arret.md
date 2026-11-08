@@ -13,6 +13,8 @@ dépendent de la région, de la devise et de vos accords ; estimez-les avec la c
 | Plan App Service B1 | Oui | | Supprimer le plan si le site ne sert plus ; l'arrêt de l'application ne réduit pas la facture du plan |
 | Event Hubs Standard (1 unité de débit) | Oui | Événements entrants | Pas de mise en pause ; supprimer l'espace de noms si le temps réel ne sert plus |
 | Azure SQL Database serverless | Stockage | Calcul, quand la base est active ; pause automatique après 60 minutes d'inactivité | Automatique. Le mirroring et les générateurs la réveillent |
+| Espaces `AmazingZone - Dev`, `- Test` et `- Prod` (guide 11) | Consommation de la capacité par l'Eventhouse `AmazingZoneEH` de chaque espace, dès qu'il est actif, et par la supervision d'espace si vous l'activez | Exécutions, si vous faites tourner la chaîne dans ces espaces | Supprimer les espaces de test et de production après l'essai, ou au moins leur Eventhouse ; sinon, suspendre la capacité |
+| Agent hébergé Azure DevOps (guide 11) | | Un job parallèle hébergé gratuit, 1 800 minutes par mois ; un passage complet du pipeline en prend une quinzaine | |
 | Key Vault, Application Insights, Log Analytics | Négligeable | Opérations et volume ingéré | |
 | SharePoint, Dataverse (essai) | Inclus dans les licences | | |
 
@@ -34,12 +36,14 @@ apparaisse en ligne dans Fabric avant de lancer une ingestion.
 
 ## 9.3 Supprimer le lab
 
-1. Dans Fabric, supprimez les deux espaces de travail (la corbeille les conserve pendant la durée de rétention
-   configurée), le domaine `Commerce`, les connexions et la référence Azure Key Vault.
+1. Dans Fabric, supprimez les espaces de travail (les deux du guide 7, et les trois du guide 11 si vous l'avez
+   suivi ; la corbeille les conserve pendant la durée de rétention configurée), le pipeline de déploiement d'essai,
+   le domaine `Commerce`, les connexions et la référence Azure Key Vault.
 2. Supprimez le lien Fabric dans Power Apps avant l'environnement Dataverse, sinon le Lakehouse géré reste
    orphelin.
 3. Supprimez les groupes de ressources : `az group delete -n RG_WMS` puis `az group delete -n RG_AmazingZone`.
    Le coffre de clés passe en suppression réversible pendant 7 jours ; `az keyvault purge` libère son nom plus tôt.
-4. Dans Microsoft Entra, supprimez l'inscription d'application `SP-Fabric-AmazingZone` et le groupe
-   `dp-equipedata` s'ils ne servent plus. Retirez aussi la passerelle `WMSgateway` de la liste des passerelles
-   Fabric.
+4. Dans Microsoft Entra, supprimez l'inscription d'application `SP-Fabric-AmazingZone` (avec elle, ses
+   informations d'identification fédérées) et le groupe `dp-equipedata` s'ils ne servent plus. Dans Azure DevOps,
+   supprimez le projet, ou au moins la connexion de service `fabric-deploiement`. Retirez aussi la passerelle
+   `WMSgateway` de la liste des passerelles Fabric.
